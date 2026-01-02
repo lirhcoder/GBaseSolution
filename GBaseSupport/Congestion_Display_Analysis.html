@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>混雑状況表示 分析レポート</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --secondary: #ec4899;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #0f172a;
+            --gray-900: #1e293b;
+            --gray-700: #334155;
+            --gray-500: #64748b;
+            --gray-300: #cbd5e1;
+            --congestion-color: #14b8a6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Hiragino Sans', 'Yu Gothic', sans-serif;
+            background: linear-gradient(135deg, #042f2e 0%, #0d9488 30%, #1e293b 100%);
+            min-height: 100vh;
+            color: #e2e8f0;
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 50px;
+            margin-bottom: 40px;
+            border: 1px solid var(--gray-700);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--congestion-color), var(--primary));
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, var(--congestion-color), var(--primary-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+        }
+
+        .subtitle {
+            color: var(--gray-300);
+            font-size: 1.2rem;
+            margin-bottom: 25px;
+        }
+
+        .header-context {
+            background: rgba(20, 184, 166, 0.1);
+            border: 1px solid var(--congestion-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        /* Priority Badge */
+        .priority-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 24px;
+            background: linear-gradient(135deg, var(--gray-500), #475569);
+            border-radius: 30px;
+            font-weight: 700;
+            color: white;
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+
+        /* Sections */
+        .section {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 35px;
+            margin-bottom: 30px;
+            border: 1px solid var(--gray-700);
+        }
+
+        .section h2 {
+            font-size: 1.6rem;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--congestion-color);
+        }
+
+        .section h3 {
+            font-size: 1.2rem;
+            color: var(--gray-300);
+            margin: 20px 0 15px;
+        }
+
+        /* Target Facilities */
+        .facility-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .facility-card {
+            background: var(--gray-900);
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid var(--gray-700);
+            text-align: center;
+        }
+
+        .facility-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .facility-card h4 {
+            color: var(--congestion-color);
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+
+        .facility-card p {
+            color: var(--gray-300);
+            font-size: 0.9rem;
+        }
+
+        .facility-need {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 4px 12px;
+            background: rgba(20, 184, 166, 0.2);
+            border-radius: 15px;
+            font-size: 0.8rem;
+            color: var(--congestion-color);
+        }
+
+        /* Congestion Display Mock */
+        .congestion-display {
+            background: var(--gray-900);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 25px 0;
+            border: 1px solid var(--gray-700);
+        }
+
+        .congestion-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .congestion-header h3 {
+            color: var(--congestion-color);
+            margin-bottom: 5px;
+        }
+
+        .congestion-time {
+            color: var(--gray-500);
+            font-size: 0.9rem;
+        }
+
+        .congestion-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+        }
+
+        .congestion-item {
+            background: var(--gray-700);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .congestion-item h4 {
+            color: var(--gray-300);
+            font-size: 0.95rem;
+            margin-bottom: 10px;
+        }
+
+        .congestion-level {
+            display: flex;
+            gap: 5px;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .level-bar {
+            width: 20px;
+            height: 30px;
+            background: var(--gray-500);
+            border-radius: 4px;
+        }
+
+        .level-bar.active.low { background: var(--success); }
+        .level-bar.active.medium { background: var(--warning); }
+        .level-bar.active.high { background: var(--danger); }
+
+        .congestion-status {
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .congestion-status.low { color: var(--success); }
+        .congestion-status.medium { color: var(--warning); }
+        .congestion-status.high { color: var(--danger); }
+
+        /* Integration Methods */
+        .method-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin: 25px 0;
+        }
+
+        .method-card {
+            background: rgba(30, 41, 59, 0.9);
+            border-radius: 20px;
+            padding: 30px;
+            border: 2px solid var(--gray-700);
+            position: relative;
+        }
+
+        .method-card.recommended {
+            border-color: var(--congestion-color);
+            background: rgba(20, 184, 166, 0.05);
+        }
+
+        .method-card.recommended::before {
+            content: '推奨';
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: var(--congestion-color);
+            color: white;
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .method-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .method-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--congestion-color), var(--primary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .method-title {
+            font-size: 1.2rem;
+            color: white;
+        }
+
+        .method-list {
+            list-style: none;
+            margin: 15px 0;
+        }
+
+        .method-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid var(--gray-700);
+            color: var(--gray-300);
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .method-list li:last-child {
+            border-bottom: none;
+        }
+
+        /* Challenges */
+        .challenge-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .challenge-card {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 16px;
+            padding: 25px;
+            border-left: 4px solid var(--danger);
+        }
+
+        .challenge-card h4 {
+            color: #fca5a5;
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+        }
+
+        .challenge-card p {
+            color: var(--gray-300);
+            font-size: 0.95rem;
+        }
+
+        /* Table */
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: var(--gray-900);
+            color: var(--congestion-color);
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid var(--congestion-color);
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid var(--gray-700);
+            color: var(--gray-300);
+        }
+
+        tr:hover {
+            background: rgba(20, 184, 166, 0.05);
+        }
+
+        /* Summary Box */
+        .summary-box {
+            background: linear-gradient(135deg, rgba(20, 184, 166, 0.2), rgba(99, 102, 241, 0.2));
+            border: 2px solid var(--congestion-color);
+            border-radius: 20px;
+            padding: 35px;
+            margin: 30px 0;
+        }
+
+        .summary-box h3 {
+            color: var(--congestion-color);
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .summary-item {
+            text-align: center;
+        }
+
+        .summary-item .value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--warning);
+        }
+
+        .summary-item .label {
+            color: var(--gray-300);
+            font-size: 0.9rem;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: var(--gray-500);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 { font-size: 1.8rem; }
+            .method-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="priority-badge">P2 - 将来検討</div>
+            <h1>混雑状況表示 分析レポート</h1>
+            <p class="subtitle">人流検知システム連携 - 地下街・空港等の高度ニーズ向け</p>
+
+            <div class="header-context">
+                <strong>背景:</strong>
+                地下街、空港、大規模ターミナル駅ビルなど、回遊性が高く滞在時間が長い施設では
+                「今混んでいる場所」「空いているレストラン」の情報ニーズが高い。
+                人流検知システム（カメラ/センサー）との連携により、リアルタイム混雑情報を提供。
+                ただし、導入ハードルが高くP2として位置づけ。
+            </div>
+        </header>
+
+        <!-- Target Facilities -->
+        <section class="section">
+            <h2>主要ターゲット施設</h2>
+
+            <p style="color: var(--gray-300); margin-bottom: 20px;">
+                混雑状況表示のニーズが特に高い施設タイプ。一般的な郊外型SCではニーズが低い。
+            </p>
+
+            <div class="facility-grid">
+                <div class="facility-card">
+                    <div class="facility-icon">&#128647;</div>
+                    <h4>地下街</h4>
+                    <p>広範囲で見通しが悪い。飲食店の混雑を事前に知りたいニーズ大。</p>
+                    <span class="facility-need">ニーズ: 非常に高い</span>
+                </div>
+                <div class="facility-card">
+                    <div class="facility-icon">&#9992;</div>
+                    <h4>空港</h4>
+                    <p>保安検査場、飲食エリア、搭乗ゲート付近の混雑情報が重要。</p>
+                    <span class="facility-need">ニーズ: 非常に高い</span>
+                </div>
+                <div class="facility-card">
+                    <div class="facility-icon">&#128646;</div>
+                    <h4>駅ビル・ターミナル</h4>
+                    <p>乗り換え客が多く、短時間で食事・買い物をしたい層が多い。</p>
+                    <span class="facility-need">ニーズ: 高い</span>
+                </div>
+                <div class="facility-card">
+                    <div class="facility-icon">&#127978;</div>
+                    <h4>大型SC（都市型）</h4>
+                    <p>フードコート、人気店舗の待ち時間情報に一定ニーズ。</p>
+                    <span class="facility-need">ニーズ: 中程度</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Congestion Display Example -->
+        <section class="section">
+            <h2>混雑表示イメージ</h2>
+
+            <div class="congestion-display">
+                <div class="congestion-header">
+                    <h3>現在の混雑状況</h3>
+                    <div class="congestion-time">更新: 12:35</div>
+                </div>
+
+                <div class="congestion-grid">
+                    <div class="congestion-item">
+                        <h4>フードコート</h4>
+                        <div class="congestion-level">
+                            <div class="level-bar active high"></div>
+                            <div class="level-bar active high"></div>
+                            <div class="level-bar active high"></div>
+                            <div class="level-bar active high"></div>
+                            <div class="level-bar active high"></div>
+                        </div>
+                        <div class="congestion-status high">非常に混雑</div>
+                    </div>
+                    <div class="congestion-item">
+                        <h4>1F エントランス</h4>
+                        <div class="congestion-level">
+                            <div class="level-bar active medium"></div>
+                            <div class="level-bar active medium"></div>
+                            <div class="level-bar active medium"></div>
+                            <div class="level-bar"></div>
+                            <div class="level-bar"></div>
+                        </div>
+                        <div class="congestion-status medium">やや混雑</div>
+                    </div>
+                    <div class="congestion-item">
+                        <h4>3F レストラン街</h4>
+                        <div class="congestion-level">
+                            <div class="level-bar active low"></div>
+                            <div class="level-bar active low"></div>
+                            <div class="level-bar"></div>
+                            <div class="level-bar"></div>
+                            <div class="level-bar"></div>
+                        </div>
+                        <div class="congestion-status low">空いています</div>
+                    </div>
+                    <div class="congestion-item">
+                        <h4>駐車場</h4>
+                        <div class="congestion-level">
+                            <div class="level-bar active medium"></div>
+                            <div class="level-bar active medium"></div>
+                            <div class="level-bar active medium"></div>
+                            <div class="level-bar active medium"></div>
+                            <div class="level-bar"></div>
+                        </div>
+                        <div class="congestion-status medium">混雑中</div>
+                    </div>
+                </div>
+            </div>
+
+            <h3>ユーザー対話例</h3>
+            <div style="background: var(--gray-900); border-radius: 12px; padding: 20px; margin-top: 15px;">
+                <p style="color: var(--gray-300); margin-bottom: 10px;"><strong style="color: var(--primary-light);">ユーザー:</strong> 「今空いてるレストランある？」</p>
+                <p style="color: var(--gray-300);"><strong style="color: var(--congestion-color);">GBase:</strong> 「現在、3Fレストラン街は比較的空いています。特に『イタリアンキッチン』『和食処さくら』は待ち時間なしでご案内可能です。一方、フードコートは現在非常に混雑しており、30分程度の待ち時間が予想されます。」</p>
+            </div>
+        </section>
+
+        <!-- Integration Methods -->
+        <section class="section">
+            <h2>連携方式</h2>
+
+            <div class="method-grid">
+                <div class="method-card recommended">
+                    <div class="method-header">
+                        <div class="method-icon">A</div>
+                        <div class="method-title">既存システムAPI連携</div>
+                    </div>
+                    <ul class="method-list">
+                        <li><span style="color: var(--success);">+</span> 施設既設の人流検知システムからAPI取得</li>
+                        <li><span style="color: var(--success);">+</span> 設備投資不要（ソフトウェア連携のみ）</li>
+                        <li><span style="color: var(--success);">+</span> リアルタイムデータ取得可能</li>
+                        <li><span style="color: var(--warning);">-</span> 施設側にAPIが必要（ない場合は対応不可）</li>
+                        <li><span style="color: var(--warning);">-</span> システム毎にカスタム連携開発</li>
+                    </ul>
+                    <div style="background: rgba(20,184,166,0.2); padding: 15px; border-radius: 10px; margin-top: 15px;">
+                        <strong style="color: var(--congestion-color);">工数:</strong> 施設毎に2-4週間（API仕様次第）
+                    </div>
+                </div>
+
+                <div class="method-card">
+                    <div class="method-header">
+                        <div class="method-icon">B</div>
+                        <div class="method-title">手動入力方式</div>
+                    </div>
+                    <ul class="method-list">
+                        <li><span style="color: var(--success);">+</span> システム連携不要、即導入可能</li>
+                        <li><span style="color: var(--success);">+</span> 施設スタッフが状況を入力</li>
+                        <li><span style="color: var(--warning);">-</span> リアルタイム性がない</li>
+                        <li><span style="color: var(--warning);">-</span> 人手による運用コスト</li>
+                        <li><span style="color: var(--warning);">-</span> 更新頻度にばらつき</li>
+                    </ul>
+                    <div style="background: rgba(100,116,139,0.2); padding: 15px; border-radius: 10px; margin-top: 15px;">
+                        <strong style="color: var(--gray-300);">工数:</strong> 1週間（入力UI開発）
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Challenges -->
+        <section class="section">
+            <h2>P2とした理由（導入ハードル）</h2>
+
+            <div class="challenge-grid">
+                <div class="challenge-card">
+                    <h4>1. 既設システム依存</h4>
+                    <p>人流検知システムが既に導入されている施設でないと実現不可。新規設備投資はGBase Supportの範囲外。</p>
+                </div>
+                <div class="challenge-card">
+                    <h4>2. 個別連携開発</h4>
+                    <p>人流検知システムは施設毎に異なるベンダー製品。標準APIがなく、個別のカスタム連携開発が必要。</p>
+                </div>
+                <div class="challenge-card">
+                    <h4>3. 対象施設の限定</h4>
+                    <p>混雑情報ニーズが高いのは地下街・空港等の特定施設。一般的なSCでは優先度が低い。</p>
+                </div>
+                <div class="challenge-card">
+                    <h4>4. 精度・責任問題</h4>
+                    <p>「空いてると言われたのに混んでいた」等のクレームリスク。情報更新頻度と精度の担保が課題。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Implementation Priority -->
+        <section class="section">
+            <h2>実装ロードマップ（条件付き）</h2>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>フェーズ</th>
+                            <th>機能</th>
+                            <th>条件</th>
+                            <th>工数</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong style="color: var(--warning);">Phase 1</strong></td>
+                            <td>手動入力方式（MVP）</td>
+                            <td>顧客要望があった場合</td>
+                            <td>1週間</td>
+                        </tr>
+                        <tr>
+                            <td><strong style="color: var(--warning);">Phase 2</strong></td>
+                            <td>汎用API受信インターフェース</td>
+                            <td>複数施設から要望</td>
+                            <td>2週間</td>
+                        </tr>
+                        <tr>
+                            <td><strong style="color: var(--gray-500);">Phase 3</strong></td>
+                            <td>個別システム連携（パイロット）</td>
+                            <td>大型案件獲得時</td>
+                            <td>施設毎2-4週間</td>
+                        </tr>
+                        <tr>
+                            <td><strong style="color: var(--gray-500);">Phase 4</strong></td>
+                            <td>予測機能（AI混雑予測）</td>
+                            <td>データ蓄積後</td>
+                            <td>4週間</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Summary -->
+        <section class="section">
+            <div class="summary-box">
+                <h3>混雑状況表示 - 結論</h3>
+                <p style="text-align: center; color: var(--gray-300); margin-bottom: 25px;">
+                    混雑状況表示は<strong style="color: var(--warning);">特定施設（地下街・空港）向けの高度機能</strong>。<br>
+                    既設システム依存のため、P2として顧客要望ベースで対応。一般SCでは優先度低。
+                </p>
+
+                <div class="summary-grid">
+                    <div class="summary-item">
+                        <div class="value">P2</div>
+                        <div class="label">優先度（将来検討）</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="value">地下街/空港</div>
+                        <div class="label">主要ターゲット</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="value">要望ベース</div>
+                        <div class="label">開発トリガー</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="value">2-4週間</div>
+                        <div class="label">施設毎連携工数</div>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 30px; margin-top: 30px; flex-wrap: wrap; justify-content: center;">
+                    <div style="flex: 1; min-width: 250px;">
+                        <h4 style="color: var(--warning); margin-bottom: 10px;">開発条件</h4>
+                        <ul style="color: var(--gray-300); padding-left: 20px;">
+                            <li>地下街/空港からの具体的要望</li>
+                            <li>既設人流検知システムのAPI確認</li>
+                            <li>個別見積での対応</li>
+                        </ul>
+                    </div>
+                    <div style="flex: 1; min-width: 250px;">
+                        <h4 style="color: var(--gray-500); margin-bottom: 10px;">一般SCへの推奨</h4>
+                        <ul style="color: var(--gray-300); padding-left: 20px;">
+                            <li>混雑情報は手動FAQ対応</li>
+                            <li>「週末午後は混雑傾向」等の一般情報</li>
+                            <li>リアルタイム連携は不要</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <p>混雑状況表示 分析レポート</p>
+            <p style="margin-top: 5px;">GBase Support - SC Industry Solution</p>
+        </footer>
+    </div>
+</body>
+</html>

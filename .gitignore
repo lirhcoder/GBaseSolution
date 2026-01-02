@@ -1,0 +1,33 @@
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Claude Code
+.claude/
+
+# Temporary files
+*.tmp
+*.bak
+~$*
+
+# Documents (not for this repo)
+*.docx
+*.pdf
+*.txt
+*.md
+!README.md
+!GBaseSupport/*.md
+
+# Extracted folders
+release_notes_extracted/

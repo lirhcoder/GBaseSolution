@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大型タッチスクリーン対応 分析レポート</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --secondary: #ec4899;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #0f172a;
+            --gray-900: #1e293b;
+            --gray-700: #334155;
+            --gray-500: #64748b;
+            --gray-300: #cbd5e1;
+            --screen-color: #0ea5e9;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Hiragino Sans', 'Yu Gothic', sans-serif;
+            background: linear-gradient(135deg, #0c4a6e 0%, #0284c7 30%, #1e293b 100%);
+            min-height: 100vh;
+            color: #e2e8f0;
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 50px;
+            margin-bottom: 40px;
+            border: 1px solid var(--gray-700);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--screen-color), var(--primary));
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, var(--screen-color), var(--primary-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+        }
+
+        .subtitle {
+            color: var(--gray-300);
+            font-size: 1.2rem;
+            margin-bottom: 25px;
+        }
+
+        .header-context {
+            background: rgba(14, 165, 233, 0.1);
+            border: 1px solid var(--screen-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        /* Priority Badge */
+        .priority-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 24px;
+            background: linear-gradient(135deg, var(--danger), #dc2626);
+            border-radius: 30px;
+            font-weight: 700;
+            color: white;
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+
+        /* Customer Badge */
+        .customer-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            background: linear-gradient(135deg, var(--success), #059669);
+            border-radius: 30px;
+            font-weight: 600;
+            color: white;
+            font-size: 0.9rem;
+            margin-left: 10px;
+        }
+
+        /* Sections */
+        .section {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 35px;
+            margin-bottom: 30px;
+            border: 1px solid var(--gray-700);
+        }
+
+        .section h2 {
+            font-size: 1.6rem;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--screen-color);
+        }
+
+        .section h3 {
+            font-size: 1.2rem;
+            color: var(--gray-300);
+            margin: 20px 0 15px;
+        }
+
+        /* Current Problem */
+        .problem-box {
+            background: rgba(239, 68, 68, 0.1);
+            border: 2px solid var(--danger);
+            border-radius: 16px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .problem-box h3 {
+            color: var(--danger);
+            margin-bottom: 15px;
+        }
+
+        .problem-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        .problem-item {
+            background: rgba(239, 68, 68, 0.05);
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid var(--danger);
+        }
+
+        .problem-item h4 {
+            color: #fca5a5;
+            margin-bottom: 10px;
+        }
+
+        .problem-item p {
+            color: var(--gray-300);
+            font-size: 0.9rem;
+        }
+
+        /* Screen Mockup */
+        .mockup-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 25px 0;
+        }
+
+        .mockup-card {
+            background: var(--gray-900);
+            border-radius: 20px;
+            padding: 25px;
+            border: 2px solid var(--gray-700);
+        }
+
+        .mockup-card.current {
+            border-color: var(--danger);
+        }
+
+        .mockup-card.proposed {
+            border-color: var(--success);
+        }
+
+        .mockup-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .mockup-header h4 {
+            color: var(--gray-300);
+        }
+
+        .mockup-header.current h4 { color: var(--danger); }
+        .mockup-header.proposed h4 { color: var(--success); }
+
+        .mockup-screen {
+            background: var(--gray-700);
+            border-radius: 12px;
+            padding: 20px;
+            min-height: 250px;
+        }
+
+        .single-bot {
+            background: var(--primary);
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            color: white;
+        }
+
+        .multi-bot-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .bot-card {
+            background: linear-gradient(135deg, var(--screen-color), var(--primary));
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .bot-card:hover {
+            transform: scale(1.02);
+        }
+
+        .bot-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .bot-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .bot-desc {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+
+        /* Feature Grid */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 25px 0;
+        }
+
+        .feature-card {
+            background: rgba(14, 165, 233, 0.05);
+            border: 1px solid var(--screen-color);
+            border-radius: 16px;
+            padding: 25px;
+        }
+
+        .feature-card h4 {
+            color: var(--screen-color);
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feature-list {
+            list-style: none;
+        }
+
+        .feature-list li {
+            padding: 8px 0;
+            color: var(--gray-300);
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            border-bottom: 1px solid var(--gray-700);
+        }
+
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+
+        /* Device Support */
+        .device-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .device-card {
+            background: var(--gray-900);
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            border: 1px solid var(--gray-700);
+        }
+
+        .device-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .device-card h4 {
+            color: var(--screen-color);
+            margin-bottom: 10px;
+        }
+
+        .device-card p {
+            color: var(--gray-300);
+            font-size: 0.9rem;
+        }
+
+        .device-size {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 4px 12px;
+            background: var(--gray-700);
+            border-radius: 15px;
+            font-size: 0.8rem;
+            color: var(--gray-300);
+        }
+
+        /* Use Cases */
+        .usecase-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .usecase-card {
+            background: var(--gray-900);
+            border-radius: 16px;
+            padding: 25px;
+            border-left: 4px solid var(--screen-color);
+        }
+
+        .usecase-card h4 {
+            color: var(--screen-color);
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+        }
+
+        .usecase-card p {
+            color: var(--gray-300);
+            font-size: 0.95rem;
+        }
+
+        /* Table */
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: var(--gray-900);
+            color: var(--screen-color);
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid var(--screen-color);
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid var(--gray-700);
+            color: var(--gray-300);
+        }
+
+        tr:hover {
+            background: rgba(14, 165, 233, 0.05);
+        }
+
+        /* Summary Box */
+        .summary-box {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.2), rgba(99, 102, 241, 0.2));
+            border: 2px solid var(--screen-color);
+            border-radius: 20px;
+            padding: 35px;
+            margin: 30px 0;
+        }
+
+        .summary-box h3 {
+            color: var(--screen-color);
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .summary-item {
+            text-align: center;
+        }
+
+        .summary-item .value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--success);
+        }
+
+        .summary-item .label {
+            color: var(--gray-300);
+            font-size: 0.9rem;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: var(--gray-500);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 { font-size: 1.8rem; }
+            .mockup-container { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="priority-badge">P0 - Must Have</div>
+            <span class="customer-badge">顧客要望あり</span>
+            <h1>大型タッチスクリーン対応 分析レポート</h1>
+            <p class="subtitle">マルチBot統合ポータル - 無人受付・デジタルサイネージ対応</p>
+
+            <div class="header-context">
+                <strong>背景:</strong>
+                現在のチャットボット問い合わせページは単一Botへのリンクのみで、統合的な入口として機能していない。
+                SC・商業施設の無人受付やデジタルサイネージでは、複数のBotを用途別に選択できる
+                <strong>マルチBot統合ポータル画面</strong>が必要。大型タッチスクリーン（32〜55インチ）に最適化した
+                UIを提供し、顧客体験を向上させる。
+            </div>
+        </header>
+
+        <!-- Current Problem -->
+        <section class="section">
+            <h2>現状の課題</h2>
+
+            <div class="problem-box">
+                <h3>現在のチャットボットページの限界</h3>
+                <div class="problem-grid">
+                    <div class="problem-item">
+                        <h4>1. 単一Botのみ対応</h4>
+                        <p>1ページ1Botの構成。複数の用途別Bot（総合案内、レストラン予約、駐車場など）を統合できない。</p>
+                    </div>
+                    <div class="problem-item">
+                        <h4>2. デバイス最適化不足</h4>
+                        <p>スマホ向けUI中心で、大型タッチスクリーン（32〜55インチ）での操作性が考慮されていない。</p>
+                    </div>
+                    <div class="problem-item">
+                        <h4>3. 無人受付に不向き</h4>
+                        <p>スタッフなしで初見のお客様が使うには、より直感的なナビゲーションが必要。</p>
+                    </div>
+                    <div class="problem-item">
+                        <h4>4. ブランディング不足</h4>
+                        <p>施設独自のデザイン・ロゴ・カラーを反映したカスタマイズ性がない。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Before/After Mockup -->
+        <section class="section">
+            <h2>ソリューション：マルチBot統合ポータル</h2>
+
+            <div class="mockup-container">
+                <div class="mockup-card current">
+                    <div class="mockup-header current">
+                        <span style="font-size: 1.5rem;">&#10060;</span>
+                        <h4>現状：単一Botページ</h4>
+                    </div>
+                    <div class="mockup-screen">
+                        <div class="single-bot">
+                            <div style="font-size: 3rem; margin-bottom: 15px;">&#129302;</div>
+                            <div style="font-size: 1.2rem; font-weight: 600;">総合案内Bot</div>
+                            <div style="font-size: 0.9rem; opacity: 0.8; margin-top: 10px;">他のBotへの導線なし</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mockup-card proposed">
+                    <div class="mockup-header proposed">
+                        <span style="font-size: 1.5rem;">&#9989;</span>
+                        <h4>提案：マルチBot統合ポータル</h4>
+                    </div>
+                    <div class="mockup-screen">
+                        <div class="multi-bot-grid">
+                            <div class="bot-card">
+                                <div class="bot-icon">&#127978;</div>
+                                <div class="bot-name">総合案内</div>
+                                <div class="bot-desc">フロア・店舗検索</div>
+                            </div>
+                            <div class="bot-card" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                                <div class="bot-icon">&#127860;</div>
+                                <div class="bot-name">レストラン</div>
+                                <div class="bot-desc">空席・予約案内</div>
+                            </div>
+                            <div class="bot-card" style="background: linear-gradient(135deg, #10b981, #059669);">
+                                <div class="bot-icon">&#128663;</div>
+                                <div class="bot-name">駐車場</div>
+                                <div class="bot-desc">料金・空き確認</div>
+                            </div>
+                            <div class="bot-card" style="background: linear-gradient(135deg, #ec4899, #db2777);">
+                                <div class="bot-icon">&#127881;</div>
+                                <div class="bot-name">イベント</div>
+                                <div class="bot-desc">開催中イベント</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Key Features -->
+        <section class="section">
+            <h2>主要機能</h2>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>&#128506; マルチBot選択UI</h4>
+                    <ul class="feature-list">
+                        <li><span style="color: var(--screen-color);">&#9679;</span> 複数Botをカード形式で一覧表示</li>
+                        <li><span style="color: var(--screen-color);">&#9679;</span> アイコン・色・説明文のカスタマイズ</li>
+                        <li><span style="color: var(--screen-color);">&#9679;</span> タッチで該当Botチャット画面へ遷移</li>
+                        <li><span style="color: var(--screen-color);">&#9679;</span> 多言語切替ボタン（日英中韓）</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h4>&#128187; 大型スクリーン最適化</h4>
+                    <ul class="feature-list">
+                        <li><span style="color: var(--screen-color);">&#9679;</span> 32〜55インチ対応レイアウト</li>
+                        <li><span style="color: var(--screen-color);">&#9679;</span> 大きなタッチターゲット（指操作最適化）</li>
+                        <li><span style="color: var(--screen-color);">&#9679;</span> 高解像度（4K対応）</li>
+                        <li><span style="color: var(--screen-color);">&#9679;</span> 横置き・縦置き両対応</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h4>&#127912; ブランドカスタマイズ</h4>
+                    <ul class="feature-list">
+                        <li><span style="color: var(--screen-color);">&#9679;</span> 施設ロゴ・背景画像設定</li>
+                        <li><span style="color: var(--screen-color);">&#9679;</span> テーマカラー変更</li>
+                        <li><span style="color: var(--screen-color);">&#9679;</span> ウェルカムメッセージ編集</li>
+                        <li><span style="color: var(--screen-color);">&#9679;</span> 営業時間表示</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h4>&#128260; 無人運用対応</h4>
+                    <ul class="feature-list">
+                        <li><span style="color: var(--screen-color);">&#9679;</span> アイドル画面（スクリーンセーバー）</li>
+                        <li><span style="color: var(--screen-color);">&#9679;</span> 一定時間操作なしで初期画面に戻る</li>
+                        <li><span style="color: var(--screen-color);">&#9679;</span> 遠隔管理・コンテンツ更新</li>
+                        <li><span style="color: var(--screen-color);">&#9679;</span> 稼働状況モニタリング</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Device Support -->
+        <section class="section">
+            <h2>対応デバイス</h2>
+
+            <div class="device-grid">
+                <div class="device-card">
+                    <div class="device-icon">&#128433;</div>
+                    <h4>大型タッチスクリーン</h4>
+                    <p>無人受付・インフォメーション端末</p>
+                    <span class="device-size">32〜55インチ</span>
+                </div>
+                <div class="device-card">
+                    <div class="device-icon">&#128187;</div>
+                    <h4>デジタルサイネージ</h4>
+                    <p>館内案内・広告連動</p>
+                    <span class="device-size">43〜75インチ</span>
+                </div>
+                <div class="device-card">
+                    <div class="device-icon">&#128241;</div>
+                    <h4>タブレット</h4>
+                    <p>カウンター設置用</p>
+                    <span class="device-size">10〜13インチ</span>
+                </div>
+                <div class="device-card">
+                    <div class="device-icon">&#128241;</div>
+                    <h4>スマートフォン</h4>
+                    <p>既存対応（QRコード誘導）</p>
+                    <span class="device-size">5〜7インチ</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Use Cases -->
+        <section class="section">
+            <h2>活用シーン</h2>
+
+            <div class="usecase-grid">
+                <div class="usecase-card">
+                    <h4>&#127978; SC無人受付</h4>
+                    <p>インフォメーションカウンター横に設置。スタッフ不在時でも24時間対応可能に。複数Botで総合案内・駐車場・レストランを統合。</p>
+                </div>
+                <div class="usecase-card">
+                    <h4>&#9992; 空港案内</h4>
+                    <p>出発・到着ロビーに設置。フライト情報、免税店案内、ラウンジ案内など用途別Botを提供。</p>
+                </div>
+                <div class="usecase-card">
+                    <h4>&#128647; 駅ビル・地下街</h4>
+                    <p>改札付近やエスカレーター横に設置。飲食検索、施設案内、乗り換え案内をワンストップで提供。</p>
+                </div>
+                <div class="usecase-card">
+                    <h4>&#127979; ホテルロビー</h4>
+                    <p>フロント横に設置。チェックイン案内、周辺観光、レストラン予約などをセルフサービス化。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Implementation -->
+        <section class="section">
+            <h2>実装計画</h2>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>フェーズ</th>
+                            <th>機能</th>
+                            <th>工数</th>
+                            <th>優先度</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong style="color: var(--danger);">Phase 1</strong></td>
+                            <td>マルチBot選択ポータル画面</td>
+                            <td>2週間</td>
+                            <td style="color: var(--danger);">P0 最優先</td>
+                        </tr>
+                        <tr>
+                            <td><strong style="color: var(--danger);">Phase 1</strong></td>
+                            <td>大型スクリーンレスポンシブ対応</td>
+                            <td>1週間</td>
+                            <td style="color: var(--danger);">P0 最優先</td>
+                        </tr>
+                        <tr>
+                            <td><strong style="color: var(--danger);">Phase 1</strong></td>
+                            <td>ブランドカスタマイズ機能</td>
+                            <td>1週間</td>
+                            <td style="color: var(--danger);">P0 最優先</td>
+                        </tr>
+                        <tr>
+                            <td><strong style="color: var(--warning);">Phase 2</strong></td>
+                            <td>アイドル画面・自動復帰</td>
+                            <td>1週間</td>
+                            <td style="color: var(--warning);">P1</td>
+                        </tr>
+                        <tr>
+                            <td><strong style="color: var(--warning);">Phase 2</strong></td>
+                            <td>遠隔管理ダッシュボード</td>
+                            <td>2週間</td>
+                            <td style="color: var(--warning);">P1</td>
+                        </tr>
+                        <tr>
+                            <td><strong style="color: var(--gray-500);">Phase 3</strong></td>
+                            <td>デジタルサイネージ広告連動</td>
+                            <td>2週間</td>
+                            <td style="color: var(--gray-500);">P2</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Summary -->
+        <section class="section">
+            <div class="summary-box">
+                <h3>大型タッチスクリーン対応 - 結論</h3>
+                <p style="text-align: center; color: var(--gray-300); margin-bottom: 25px;">
+                    マルチBot統合ポータルは<strong style="color: var(--screen-color);">無人受付・デジタルサイネージ対応の必須機能</strong>。<br>
+                    顧客要望あり、P0として最優先で開発。Phase 1で4週間、基本機能をリリース。
+                </p>
+
+                <div class="summary-grid">
+                    <div class="summary-item">
+                        <div class="value">P0</div>
+                        <div class="label">優先度（最優先）</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="value">4週間</div>
+                        <div class="label">Phase 1 工数</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="value">32-55"</div>
+                        <div class="label">対応スクリーンサイズ</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="value">複数Bot</div>
+                        <div class="label">統合ポータル対応</div>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 30px; margin-top: 30px; flex-wrap: wrap; justify-content: center;">
+                    <div style="flex: 1; min-width: 250px;">
+                        <h4 style="color: var(--danger); margin-bottom: 10px;">Phase 1 必須機能</h4>
+                        <ul style="color: var(--gray-300); padding-left: 20px;">
+                            <li>マルチBot選択ポータル画面</li>
+                            <li>大型スクリーンレスポンシブ</li>
+                            <li>ロゴ・カラーカスタマイズ</li>
+                            <li>多言語切替</li>
+                        </ul>
+                    </div>
+                    <div style="flex: 1; min-width: 250px;">
+                        <h4 style="color: var(--warning); margin-bottom: 10px;">Phase 2 追加機能</h4>
+                        <ul style="color: var(--gray-300); padding-left: 20px;">
+                            <li>アイドル画面・自動復帰</li>
+                            <li>遠隔管理ダッシュボード</li>
+                            <li>稼働状況モニタリング</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <p>大型タッチスクリーン対応 分析レポート</p>
+            <p style="margin-top: 5px;">GBase Support - SC Industry Solution</p>
+        </footer>
+    </div>
+</body>
+</html>

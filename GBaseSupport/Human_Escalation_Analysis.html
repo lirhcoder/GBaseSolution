@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>転人工対応（エスカレーション通知）分析レポート</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --secondary: #ec4899;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #0f172a;
+            --gray-900: #1e293b;
+            --gray-700: #334155;
+            --gray-500: #64748b;
+            --gray-300: #cbd5e1;
+            --escalation-color: #f43f5e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Hiragino Sans', 'Yu Gothic', sans-serif;
+            background: linear-gradient(135deg, #881337 0%, #be123c 30%, #1e293b 100%);
+            min-height: 100vh;
+            color: #e2e8f0;
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 50px;
+            margin-bottom: 40px;
+            border: 1px solid var(--gray-700);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--escalation-color), var(--warning));
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, var(--escalation-color), var(--warning));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+        }
+
+        .subtitle {
+            color: var(--gray-300);
+            font-size: 1.2rem;
+            margin-bottom: 25px;
+        }
+
+        .header-context {
+            background: rgba(244, 63, 94, 0.1);
+            border: 1px solid var(--escalation-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        /* Priority Badge */
+        .priority-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 24px;
+            background: linear-gradient(135deg, var(--danger), #dc2626);
+            border-radius: 30px;
+            font-weight: 700;
+            color: white;
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+
+        .customer-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            background: linear-gradient(135deg, var(--success), #059669);
+            border-radius: 30px;
+            font-weight: 600;
+            color: white;
+            font-size: 0.9rem;
+            margin-left: 10px;
+        }
+
+        /* Sections */
+        .section {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 35px;
+            margin-bottom: 30px;
+            border: 1px solid var(--gray-700);
+        }
+
+        .section h2 {
+            font-size: 1.6rem;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--escalation-color);
+        }
+
+        .section h3 {
+            font-size: 1.2rem;
+            color: var(--gray-300);
+            margin: 20px 0 15px;
+        }
+
+        /* Flow Diagram */
+        .flow-container {
+            background: rgba(244, 63, 94, 0.05);
+            border: 1px solid var(--escalation-color);
+            border-radius: 16px;
+            padding: 30px;
+            margin: 25px 0;
+        }
+
+        .flow-title {
+            text-align: center;
+            color: var(--escalation-color);
+            margin-bottom: 25px;
+            font-size: 1.1rem;
+        }
+
+        .flow-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin: 15px 0;
+        }
+
+        .flow-box {
+            background: var(--gray-900);
+            border: 2px solid var(--escalation-color);
+            border-radius: 12px;
+            padding: 15px 20px;
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .flow-box h4 {
+            color: var(--escalation-color);
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .flow-box p {
+            color: var(--gray-300);
+            font-size: 0.8rem;
+        }
+
+        .flow-arrow {
+            font-size: 1.5rem;
+            color: var(--escalation-color);
+        }
+
+        /* Method Comparison */
+        .method-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin: 25px 0;
+        }
+
+        .method-card {
+            background: var(--gray-900);
+            border-radius: 20px;
+            padding: 30px;
+            border: 2px solid var(--gray-700);
+            position: relative;
+        }
+
+        .method-card.priority-1 {
+            border-color: var(--danger);
+            background: rgba(244, 63, 94, 0.05);
+        }
+
+        .method-card.priority-1::before {
+            content: '優先度1';
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: var(--danger);
+            color: white;
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .method-card.priority-2::before {
+            content: '優先度2';
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: var(--warning);
+            color: white;
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .method-card.priority-3::before {
+            content: '優先度3';
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: var(--success);
+            color: white;
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .method-card.priority-4::before {
+            content: '優先度4';
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: var(--gray-500);
+            color: white;
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .method-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .method-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--escalation-color), var(--warning));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .method-title {
+            font-size: 1.2rem;
+            color: white;
+        }
+
+        .method-subtitle {
+            color: var(--gray-500);
+            font-size: 0.9rem;
+        }
+
+        .pros-cons {
+            margin-top: 20px;
+        }
+
+        .pros, .cons {
+            margin-bottom: 15px;
+        }
+
+        .pros h5 {
+            color: var(--success);
+            font-size: 0.95rem;
+            margin-bottom: 10px;
+        }
+
+        .cons h5 {
+            color: var(--danger);
+            font-size: 0.95rem;
+            margin-bottom: 10px;
+        }
+
+        .pros-cons ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .pros-cons li {
+            padding: 5px 0;
+            color: var(--gray-300);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .method-footer {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid var(--gray-700);
+        }
+
+        .cost-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .cost-low { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+        .cost-medium { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
+        .cost-high { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+
+        /* Comparison Table */
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: var(--gray-900);
+            color: var(--escalation-color);
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid var(--escalation-color);
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid var(--gray-700);
+            color: var(--gray-300);
+        }
+
+        tr:hover {
+            background: rgba(244, 63, 94, 0.05);
+        }
+
+        /* Recommendation Box */
+        .recommendation-box {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05));
+            border: 2px solid var(--success);
+            border-radius: 16px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .recommendation-box h3 {
+            color: var(--success);
+            margin-bottom: 15px;
+        }
+
+        .recommendation-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .recommendation-item {
+            background: rgba(16, 185, 129, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .recommendation-item .rank {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--success);
+        }
+
+        .recommendation-item .name {
+            color: var(--gray-300);
+            margin-top: 5px;
+        }
+
+        /* Implementation Timeline */
+        .timeline-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .timeline-item {
+            background: var(--gray-900);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid var(--gray-700);
+        }
+
+        .timeline-item.active {
+            border-color: var(--escalation-color);
+            background: rgba(244, 63, 94, 0.1);
+        }
+
+        .timeline-phase {
+            font-size: 0.8rem;
+            color: var(--gray-500);
+            margin-bottom: 10px;
+        }
+
+        .timeline-method {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .timeline-name {
+            color: var(--gray-300);
+            font-size: 0.9rem;
+        }
+
+        .timeline-weeks {
+            margin-top: 10px;
+            font-size: 0.8rem;
+            color: var(--escalation-color);
+        }
+
+        /* Summary Box */
+        .summary-box {
+            background: linear-gradient(135deg, rgba(244, 63, 94, 0.2), rgba(245, 158, 11, 0.2));
+            border: 2px solid var(--escalation-color);
+            border-radius: 20px;
+            padding: 35px;
+            margin: 30px 0;
+        }
+
+        .summary-box h3 {
+            color: var(--escalation-color);
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .summary-item {
+            text-align: center;
+        }
+
+        .summary-item .value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--success);
+        }
+
+        .summary-item .label {
+            color: var(--gray-300);
+            font-size: 0.9rem;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: var(--gray-500);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 { font-size: 1.8rem; }
+            .timeline-grid { grid-template-columns: repeat(2, 1fr); }
+            .flow-row { flex-direction: column; }
+            .flow-arrow { transform: rotate(90deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="priority-badge">P0 - Must Have</div>
+            <span class="customer-badge">顧客要望あり</span>
+            <h1>転人工対応（エスカレーション通知）</h1>
+            <p class="subtitle">AIが対応できない場合の人間への引き継ぎ通知システム</p>
+
+            <div class="header-context">
+                <strong>背景:</strong>
+                チャットボットがユーザーの質問に回答できない場合、または「人間と話したい」という要望があった場合に、
+                担当スタッフへ通知し、有人対応への引き継ぎを行う機能。通知方法として<strong>メール、SMS、LINE WORKS、電話</strong>
+                の4方式を分析し、実装優先度を決定する。顧客要望あり、P0として最優先で対応。
+            </div>
+        </header>
+
+        <!-- Escalation Flow -->
+        <section class="section">
+            <h2>エスカレーションフロー</h2>
+
+            <div class="flow-container">
+                <div class="flow-title">転人工対応の基本フロー</div>
+                <div class="flow-row">
+                    <div class="flow-box">
+                        <h4>&#128172; ユーザー問い合わせ</h4>
+                        <p>チャットボットで質問</p>
+                    </div>
+                    <span class="flow-arrow">&#10148;</span>
+                    <div class="flow-box">
+                        <h4>&#129302; AI判定</h4>
+                        <p>回答不可 or 転人工要求</p>
+                    </div>
+                    <span class="flow-arrow">&#10148;</span>
+                    <div class="flow-box" style="border-color: var(--warning);">
+                        <h4 style="color: var(--warning);">&#128276; 通知送信</h4>
+                        <p>担当者へ通知</p>
+                    </div>
+                    <span class="flow-arrow">&#10148;</span>
+                    <div class="flow-box" style="border-color: var(--success);">
+                        <h4 style="color: var(--success);">&#128100; 有人対応</h4>
+                        <p>スタッフが引き継ぎ</p>
+                    </div>
+                </div>
+            </div>
+
+            <h3>エスカレーション発動条件</h3>
+            <ul style="color: var(--gray-300); padding-left: 20px; list-style: disc;">
+                <li>ユーザーが「人間と話したい」「スタッフに繋いで」等の転人工要求を発言</li>
+                <li>AIが回答に自信がない場合（信頼度スコア閾値以下）</li>
+                <li>同じ質問の繰り返し（3回以上）で解決しない場合</li>
+                <li>ネガティブフィードバック（「役に立たない」等）を受けた場合</li>
+                <li>特定のキーワード検知（クレーム、緊急、事故等）</li>
+            </ul>
+        </section>
+
+        <!-- Method Comparison -->
+        <section class="section">
+            <h2>通知方式の比較分析</h2>
+
+            <div class="method-grid">
+                <!-- Email -->
+                <div class="method-card priority-3">
+                    <div class="method-header">
+                        <div class="method-icon">&#128231;</div>
+                        <div>
+                            <div class="method-title">メール通知</div>
+                            <div class="method-subtitle">Email Notification</div>
+                        </div>
+                    </div>
+                    <div class="pros-cons">
+                        <div class="pros">
+                            <h5>&#128994; メリット</h5>
+                            <ul>
+                                <li><span style="color: var(--success);">+</span> 実装が最も簡単（SMTP送信のみ）</li>
+                                <li><span style="color: var(--success);">+</span> 追加コストほぼゼロ</li>
+                                <li><span style="color: var(--success);">+</span> 対話履歴を詳細に添付可能</li>
+                                <li><span style="color: var(--success);">+</span> 既存インフラで対応可能</li>
+                            </ul>
+                        </div>
+                        <div class="cons">
+                            <h5>&#128308; デメリット</h5>
+                            <ul>
+                                <li><span style="color: var(--danger);">-</span> 即時性がない（確認に時間がかかる）</li>
+                                <li><span style="color: var(--danger);">-</span> 迷惑メール扱いになるリスク</li>
+                                <li><span style="color: var(--danger);">-</span> プッシュ通知なし（開くまで気づかない）</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="method-footer">
+                        <span class="cost-badge cost-low">コスト: 低</span>
+                        <span style="margin-left: 10px; color: var(--gray-500);">工数: 3日</span>
+                    </div>
+                </div>
+
+                <!-- SMS -->
+                <div class="method-card priority-2">
+                    <div class="method-header">
+                        <div class="method-icon">&#128241;</div>
+                        <div>
+                            <div class="method-title">SMS通知</div>
+                            <div class="method-subtitle">Short Message Service</div>
+                        </div>
+                    </div>
+                    <div class="pros-cons">
+                        <div class="pros">
+                            <h5>&#128994; メリット</h5>
+                            <ul>
+                                <li><span style="color: var(--success);">+</span> 高い到達率（ほぼ100%）</li>
+                                <li><span style="color: var(--success);">+</span> 即時性が高い（数秒で届く）</li>
+                                <li><span style="color: var(--success);">+</span> 専用アプリ不要</li>
+                                <li><span style="color: var(--success);">+</span> 担当者のスマホに直接通知</li>
+                            </ul>
+                        </div>
+                        <div class="cons">
+                            <h5>&#128308; デメリット</h5>
+                            <ul>
+                                <li><span style="color: var(--danger);">-</span> 送信コストがかかる（1通10-15円）</li>
+                                <li><span style="color: var(--danger);">-</span> 文字数制限（70文字/件）</li>
+                                <li><span style="color: var(--danger);">-</span> 対話履歴は添付不可</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="method-footer">
+                        <span class="cost-badge cost-medium">コスト: 中</span>
+                        <span style="margin-left: 10px; color: var(--gray-500);">工数: 1週間</span>
+                    </div>
+                </div>
+
+                <!-- LINE WORKS -->
+                <div class="method-card priority-1">
+                    <div class="method-header">
+                        <div class="method-icon" style="background: linear-gradient(135deg, #00c300, #00b900);">&#128172;</div>
+                        <div>
+                            <div class="method-title">LINE WORKS通知</div>
+                            <div class="method-subtitle">ビジネスチャット連携</div>
+                        </div>
+                    </div>
+                    <div class="pros-cons">
+                        <div class="pros">
+                            <h5>&#128994; メリット</h5>
+                            <ul>
+                                <li><span style="color: var(--success);">+</span> 日本企業で普及率高い</li>
+                                <li><span style="color: var(--success);">+</span> 即時プッシュ通知</li>
+                                <li><span style="color: var(--success);">+</span> 対話履歴を含むリッチな通知可能</li>
+                                <li><span style="color: var(--success);">+</span> グループ通知対応（複数担当者）</li>
+                                <li><span style="color: var(--success);">+</span> 追加コストなし（API利用）</li>
+                            </ul>
+                        </div>
+                        <div class="cons">
+                            <h5>&#128308; デメリット</h5>
+                            <ul>
+                                <li><span style="color: var(--danger);">-</span> LINE WORKS契約が前提</li>
+                                <li><span style="color: var(--danger);">-</span> Bot連携設定が必要</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="method-footer">
+                        <span class="cost-badge cost-low">コスト: 低</span>
+                        <span style="margin-left: 10px; color: var(--gray-500);">工数: 1週間</span>
+                    </div>
+                </div>
+
+                <!-- Phone Call -->
+                <div class="method-card priority-4">
+                    <div class="method-header">
+                        <div class="method-icon">&#128222;</div>
+                        <div>
+                            <div class="method-title">電話通知</div>
+                            <div class="method-subtitle">自動音声発信</div>
+                        </div>
+                    </div>
+                    <div class="pros-cons">
+                        <div class="pros">
+                            <h5>&#128994; メリット</h5>
+                            <ul>
+                                <li><span style="color: var(--success);">+</span> 最も確実に気づく（強制的）</li>
+                                <li><span style="color: var(--success);">+</span> 緊急時に有効</li>
+                                <li><span style="color: var(--success);">+</span> 確認応答を取得可能</li>
+                            </ul>
+                        </div>
+                        <div class="cons">
+                            <h5>&#128308; デメリット</h5>
+                            <ul>
+                                <li><span style="color: var(--danger);">-</span> 通話コストが高い</li>
+                                <li><span style="color: var(--danger);">-</span> 音声発信システムの構築が必要</li>
+                                <li><span style="color: var(--danger);">-</span> 頻繁な発信は迷惑になる</li>
+                                <li><span style="color: var(--danger);">-</span> 対話内容の伝達に限界</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="method-footer">
+                        <span class="cost-badge cost-high">コスト: 高</span>
+                        <span style="margin-left: 10px; color: var(--gray-500);">工数: 3週間</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Comparison Table -->
+        <section class="section">
+            <h2>比較マトリクス</h2>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>評価項目</th>
+                            <th>&#128231; メール</th>
+                            <th>&#128241; SMS</th>
+                            <th>&#128172; LINE WORKS</th>
+                            <th>&#128222; 電話</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>即時性</strong></td>
+                            <td style="color: var(--danger);">低い</td>
+                            <td style="color: var(--success);">高い</td>
+                            <td style="color: var(--success);">高い</td>
+                            <td style="color: var(--success);">最高</td>
+                        </tr>
+                        <tr>
+                            <td><strong>到達率</strong></td>
+                            <td style="color: var(--warning);">中（迷惑メール）</td>
+                            <td style="color: var(--success);">高い（99%）</td>
+                            <td style="color: var(--success);">高い</td>
+                            <td style="color: var(--success);">高い</td>
+                        </tr>
+                        <tr>
+                            <td><strong>情報量</strong></td>
+                            <td style="color: var(--success);">多い（履歴添付）</td>
+                            <td style="color: var(--danger);">少ない（70文字）</td>
+                            <td style="color: var(--success);">多い（リッチ）</td>
+                            <td style="color: var(--danger);">少ない（音声）</td>
+                        </tr>
+                        <tr>
+                            <td><strong>導入コスト</strong></td>
+                            <td style="color: var(--success);">低</td>
+                            <td style="color: var(--warning);">中</td>
+                            <td style="color: var(--success);">低</td>
+                            <td style="color: var(--danger);">高</td>
+                        </tr>
+                        <tr>
+                            <td><strong>運用コスト</strong></td>
+                            <td style="color: var(--success);">ほぼ0</td>
+                            <td style="color: var(--warning);">1通10-15円</td>
+                            <td style="color: var(--success);">ほぼ0</td>
+                            <td style="color: var(--danger);">1通30-50円</td>
+                        </tr>
+                        <tr>
+                            <td><strong>実装工数</strong></td>
+                            <td style="color: var(--success);">3日</td>
+                            <td style="color: var(--warning);">1週間</td>
+                            <td style="color: var(--warning);">1週間</td>
+                            <td style="color: var(--danger);">3週間</td>
+                        </tr>
+                        <tr>
+                            <td><strong>前提条件</strong></td>
+                            <td>なし</td>
+                            <td>SMS API契約</td>
+                            <td>LINE WORKS契約</td>
+                            <td>電話API契約</td>
+                        </tr>
+                        <tr>
+                            <td><strong style="color: var(--escalation-color);">推奨優先度</strong></td>
+                            <td style="color: var(--success);">3位</td>
+                            <td style="color: var(--warning);">2位</td>
+                            <td style="color: var(--danger); font-weight: bold;">1位（推奨）</td>
+                            <td style="color: var(--gray-500);">4位</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Recommendation -->
+        <section class="section">
+            <h2>推奨実装順序</h2>
+
+            <div class="recommendation-box">
+                <h3>推奨：段階的実装アプローチ</h3>
+                <p style="color: var(--gray-300); margin-bottom: 20px;">
+                    顧客の利用環境に応じて複数方式を提供し、顧客が選択できるようにする。
+                    日本企業ではLINE WORKS普及率が高いため、LINE WORKS対応を最優先とする。
+                </p>
+                <div class="recommendation-list">
+                    <div class="recommendation-item">
+                        <div class="rank">1st</div>
+                        <div class="name">LINE WORKS</div>
+                    </div>
+                    <div class="recommendation-item">
+                        <div class="rank">2nd</div>
+                        <div class="name">SMS</div>
+                    </div>
+                    <div class="recommendation-item">
+                        <div class="rank">3rd</div>
+                        <div class="name">メール</div>
+                    </div>
+                    <div class="recommendation-item">
+                        <div class="rank">4th</div>
+                        <div class="name">電話（オプション）</div>
+                    </div>
+                </div>
+            </div>
+
+            <h3>実装タイムライン</h3>
+            <div class="timeline-grid">
+                <div class="timeline-item active">
+                    <div class="timeline-phase">Phase 1</div>
+                    <div class="timeline-method">&#128172;</div>
+                    <div class="timeline-name">LINE WORKS</div>
+                    <div class="timeline-weeks">1週間</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-phase">Phase 1</div>
+                    <div class="timeline-method">&#128231;</div>
+                    <div class="timeline-name">メール</div>
+                    <div class="timeline-weeks">3日</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-phase">Phase 2</div>
+                    <div class="timeline-method">&#128241;</div>
+                    <div class="timeline-name">SMS</div>
+                    <div class="timeline-weeks">1週間</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-phase">Phase 3</div>
+                    <div class="timeline-method">&#128222;</div>
+                    <div class="timeline-name">電話（オプション）</div>
+                    <div class="timeline-weeks">3週間</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Notification Content -->
+        <section class="section">
+            <h2>通知内容サンプル</h2>
+
+            <div style="background: var(--gray-900); border-radius: 12px; padding: 20px; margin: 20px 0;">
+                <h4 style="color: var(--escalation-color); margin-bottom: 15px;">LINE WORKS通知例</h4>
+                <div style="background: var(--gray-700); border-radius: 12px; padding: 20px;">
+                    <p style="color: white; margin-bottom: 10px;"><strong>&#128276; 転人工リクエスト</strong></p>
+                    <p style="color: var(--gray-300); font-size: 0.9rem; margin-bottom: 10px;">
+                        【発生日時】2025/01/15 14:32<br>
+                        【ユーザー】お客様（LINE経由）<br>
+                        【理由】回答不可（3回繰り返し）<br>
+                        【最後の質問】「返品の手続きについて詳しく教えて」
+                    </p>
+                    <p style="color: var(--primary-light); font-size: 0.9rem;">
+                        <a style="color: var(--primary-light);">&#128279; 対話履歴を確認</a>
+                    </p>
+                </div>
+            </div>
+
+            <div style="background: var(--gray-900); border-radius: 12px; padding: 20px; margin: 20px 0;">
+                <h4 style="color: var(--escalation-color); margin-bottom: 15px;">SMS通知例（70文字以内）</h4>
+                <div style="background: var(--gray-700); border-radius: 12px; padding: 20px;">
+                    <p style="color: white; font-size: 0.95rem;">
+                        【GBase】転人工リクエスト発生（14:32）返品手続きについての問い合わせ。管理画面で確認してください。
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Summary -->
+        <section class="section">
+            <div class="summary-box">
+                <h3>転人工対応 - 結論</h3>
+                <p style="text-align: center; color: var(--gray-300); margin-bottom: 25px;">
+                    エスカレーション通知は<strong style="color: var(--escalation-color);">有人対応への円滑な引き継ぎの必須機能</strong>。<br>
+                    LINE WORKS + メールをPhase 1で実装（約2週間）、SMSはPhase 2で追加。
+                </p>
+
+                <div class="summary-grid">
+                    <div class="summary-item">
+                        <div class="value">P0</div>
+                        <div class="label">優先度（最優先）</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="value">2週間</div>
+                        <div class="label">Phase 1 工数</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="value">4方式</div>
+                        <div class="label">対応通知方式</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="value">LINE WORKS</div>
+                        <div class="label">最優先実装</div>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 30px; margin-top: 30px; flex-wrap: wrap; justify-content: center;">
+                    <div style="flex: 1; min-width: 250px;">
+                        <h4 style="color: var(--danger); margin-bottom: 10px;">Phase 1（P0）</h4>
+                        <ul style="color: var(--gray-300); padding-left: 20px;">
+                            <li>LINE WORKS通知（1週間）</li>
+                            <li>メール通知（3日）</li>
+                            <li>エスカレーション判定ロジック</li>
+                            <li>管理画面での設定UI</li>
+                        </ul>
+                    </div>
+                    <div style="flex: 1; min-width: 250px;">
+                        <h4 style="color: var(--warning); margin-bottom: 10px;">Phase 2（P1）</h4>
+                        <ul style="color: var(--gray-300); padding-left: 20px;">
+                            <li>SMS通知（1週間）</li>
+                            <li>通知先の複数設定</li>
+                            <li>エスカレーション履歴レポート</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <p>転人工対応（エスカレーション通知）分析レポート</p>
+            <p style="margin-top: 5px;">GBase Support - SC Industry Solution</p>
+        </footer>
+    </div>
+</body>
+</html>
