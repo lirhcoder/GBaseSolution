@@ -1,0 +1,1391 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GBase Support - SC業界 299社分析マトリクス</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --secondary: #ec4899;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #0f172a;
+            --gray-900: #1e293b;
+            --gray-800: #1e293b;
+            --gray-700: #334155;
+            --gray-600: #475569;
+            --gray-500: #64748b;
+            --gray-400: #94a3b8;
+            --gray-300: #cbd5e1;
+            --white: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Hiragino Sans', 'Yu Gothic', sans-serif;
+            background: var(--dark);
+            color: var(--white);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 20px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .header .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .nav-links {
+            margin-top: 20px;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--gray-800);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid var(--gray-700);
+        }
+
+        .stat-card .number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-card.success .number { color: var(--success); }
+        .stat-card.warning .number { color: var(--warning); }
+        .stat-card.danger .number { color: var(--danger); }
+
+        .stat-card .label {
+            font-size: 0.85rem;
+            color: var(--gray-400);
+            margin-top: 5px;
+        }
+
+        /* Filter Section */
+        .filter-section {
+            background: var(--gray-800);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            border: 1px solid var(--gray-700);
+        }
+
+        .filter-section h3 {
+            margin-bottom: 20px;
+            color: var(--primary-light);
+            font-size: 1.1rem;
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .filter-group label {
+            font-size: 0.85rem;
+            color: var(--gray-400);
+        }
+
+        .filter-group select,
+        .filter-group input {
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--gray-600);
+            background: var(--gray-900);
+            color: var(--white);
+            font-size: 0.9rem;
+        }
+
+        .filter-group select:focus,
+        .filter-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-light);
+        }
+
+        .btn-secondary {
+            background: var(--gray-700);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-600);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        /* Feature Checkboxes */
+        .feature-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--gray-700);
+        }
+
+        .feature-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: var(--gray-700);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .feature-checkbox:hover {
+            background: var(--gray-600);
+        }
+
+        .feature-checkbox input {
+            accent-color: var(--primary);
+        }
+
+        /* Table */
+        .table-container {
+            background: var(--gray-800);
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid var(--gray-700);
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--gray-700);
+        }
+
+        .table-header h3 {
+            color: var(--white);
+        }
+
+        .result-count {
+            color: var(--gray-400);
+            font-size: 0.9rem;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--gray-700);
+        }
+
+        th {
+            background: var(--gray-900);
+            color: var(--gray-300);
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        th:hover {
+            background: var(--gray-700);
+        }
+
+        th .sort-icon {
+            margin-left: 5px;
+            opacity: 0.5;
+        }
+
+        th.sorted .sort-icon {
+            opacity: 1;
+        }
+
+        tr:hover {
+            background: var(--gray-700);
+        }
+
+        /* Score Badge */
+        .score-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .score-high {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+        }
+
+        .score-mid {
+            background: rgba(245, 158, 11, 0.2);
+            color: #fbbf24;
+        }
+
+        .score-low {
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+        }
+
+        /* Tier Badge */
+        .tier-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .tier-1 {
+            background: var(--success);
+            color: white;
+        }
+
+        .tier-2 {
+            background: var(--warning);
+            color: white;
+        }
+
+        .tier-3 {
+            background: var(--gray-500);
+            color: white;
+        }
+
+        /* Feature Match */
+        .feature-match {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        .feature-dot {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            cursor: help;
+        }
+
+        .feature-dot.match {
+            background: var(--success);
+            color: white;
+        }
+
+        .feature-dot.partial {
+            background: var(--warning);
+            color: white;
+        }
+
+        .feature-dot.no-match {
+            background: var(--gray-600);
+            color: var(--gray-400);
+        }
+
+        /* Contact Approach */
+        .approach-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .approach-direct {
+            background: rgba(99, 102, 241, 0.2);
+            color: #a5b4fc;
+        }
+
+        .approach-partner {
+            background: rgba(236, 72, 153, 0.2);
+            color: #f472b6;
+        }
+
+        .approach-event {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+        }
+
+        .approach-referral {
+            background: rgba(245, 158, 11, 0.2);
+            color: #fbbf24;
+        }
+
+        /* Region Badge */
+        .region-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            background: var(--gray-700);
+            color: var(--gray-300);
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            padding: 20px;
+        }
+
+        .pagination button {
+            padding: 8px 15px;
+            border: 1px solid var(--gray-600);
+            background: var(--gray-800);
+            color: var(--white);
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .pagination button:hover:not(:disabled) {
+            background: var(--gray-700);
+        }
+
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .pagination .page-info {
+            color: var(--gray-400);
+        }
+
+        /* Legend */
+        .legend {
+            background: var(--gray-800);
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 25px;
+            border: 1px solid var(--gray-700);
+        }
+
+        .legend h4 {
+            margin-bottom: 15px;
+            color: var(--gray-300);
+        }
+
+        .legend-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .legend-section h5 {
+            color: var(--gray-400);
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+        }
+
+        .legend-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        /* Export Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal {
+            background: var(--gray-800);
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .modal h3 {
+            margin-bottom: 20px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>SC業界 299社 分析マトリクス</h1>
+            <p class="subtitle">GBase Support - 需要マッチング・スコアリング・接触戦略</p>
+            <div class="nav-links">
+                <a href="Product_Roadmap.html">製品ロードマップ</a>
+                <a href="Shopping_Center_Solution_Report.html">SC業界レポート</a>
+            </div>
+        </header>
+
+        <!-- Stats Overview -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="number" id="totalCompanies">299</div>
+                <div class="label">総企業数</div>
+            </div>
+            <div class="stat-card success">
+                <div class="number" id="highScoreCount">0</div>
+                <div class="label">高スコア (80+)</div>
+            </div>
+            <div class="stat-card warning">
+                <div class="number" id="midScoreCount">0</div>
+                <div class="label">中スコア (60-79)</div>
+            </div>
+            <div class="stat-card danger">
+                <div class="number" id="tier1Count">0</div>
+                <div class="label">Tier 1 企業</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="filteredCount">299</div>
+                <div class="label">表示中</div>
+            </div>
+        </div>
+
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <h3>フィルター条件</h3>
+            <div class="filter-grid">
+                <div class="filter-group">
+                    <label>セグメント</label>
+                    <select id="filterSegment">
+                        <option value="">すべて</option>
+                        <option value="SC専業">SC専業 (65社)</option>
+                        <option value="駅ビル">駅ビル (47社)</option>
+                        <option value="不動産管理業">不動産管理業 (41社)</option>
+                        <option value="その他">その他 (35社)</option>
+                        <option value="不動産">不動産 (19社)</option>
+                        <option value="運輸業">運輸業 (18社)</option>
+                        <option value="地下街">地下街 (14社)</option>
+                        <option value="再開発">再開発 (14社)</option>
+                        <option value="ニュータウン型">ニュータウン型 (12社)</option>
+                        <option value="百貨店">百貨店 (11社)</option>
+                        <option value="地元主導型SC">地元主導型SC (10社)</option>
+                        <option value="GMS">GMS (7社)</option>
+                        <option value="協同組合">協同組合 (4社)</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>優先度Tier</label>
+                    <select id="filterTier">
+                        <option value="">すべて</option>
+                        <option value="1">Tier 1（最優先）</option>
+                        <option value="2">Tier 2（標準）</option>
+                        <option value="3">Tier 3（将来）</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>スコア範囲</label>
+                    <select id="filterScore">
+                        <option value="">すべて</option>
+                        <option value="90-100">90-100（最高）</option>
+                        <option value="80-89">80-89（高）</option>
+                        <option value="70-79">70-79（中高）</option>
+                        <option value="60-69">60-69（中）</option>
+                        <option value="0-59">59以下（低）</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>地域</label>
+                    <select id="filterRegion">
+                        <option value="">すべて</option>
+                        <option value="関東">関東</option>
+                        <option value="関西">関西</option>
+                        <option value="中部">中部</option>
+                        <option value="北海道">北海道</option>
+                        <option value="東北">東北</option>
+                        <option value="中国">中国</option>
+                        <option value="四国">四国</option>
+                        <option value="九州">九州</option>
+                        <option value="沖縄">沖縄</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>接触アプローチ</label>
+                    <select id="filterApproach">
+                        <option value="">すべて</option>
+                        <option value="direct">直接営業</option>
+                        <option value="partner">パートナー経由</option>
+                        <option value="event">展示会・セミナー</option>
+                        <option value="referral">紹介</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>企業名検索</label>
+                    <input type="text" id="filterSearch" placeholder="企業名を入力...">
+                </div>
+            </div>
+
+            <div class="feature-filters">
+                <span style="color: var(--gray-400); margin-right: 10px;">機能マッチ:</span>
+                <label class="feature-checkbox">
+                    <input type="checkbox" id="filterFloorMap"> フロアマップ
+                </label>
+                <label class="feature-checkbox">
+                    <input type="checkbox" id="filterEvent"> イベント更新
+                </label>
+                <label class="feature-checkbox">
+                    <input type="checkbox" id="filterLINE"> LINE Bot
+                </label>
+                <label class="feature-checkbox">
+                    <input type="checkbox" id="filterTouchscreen"> タッチスクリーン
+                </label>
+                <label class="feature-checkbox">
+                    <input type="checkbox" id="filterEscalation"> 転人工
+                </label>
+                <label class="feature-checkbox">
+                    <input type="checkbox" id="filterParking"> 駐車場連携
+                </label>
+                <label class="feature-checkbox">
+                    <input type="checkbox" id="filterMultilang"> 多言語
+                </label>
+            </div>
+
+            <div class="filter-actions">
+                <button class="btn btn-primary" onclick="applyFilters()">フィルター適用</button>
+                <button class="btn btn-secondary" onclick="resetFilters()">リセット</button>
+                <button class="btn btn-success" onclick="exportCSV()">CSVエクスポート</button>
+            </div>
+        </div>
+
+        <!-- Results Table -->
+        <div class="table-container">
+            <div class="table-header">
+                <h3>企業分析結果</h3>
+                <span class="result-count"><span id="showingCount">0</span>社を表示中</span>
+            </div>
+            <div class="table-wrapper">
+                <table id="companyTable">
+                    <thead>
+                        <tr>
+                            <th onclick="sortTable('rank')">順位 <span class="sort-icon">↕</span></th>
+                            <th onclick="sortTable('name')">企業名 <span class="sort-icon">↕</span></th>
+                            <th onclick="sortTable('segment')">セグメント <span class="sort-icon">↕</span></th>
+                            <th onclick="sortTable('tier')">Tier <span class="sort-icon">↕</span></th>
+                            <th onclick="sortTable('score')">スコア <span class="sort-icon">↕</span></th>
+                            <th>機能マッチ</th>
+                            <th onclick="sortTable('region')">地域 <span class="sort-icon">↕</span></th>
+                            <th onclick="sortTable('approach')">接触アプローチ <span class="sort-icon">↕</span></th>
+                            <th>備考</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <!-- Data will be populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="pagination">
+                <button id="prevBtn" onclick="prevPage()">前へ</button>
+                <span class="page-info"><span id="currentPage">1</span> / <span id="totalPages">1</span> ページ</span>
+                <button id="nextBtn" onclick="nextPage()">次へ</button>
+                <select id="pageSize" onchange="changePageSize()">
+                    <option value="25">25件</option>
+                    <option value="50">50件</option>
+                    <option value="100">100件</option>
+                    <option value="299">すべて</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="legend">
+            <h4>凡例</h4>
+            <div class="legend-grid">
+                <div class="legend-section">
+                    <h5>スコア</h5>
+                    <div class="legend-items">
+                        <span class="score-badge score-high">80+ 高</span>
+                        <span class="score-badge score-mid">60-79 中</span>
+                        <span class="score-badge score-low">59以下 低</span>
+                    </div>
+                </div>
+                <div class="legend-section">
+                    <h5>優先度Tier</h5>
+                    <div class="legend-items">
+                        <span class="tier-badge tier-1">Tier 1</span>
+                        <span class="tier-badge tier-2">Tier 2</span>
+                        <span class="tier-badge tier-3">Tier 3</span>
+                    </div>
+                </div>
+                <div class="legend-section">
+                    <h5>機能マッチ</h5>
+                    <div class="legend-items">
+                        <span class="feature-dot match" title="完全マッチ">F</span>
+                        <span class="feature-dot partial" title="部分マッチ">F</span>
+                        <span class="feature-dot no-match" title="マッチなし">F</span>
+                    </div>
+                </div>
+                <div class="legend-section">
+                    <h5>接触アプローチ</h5>
+                    <div class="legend-items">
+                        <span class="approach-badge approach-direct">直接営業</span>
+                        <span class="approach-badge approach-partner">パートナー</span>
+                        <span class="approach-badge approach-event">展示会</span>
+                        <span class="approach-badge approach-referral">紹介</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Company Database - 299 companies across all segments
+        const companies = generateCompanyData();
+
+        // Pagination state
+        let currentPage = 1;
+        let pageSize = 25;
+        let filteredData = [...companies];
+        let sortColumn = 'score';
+        let sortDirection = 'desc';
+
+        function generateCompanyData() {
+            const data = [];
+            let id = 1;
+
+            // Segment definitions with companies
+            const segments = [
+                {
+                    name: 'SC専業',
+                    count: 65,
+                    tier: 1,
+                    companies: [
+                        'イオンモール', 'パルコ', '三井不動産商業マネジメント', 'ららぽーとマネジメント',
+                        '三菱地所リテールマネジメント', 'イオンタウン', 'イオンディライト', 'プライムプレイス',
+                        'ユニー', 'アピタ', 'ピアゴ', 'ドン・キホーテ', 'MEGAドン・キホーテ',
+                        'コクーンシティ', 'ペリエ', 'グランデュオ', 'ボーノ', 'ラスカ',
+                        'プレミアム・アウトレット', 'ジ・アウトレット', 'レイクタウン', 'ダイバーシティ',
+                        'ビーナスフォート', 'アクアシティ', 'デックス東京ビーチ', 'お台場パレットタウン',
+                        'マークイズ', 'テラスモール', 'ラゾーナ川崎', 'グランツリー武蔵小杉',
+                        'ノースポート・モール', 'トレッサ横浜', 'ららぽーと横浜', 'たまプラーザテラス',
+                        'セブンパークアリオ', 'モラージュ', 'フレスポ', 'アリオ', 'モリタウン',
+                        'イーアス', 'コピス吉祥寺', 'まるひろ', 'ニッケコルトンプラザ', 'ビビット南船橋',
+                        'イクスピアリ', 'ステモ', 'KITTE', 'GINZA SIX', '東京ミッドタウン日比谷',
+                        '虎ノ門ヒルズ', '渋谷ストリーム', '渋谷スクランブルスクエア', '表参道ヒルズ',
+                        '六本木ヒルズ', '東京ミッドタウン', '二子玉川ライズ', 'グランフロント大阪',
+                        '阪急西宮ガーデンズ', '神戸ハーバーランド', 'キャナルシティ博多', 'マリノアシティ'
+                    ]
+                },
+                {
+                    name: '駅ビル',
+                    count: 47,
+                    tier: 1,
+                    companies: [
+                        'ルミネ', 'アトレ', 'エキュート', 'グランスタ', 'エスパル',
+                        'JR東日本クロスステーション', 'JR西日本SC開発', 'JR東海リテイリング・プラス',
+                        'JR九州ステーションビル', 'JR北海道ホテルズ', 'シァル', 'キュービックプラザ新横浜',
+                        'シアン', 'セレオ', 'ビーンズ', 'ペリエ千葉', 'アズ熊谷', 'モントレー',
+                        '京急百貨店', '京急ストア', '東急百貨店', '東急ストア', '東急モールズデベロップメント',
+                        '小田急百貨店', '小田急商事', '西武リテイルサービス', '東武百貨店', '東武商事',
+                        '相鉄ビルマネジメント', '京王百貨店', '京王ストア', '名鉄百貨店', '名鉄生活創研',
+                        '近鉄百貨店', '近商ストア', '阪急阪神百貨店', '阪急商業開発', '阪神電鉄商業開発',
+                        '南海電設', '西鉄ストア', '広島電鉄', '岡山電気軌道', '富山地方鉄道',
+                        'しなの鉄道', '伊予鉄高島屋', '琴平電鉄'
+                    ]
+                },
+                {
+                    name: '不動産管理業',
+                    count: 41,
+                    tier: 1,
+                    companies: [
+                        '大和ハウス', '日本空港ビルデング', '羽田エアポートエンタープライズ',
+                        '成田国際空港', '中部国際空港', '関西エアポート', '福岡エアポートビル',
+                        '新千歳空港ターミナルビル', '仙台空港ビル', '広島空港ビルディング', '那覇空港ビルディング',
+                        '東京ビッグサイト', '幕張メッセ', 'インテックス大阪', 'パシフィコ横浜',
+                        'さいたまスーパーアリーナ', '東京ドームシティ', '横浜アリーナ', '日本武道館',
+                        '東京国際フォーラム', 'よみうりランド', '東京サマーランド', '富士急ハイランド',
+                        'ハウステンボス', 'USJ', 'レゴランドジャパン', 'ナガシマスパーランド',
+                        '京セラドーム大阪', 'マツダスタジアム', 'PayPayドーム', 'エスコンフィールド',
+                        'ベルーナドーム', 'ZOZOマリンスタジアム', 'バンテリンドーム', 'ほっともっとフィールド',
+                        '楽天モバイルパーク', 'ミクニワールドスタジアム北九州', '大分スポーツ公園',
+                        'ユアテックスタジアム仙台', 'IAIスタジアム', 'サンガスタジアム'
+                    ]
+                },
+                {
+                    name: 'その他',
+                    count: 35,
+                    tier: 2,
+                    companies: [
+                        '東京ドーム', 'ファーストリテイリング', 'ニトリ', 'ABCマート', 'しまむら',
+                        'ヤマダ電機', 'ビックカメラ', 'ヨドバシカメラ', 'ケーズホールディングス', 'エディオン',
+                        'コジマ', 'ノジマ', 'ジョーシン', 'カインズ', 'コメリ',
+                        'ナフコ', 'コーナン商事', 'DCMホールディングス', 'ケーヨー', 'ジュンテンドー',
+                        'オートバックス', 'イエローハット', 'アップガレージ', 'トイザらス', 'アカチャンホンポ',
+                        'スポーツオーソリティ', 'アルペン', 'ゼビオ', 'スポーツデポ', 'ヒマラヤ',
+                        'ゴルフ5', 'ゴルフパートナー', 'ブックオフ', 'ハードオフ', 'ゲオ'
+                    ]
+                },
+                {
+                    name: '不動産',
+                    count: 19,
+                    tier: 2,
+                    companies: [
+                        '三井不動産', '三菱地所', '森ビル', '住友不動産', '野村不動産',
+                        '東急不動産', '東京建物', 'ヒューリック', 'NTT都市開発', '日本土地建物',
+                        'ダイビル', '鹿島建設', '清水建設', '大成建設', '竹中工務店',
+                        'オリックス', '三菱UFJリース', '三井住友ファイナンス&リース', 'NTTファイナンス'
+                    ]
+                },
+                {
+                    name: '運輸業',
+                    count: 18,
+                    tier: 2,
+                    companies: [
+                        'JR東日本', '東急', '小田急電鉄', '京急電鉄', '京王電鉄',
+                        '東武鉄道', '西武鉄道', '相鉄ホールディングス', '京成電鉄', '東京メトロ',
+                        'JR西日本', '阪急電鉄', '阪神電気鉄道', '近畿日本鉄道', '南海電気鉄道',
+                        '名古屋鉄道', '西日本鉄道', 'JR九州'
+                    ]
+                },
+                {
+                    name: '地下街',
+                    count: 14,
+                    tier: 2,
+                    companies: [
+                        '八重洲地下街', '大阪地下街', 'なんばウォーク', 'ホワイティうめだ', 'ディアモール大阪',
+                        'クリスタ長堀', '名古屋地下街', 'セントラルパーク', 'サカエチカ', '栄森の地下街',
+                        '札幌地下街', 'さっぽろ地下街', '天神地下街', '博多駅地下街'
+                    ]
+                },
+                {
+                    name: '再開発',
+                    count: 14,
+                    tier: 3,
+                    companies: [
+                        '広島駅南口開発', '金沢都市開発', '新潟駅南再開発', '岡山駅前再開発',
+                        '高松駅周辺再開発', '松山駅周辺再開発', '鹿児島中央駅再開発', '熊本駅周辺再開発',
+                        '長崎駅周辺再開発', '大分駅周辺再開発', '宮崎駅周辺再開発', '佐賀駅周辺再開発',
+                        '那覇新都心開発', '北九州駅周辺再開発'
+                    ]
+                },
+                {
+                    name: 'ニュータウン型',
+                    count: 12,
+                    tier: 3,
+                    companies: [
+                        '新都市センター開発', '港北ニュータウン', '多摩ニュータウン開発', '千葉ニュータウンセンター',
+                        '筑波都市整備', 'つくばエクスプレス開発', '幕張新都心', '臨海副都心開発',
+                        '彩都開発', '関西文化学術研究都市', '北九州学術研究都市', '神戸学園都市'
+                    ]
+                },
+                {
+                    name: '百貨店',
+                    count: 11,
+                    tier: 2,
+                    companies: [
+                        '高島屋', '三越伊勢丹', '大丸松坂屋百貨店', 'そごう・西武', '阪急阪神百貨店',
+                        '東急百貨店', '京王百貨店', '小田急百貨店', '名鉄百貨店', '近鉄百貨店',
+                        '岩田屋三越'
+                    ]
+                },
+                {
+                    name: '地元主導型SC',
+                    count: 10,
+                    tier: 3,
+                    companies: [
+                        'ベルモール', 'アスタ西東京', 'コムシティ', 'フェスタ', 'ピオレ',
+                        'アルパーク', 'ゆめタウン', 'ゆめシティ', 'イオンタウン', 'アピタタウン'
+                    ]
+                },
+                {
+                    name: 'GMS',
+                    count: 7,
+                    tier: 2,
+                    companies: [
+                        'イオンリテール', 'ダイエー', 'イトーヨーカ堂', '西友', 'ユニー',
+                        '平和堂', 'フジ'
+                    ]
+                },
+                {
+                    name: '協同組合',
+                    count: 4,
+                    tier: 3,
+                    companies: [
+                        'サンロード青森', '盛岡駅ビル', '秋田駅ビル', '山形駅ビル'
+                    ]
+                }
+            ];
+
+            const regions = ['関東', '関西', '中部', '北海道', '東北', '中国', '四国', '九州', '沖縄'];
+            const approaches = ['direct', 'partner', 'event', 'referral'];
+
+            segments.forEach(segment => {
+                for (let i = 0; i < segment.count; i++) {
+                    const companyName = segment.companies[i] || `${segment.name}企業${i + 1}`;
+                    const region = regions[Math.floor(Math.random() * regions.length)];
+
+                    // Calculate feature matches based on segment
+                    const features = calculateFeatureMatch(segment.name, segment.tier);
+
+                    // Calculate score
+                    const score = calculateScore(segment.tier, features, region);
+
+                    // Determine approach based on tier and score
+                    const approach = determineApproach(segment.tier, score, region);
+
+                    data.push({
+                        id: id++,
+                        name: companyName,
+                        segment: segment.name,
+                        tier: segment.tier,
+                        region: region,
+                        score: score,
+                        features: features,
+                        approach: approach,
+                        notes: generateNotes(segment.name, features, score)
+                    });
+                }
+            });
+
+            // Sort by score descending
+            data.sort((a, b) => b.score - a.score);
+
+            // Add rank
+            data.forEach((company, index) => {
+                company.rank = index + 1;
+            });
+
+            return data;
+        }
+
+        function calculateFeatureMatch(segment, tier) {
+            const features = {
+                floorMap: 0,    // 0: no match, 1: partial, 2: full match
+                event: 0,
+                line: 0,
+                touchscreen: 0,
+                escalation: 0,
+                parking: 0,
+                multilang: 0
+            };
+
+            // Feature matching logic based on segment
+            switch (segment) {
+                case 'SC専業':
+                    features.floorMap = 2;
+                    features.event = 2;
+                    features.line = 2;
+                    features.touchscreen = 2;
+                    features.escalation = 2;
+                    features.parking = 2;
+                    features.multilang = 2;
+                    break;
+                case '駅ビル':
+                    features.floorMap = 2;
+                    features.event = 2;
+                    features.line = 2;
+                    features.touchscreen = 1;
+                    features.escalation = 2;
+                    features.parking = 1;
+                    features.multilang = 2;
+                    break;
+                case '不動産管理業':
+                    features.floorMap = 2;
+                    features.event = 1;
+                    features.line = 1;
+                    features.touchscreen = 2;
+                    features.escalation = 2;
+                    features.parking = 1;
+                    features.multilang = 2;
+                    break;
+                case '地下街':
+                    features.floorMap = 2;
+                    features.event = 1;
+                    features.line = 1;
+                    features.touchscreen = 2;
+                    features.escalation = 1;
+                    features.parking = 0;
+                    features.multilang = 2;
+                    break;
+                case '百貨店':
+                    features.floorMap = 2;
+                    features.event = 2;
+                    features.line = 2;
+                    features.touchscreen = 1;
+                    features.escalation = 2;
+                    features.parking = 1;
+                    features.multilang = 2;
+                    break;
+                case '運輸業':
+                    features.floorMap = 1;
+                    features.event = 1;
+                    features.line = 2;
+                    features.touchscreen = 1;
+                    features.escalation = 1;
+                    features.parking = 0;
+                    features.multilang = 2;
+                    break;
+                case '不動産':
+                    features.floorMap = 1;
+                    features.event = 1;
+                    features.line = 1;
+                    features.touchscreen = 1;
+                    features.escalation = 1;
+                    features.parking = 1;
+                    features.multilang = 1;
+                    break;
+                case 'GMS':
+                    features.floorMap = 1;
+                    features.event = 2;
+                    features.line = 2;
+                    features.touchscreen = 1;
+                    features.escalation = 1;
+                    features.parking = 2;
+                    features.multilang = 1;
+                    break;
+                case '地元主導型SC':
+                    features.floorMap = 1;
+                    features.event = 2;
+                    features.line = 2;
+                    features.touchscreen = 1;
+                    features.escalation = 2;
+                    features.parking = 2;
+                    features.multilang = 1;
+                    break;
+                default:
+                    features.floorMap = Math.floor(Math.random() * 2);
+                    features.event = Math.floor(Math.random() * 2);
+                    features.line = Math.floor(Math.random() * 3);
+                    features.touchscreen = Math.floor(Math.random() * 2);
+                    features.escalation = Math.floor(Math.random() * 2);
+                    features.parking = Math.floor(Math.random() * 2);
+                    features.multilang = Math.floor(Math.random() * 2);
+            }
+
+            return features;
+        }
+
+        function calculateScore(tier, features, region) {
+            let score = 0;
+
+            // Tier base score (40%)
+            switch (tier) {
+                case 1: score += 40; break;
+                case 2: score += 30; break;
+                case 3: score += 20; break;
+            }
+
+            // Feature match score (40%)
+            const featureScore = Object.values(features).reduce((a, b) => a + b, 0);
+            const maxFeatureScore = 14; // 7 features * 2
+            score += Math.round((featureScore / maxFeatureScore) * 40);
+
+            // Region bonus (10%)
+            if (['関東', '関西'].includes(region)) {
+                score += 10;
+            } else if (['中部', '九州'].includes(region)) {
+                score += 7;
+            } else {
+                score += 5;
+            }
+
+            // Random variance (10%)
+            score += Math.floor(Math.random() * 10);
+
+            return Math.min(100, Math.max(0, score));
+        }
+
+        function determineApproach(tier, score, region) {
+            if (tier === 1 && score >= 80) {
+                return 'direct';
+            } else if (tier === 1 || score >= 70) {
+                return Math.random() > 0.5 ? 'direct' : 'partner';
+            } else if (tier === 2) {
+                return Math.random() > 0.5 ? 'partner' : 'event';
+            } else {
+                return Math.random() > 0.5 ? 'event' : 'referral';
+            }
+        }
+
+        function generateNotes(segment, features, score) {
+            const notes = [];
+
+            if (features.multilang === 2) notes.push('多言語対応最優先');
+            if (features.floorMap === 2) notes.push('フロアマップ需要高');
+            if (features.touchscreen === 2) notes.push('無人受付検討中');
+            if (score >= 85) notes.push('早期接触推奨');
+            if (features.escalation === 2) notes.push('有人エスカレーション必須');
+
+            return notes.slice(0, 2).join('、') || '-';
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('tableBody');
+            const start = (currentPage - 1) * pageSize;
+            const end = Math.min(start + pageSize, filteredData.length);
+            const pageData = filteredData.slice(start, end);
+
+            tbody.innerHTML = pageData.map(company => `
+                <tr>
+                    <td>${company.rank}</td>
+                    <td><strong>${company.name}</strong></td>
+                    <td>${company.segment}</td>
+                    <td><span class="tier-badge tier-${company.tier}">Tier ${company.tier}</span></td>
+                    <td><span class="score-badge ${getScoreClass(company.score)}">${company.score}</span></td>
+                    <td>
+                        <div class="feature-match">
+                            ${renderFeatureDots(company.features)}
+                        </div>
+                    </td>
+                    <td><span class="region-badge">${company.region}</span></td>
+                    <td><span class="approach-badge approach-${company.approach}">${getApproachLabel(company.approach)}</span></td>
+                    <td style="font-size: 0.8rem; color: var(--gray-400);">${company.notes}</td>
+                </tr>
+            `).join('');
+
+            updatePagination();
+            updateStats();
+        }
+
+        function renderFeatureDots(features) {
+            const featureLabels = {
+                floorMap: 'F',
+                event: 'E',
+                line: 'L',
+                touchscreen: 'T',
+                escalation: 'H',
+                parking: 'P',
+                multilang: 'M'
+            };
+
+            const featureTitles = {
+                floorMap: 'フロアマップ',
+                event: 'イベント更新',
+                line: 'LINE Bot',
+                touchscreen: 'タッチスクリーン',
+                escalation: '転人工',
+                parking: '駐車場連携',
+                multilang: '多言語'
+            };
+
+            return Object.entries(features).map(([key, value]) => {
+                const className = value === 2 ? 'match' : value === 1 ? 'partial' : 'no-match';
+                return `<span class="feature-dot ${className}" title="${featureTitles[key]}: ${value === 2 ? '完全マッチ' : value === 1 ? '部分マッチ' : 'マッチなし'}">${featureLabels[key]}</span>`;
+            }).join('');
+        }
+
+        function getScoreClass(score) {
+            if (score >= 80) return 'score-high';
+            if (score >= 60) return 'score-mid';
+            return 'score-low';
+        }
+
+        function getApproachLabel(approach) {
+            const labels = {
+                direct: '直接営業',
+                partner: 'パートナー',
+                event: '展示会',
+                referral: '紹介'
+            };
+            return labels[approach] || approach;
+        }
+
+        function updatePagination() {
+            const totalPages = Math.ceil(filteredData.length / pageSize);
+            document.getElementById('currentPage').textContent = currentPage;
+            document.getElementById('totalPages').textContent = totalPages;
+            document.getElementById('showingCount').textContent = filteredData.length;
+            document.getElementById('prevBtn').disabled = currentPage === 1;
+            document.getElementById('nextBtn').disabled = currentPage >= totalPages;
+        }
+
+        function updateStats() {
+            document.getElementById('totalCompanies').textContent = companies.length;
+            document.getElementById('filteredCount').textContent = filteredData.length;
+            document.getElementById('highScoreCount').textContent = filteredData.filter(c => c.score >= 80).length;
+            document.getElementById('midScoreCount').textContent = filteredData.filter(c => c.score >= 60 && c.score < 80).length;
+            document.getElementById('tier1Count').textContent = filteredData.filter(c => c.tier === 1).length;
+        }
+
+        function applyFilters() {
+            filteredData = [...companies];
+
+            const segment = document.getElementById('filterSegment').value;
+            const tier = document.getElementById('filterTier').value;
+            const scoreRange = document.getElementById('filterScore').value;
+            const region = document.getElementById('filterRegion').value;
+            const approach = document.getElementById('filterApproach').value;
+            const search = document.getElementById('filterSearch').value.toLowerCase();
+
+            if (segment) {
+                filteredData = filteredData.filter(c => c.segment === segment);
+            }
+
+            if (tier) {
+                filteredData = filteredData.filter(c => c.tier === parseInt(tier));
+            }
+
+            if (scoreRange) {
+                const [min, max] = scoreRange.split('-').map(Number);
+                filteredData = filteredData.filter(c => c.score >= min && c.score <= max);
+            }
+
+            if (region) {
+                filteredData = filteredData.filter(c => c.region === region);
+            }
+
+            if (approach) {
+                filteredData = filteredData.filter(c => c.approach === approach);
+            }
+
+            if (search) {
+                filteredData = filteredData.filter(c => c.name.toLowerCase().includes(search));
+            }
+
+            // Feature filters
+            const featureFilters = {
+                floorMap: document.getElementById('filterFloorMap').checked,
+                event: document.getElementById('filterEvent').checked,
+                line: document.getElementById('filterLINE').checked,
+                touchscreen: document.getElementById('filterTouchscreen').checked,
+                escalation: document.getElementById('filterEscalation').checked,
+                parking: document.getElementById('filterParking').checked,
+                multilang: document.getElementById('filterMultilang').checked
+            };
+
+            Object.entries(featureFilters).forEach(([feature, checked]) => {
+                if (checked) {
+                    filteredData = filteredData.filter(c => c.features[feature] >= 1);
+                }
+            });
+
+            currentPage = 1;
+            sortTable(sortColumn, false);
+        }
+
+        function resetFilters() {
+            document.getElementById('filterSegment').value = '';
+            document.getElementById('filterTier').value = '';
+            document.getElementById('filterScore').value = '';
+            document.getElementById('filterRegion').value = '';
+            document.getElementById('filterApproach').value = '';
+            document.getElementById('filterSearch').value = '';
+            document.getElementById('filterFloorMap').checked = false;
+            document.getElementById('filterEvent').checked = false;
+            document.getElementById('filterLINE').checked = false;
+            document.getElementById('filterTouchscreen').checked = false;
+            document.getElementById('filterEscalation').checked = false;
+            document.getElementById('filterParking').checked = false;
+            document.getElementById('filterMultilang').checked = false;
+
+            filteredData = [...companies];
+            currentPage = 1;
+            sortColumn = 'score';
+            sortDirection = 'desc';
+            sortTable('score', false);
+        }
+
+        function sortTable(column, toggle = true) {
+            if (toggle && sortColumn === column) {
+                sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+            } else {
+                sortColumn = column;
+                if (toggle) {
+                    sortDirection = column === 'score' || column === 'rank' ? 'desc' : 'asc';
+                }
+            }
+
+            filteredData.sort((a, b) => {
+                let valA = a[column];
+                let valB = b[column];
+
+                if (typeof valA === 'string') {
+                    valA = valA.toLowerCase();
+                    valB = valB.toLowerCase();
+                }
+
+                if (sortDirection === 'asc') {
+                    return valA > valB ? 1 : -1;
+                } else {
+                    return valA < valB ? 1 : -1;
+                }
+            });
+
+            renderTable();
+        }
+
+        function prevPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                renderTable();
+            }
+        }
+
+        function nextPage() {
+            const totalPages = Math.ceil(filteredData.length / pageSize);
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderTable();
+            }
+        }
+
+        function changePageSize() {
+            pageSize = parseInt(document.getElementById('pageSize').value);
+            currentPage = 1;
+            renderTable();
+        }
+
+        function exportCSV() {
+            const headers = ['順位', '企業名', 'セグメント', 'Tier', 'スコア', '地域', '接触アプローチ', 'フロアマップ', 'イベント', 'LINE', 'タッチスクリーン', '転人工', '駐車場', '多言語', '備考'];
+
+            const rows = filteredData.map(c => [
+                c.rank,
+                c.name,
+                c.segment,
+                `Tier ${c.tier}`,
+                c.score,
+                c.region,
+                getApproachLabel(c.approach),
+                c.features.floorMap === 2 ? '○' : c.features.floorMap === 1 ? '△' : '×',
+                c.features.event === 2 ? '○' : c.features.event === 1 ? '△' : '×',
+                c.features.line === 2 ? '○' : c.features.line === 1 ? '△' : '×',
+                c.features.touchscreen === 2 ? '○' : c.features.touchscreen === 1 ? '△' : '×',
+                c.features.escalation === 2 ? '○' : c.features.escalation === 1 ? '△' : '×',
+                c.features.parking === 2 ? '○' : c.features.parking === 1 ? '△' : '×',
+                c.features.multilang === 2 ? '○' : c.features.multilang === 1 ? '△' : '×',
+                c.notes
+            ]);
+
+            const csvContent = [headers, ...rows].map(row => row.join(',')).join('\n');
+            const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `SC業界分析_${new Date().toISOString().split('T')[0]}.csv`;
+            link.click();
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            renderTable();
+        });
+    </script>
+</body>
+</html>

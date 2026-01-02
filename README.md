@@ -25,6 +25,7 @@ GBaseSolution/
 |---------|------|
 | [Product_Roadmap.html](GBaseSupport/Product_Roadmap.html) | 製品開発ロードマップ 2026-2027 |
 | [Shopping_Center_Solution_Report.html](GBaseSupport/Shopping_Center_Solution_Report.html) | SC業界向けソリューション総合レポート |
+| [Company_Analysis_Matrix.html](GBaseSupport/Company_Analysis_Matrix.html) | **299社分析マトリクス（フィルタリング機能付き）** |
 
 ### 機能別分析レポート
 
@@ -66,6 +67,7 @@ GBaseSolution/
 |-------------|-----|
 | **製品ロードマップ** | https://lirhcoder.github.io/GBaseSolution/GBaseSupport/Product_Roadmap.html |
 | **SC業界ソリューションレポート** | https://lirhcoder.github.io/GBaseSolution/GBaseSupport/Shopping_Center_Solution_Report.html |
+| **299社分析マトリクス** | https://lirhcoder.github.io/GBaseSolution/GBaseSupport/Company_Analysis_Matrix.html |
 
 ### ローカル閲覧
 
