@@ -19,11 +19,19 @@ GBaseSolution/
 
 ## 主要ドキュメント
 
+### 落地ページ（Landing Page）デザインバリエーション
+
+| ファイル | スタイル | 説明 |
+|---------|----------|------|
+| [SC_Solution_Landing.html](GBaseSupport/SC_Solution_Landing.html) | Light Glassmorphism | ライトモード・フロストグラス効果 |
+| [SC_Solution_Landing_A_Dark.html](GBaseSupport/SC_Solution_Landing_A_Dark.html) | **Glassmorphism Dark** | ダークモード・ネオングラデーション |
+| [SC_Solution_Landing_B_Minimal.html](GBaseSupport/SC_Solution_Landing_B_Minimal.html) | **Minimal Light Pro** | ミニマル・ホワイトスペース重視 |
+| [SC_Solution_Landing_C_Bento.html](GBaseSupport/SC_Solution_Landing_C_Bento.html) | **Bento Grid Modern** | Apple風モジュラーカードレイアウト |
+
 ### マスターレポート
 
 | ファイル | 説明 |
 |---------|------|
-| [SC_Solution_Landing.html](GBaseSupport/SC_Solution_Landing.html) | **SC業界向けAIソリューション落地ページ（営業用LP）** |
 | [Product_Roadmap.html](GBaseSupport/Product_Roadmap.html) | 製品開発ロードマップ 2026-2027 |
 | [Shopping_Center_Solution_Report.html](GBaseSupport/Shopping_Center_Solution_Report.html) | SC業界向けソリューション総合レポート |
 | [Company_Analysis_Matrix.html](GBaseSupport/Company_Analysis_Matrix.html) | **299社分析マトリクス（フィルタリング機能付き）** |
@@ -64,12 +72,20 @@ GBaseSolution/
 
 以下のURLでブラウザから直接閲覧できます：
 
+**Landing Page デザインバリエーション:**
+| スタイル | URL |
+|----------|-----|
+| Light Glassmorphism | https://lirhcoder.github.io/GBaseSolution/GBaseSupport/SC_Solution_Landing.html |
+| **Glassmorphism Dark** | https://lirhcoder.github.io/GBaseSolution/GBaseSupport/SC_Solution_Landing_A_Dark.html |
+| **Minimal Light Pro** | https://lirhcoder.github.io/GBaseSolution/GBaseSupport/SC_Solution_Landing_B_Minimal.html |
+| **Bento Grid Modern** | https://lirhcoder.github.io/GBaseSolution/GBaseSupport/SC_Solution_Landing_C_Bento.html |
+
+**マスターレポート:**
 | ドキュメント | URL |
 |-------------|-----|
-| **SC業界ソリューションLP** | https://lirhcoder.github.io/GBaseSolution/GBaseSupport/SC_Solution_Landing.html |
-| **製品ロードマップ** | https://lirhcoder.github.io/GBaseSolution/GBaseSupport/Product_Roadmap.html |
-| **SC業界ソリューションレポート** | https://lirhcoder.github.io/GBaseSolution/GBaseSupport/Shopping_Center_Solution_Report.html |
-| **299社分析マトリクス** | https://lirhcoder.github.io/GBaseSolution/GBaseSupport/Company_Analysis_Matrix.html |
+| 製品ロードマップ | https://lirhcoder.github.io/GBaseSolution/GBaseSupport/Product_Roadmap.html |
+| SC業界ソリューションレポート | https://lirhcoder.github.io/GBaseSolution/GBaseSupport/Shopping_Center_Solution_Report.html |
+| 299社分析マトリクス | https://lirhcoder.github.io/GBaseSolution/GBaseSupport/Company_Analysis_Matrix.html |
 
 ### ローカル閲覧
 
@@ -83,6 +99,10 @@ open GBaseSupport/Product_Roadmap.html
 
 ## 更新履歴
 
+- 2026-01-02: Landing Pageデザインバリエーション追加
+  - Glassmorphism Dark (Option A)
+  - Minimal Light Pro (Option B)
+  - Bento Grid Modern (Option C)
 - 2026-01-02: 初版作成
   - SC業界調査レポート
   - 製品ロードマップ 2026-2027
