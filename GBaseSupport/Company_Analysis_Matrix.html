@@ -413,6 +413,12 @@
             color: #fbbf24;
         }
 
+        /* Company Link */
+        td a:hover {
+            text-decoration: underline !important;
+            color: #67e8f9 !important;
+        }
+
         /* Region Badge */
         .region-badge {
             display: inline-block;
@@ -736,11 +742,23 @@
                     </div>
                 </div>
                 <div class="legend-section">
-                    <h5>機能マッチ</h5>
+                    <h5>機能マッチ記号</h5>
+                    <div class="legend-items" style="flex-direction: column; gap: 5px;">
+                        <div><span class="feature-dot match">F</span> = フロアマップ連携</div>
+                        <div><span class="feature-dot match">E</span> = イベント自動更新</div>
+                        <div><span class="feature-dot match">L</span> = LINE Bot強化</div>
+                        <div><span class="feature-dot match">T</span> = タッチスクリーン対応</div>
+                        <div><span class="feature-dot match">H</span> = 転人工（Human Escalation）</div>
+                        <div><span class="feature-dot match">P</span> = 駐車場システム連携</div>
+                        <div><span class="feature-dot match">M</span> = 多言語対応</div>
+                    </div>
+                </div>
+                <div class="legend-section">
+                    <h5>マッチ度</h5>
                     <div class="legend-items">
-                        <span class="feature-dot match" title="完全マッチ">F</span>
-                        <span class="feature-dot partial" title="部分マッチ">F</span>
-                        <span class="feature-dot no-match" title="マッチなし">F</span>
+                        <span class="feature-dot match" style="width: auto; padding: 0 8px;">完全マッチ</span>
+                        <span class="feature-dot partial" style="width: auto; padding: 0 8px;">部分マッチ</span>
+                        <span class="feature-dot no-match" style="width: auto; padding: 0 8px;">マッチなし</span>
                     </div>
                 </div>
                 <div class="legend-section">
@@ -757,6 +775,122 @@
     </div>
 
     <script>
+        // Company URL Database
+        const companyUrls = {
+            // SC専業
+            'イオンモール': 'https://www.aeonmall.com/',
+            'パルコ': 'https://www.parco.co.jp/',
+            '三井不動産商業マネジメント': 'https://www.mitsuifudosan.co.jp/',
+            'ららぽーとマネジメント': 'https://www.lalaport.jp/',
+            '三菱地所リテールマネジメント': 'https://www.mec-r.com/',
+            'イオンタウン': 'https://www.aeontown.co.jp/',
+            'イオンディライト': 'https://www.aeondelight.co.jp/',
+            'ドン・キホーテ': 'https://www.donki.com/',
+            'MEGAドン・キホーテ': 'https://www.donki.com/',
+            'プレミアム・アウトレット': 'https://www.premiumoutlets.co.jp/',
+            'レイクタウン': 'https://www.aeon-laketown.jp/',
+            'ダイバーシティ': 'https://www.divercity-tokyo.com/',
+            'アクアシティ': 'https://www.aquacity.jp/',
+            'マークイズ': 'https://www.mec-markis.jp/',
+            'テラスモール': 'https://terracemall-shonan.com/',
+            'ラゾーナ川崎': 'https://lazona-kawasaki.com/',
+            'グランツリー武蔵小杉': 'https://grandtree-musashikosugi.com/',
+            'ららぽーと横浜': 'https://mitsui-shopping-park.com/lalaport/yokohama/',
+            'KITTE': 'https://jptower-kitte.jp/',
+            'GINZA SIX': 'https://ginza6.tokyo/',
+            '東京ミッドタウン日比谷': 'https://www.hibiya.tokyo-midtown.com/',
+            '虎ノ門ヒルズ': 'https://www.toranomonhills.com/',
+            '渋谷ストリーム': 'https://shibuyastream.jp/',
+            '渋谷スクランブルスクエア': 'https://www.shibuya-scramble-square.com/',
+            '表参道ヒルズ': 'https://www.omotesandohills.com/',
+            '六本木ヒルズ': 'https://www.roppongihills.com/',
+            '東京ミッドタウン': 'https://www.tokyo-midtown.com/',
+            '二子玉川ライズ': 'https://www.rise.sc/',
+            'グランフロント大阪': 'https://www.grandfront-osaka.jp/',
+            '阪急西宮ガーデンズ': 'https://nishinomiya-gardens.com/',
+            'キャナルシティ博多': 'https://canalcity.co.jp/',
+            // 駅ビル
+            'ルミネ': 'https://www.lumine.ne.jp/',
+            'アトレ': 'https://www.atre.co.jp/',
+            'エキュート': 'https://www.ecute.jp/',
+            'グランスタ': 'https://www.gransta.jp/',
+            'エスパル': 'https://www.s-pal.jp/',
+            'JR東日本クロスステーション': 'https://www.j-retail.jp/',
+            'JR西日本SC開発': 'https://www.jrwd.co.jp/',
+            '京急百貨店': 'https://www.keikyu-depart.com/',
+            '東急百貨店': 'https://www.tokyu-dept.co.jp/',
+            '東急モールズデベロップメント': 'https://www.tokyu-tmd.co.jp/',
+            '小田急百貨店': 'https://www.odakyu-dept.co.jp/',
+            '東武百貨店': 'https://www.tobu-dept.jp/',
+            '京王百貨店': 'https://www.keionet.com/',
+            '名鉄百貨店': 'https://www.e-meitetsu.com/',
+            '近鉄百貨店': 'https://www.d-kintetsu.co.jp/',
+            '阪急阪神百貨店': 'https://www.hankyu-hanshin-dept.co.jp/',
+            // 不動産管理業
+            '大和ハウス': 'https://www.daiwahouse.co.jp/',
+            '日本空港ビルデング': 'https://www.tokyo-airport-bldg.co.jp/',
+            '成田国際空港': 'https://www.narita-airport.jp/',
+            '中部国際空港': 'https://www.centrair.jp/',
+            '関西エアポート': 'https://www.kansai-airports.co.jp/',
+            '東京ビッグサイト': 'https://www.bigsight.jp/',
+            '幕張メッセ': 'https://www.m-messe.co.jp/',
+            'パシフィコ横浜': 'https://www.pacifico.co.jp/',
+            '東京ドームシティ': 'https://www.tokyo-dome.co.jp/',
+            'USJ': 'https://www.usj.co.jp/',
+            'ハウステンボス': 'https://www.huistenbosch.co.jp/',
+            '富士急ハイランド': 'https://www.fujiq.jp/',
+            // 不動産
+            '三井不動産': 'https://www.mitsuifudosan.co.jp/',
+            '三菱地所': 'https://www.mec.co.jp/',
+            '森ビル': 'https://www.mori.co.jp/',
+            '住友不動産': 'https://www.sumitomo-rd.co.jp/',
+            '野村不動産': 'https://www.nomura-re.co.jp/',
+            '東急不動産': 'https://www.tokyu-land.co.jp/',
+            '東京建物': 'https://www.tatemono.com/',
+            'ヒューリック': 'https://www.hulic.co.jp/',
+            // 運輸業
+            'JR東日本': 'https://www.jreast.co.jp/',
+            '東急': 'https://www.tokyu.co.jp/',
+            '小田急電鉄': 'https://www.odakyu.jp/',
+            '京急電鉄': 'https://www.keikyu.co.jp/',
+            '京王電鉄': 'https://www.keio.co.jp/',
+            '東武鉄道': 'https://www.tobu.co.jp/',
+            '西武鉄道': 'https://www.seiburailway.jp/',
+            '京成電鉄': 'https://www.keisei.co.jp/',
+            '東京メトロ': 'https://www.tokyometro.jp/',
+            'JR西日本': 'https://www.westjr.co.jp/',
+            '阪急電鉄': 'https://www.hankyu.co.jp/',
+            '近畿日本鉄道': 'https://www.kintetsu.co.jp/',
+            '名古屋鉄道': 'https://www.meitetsu.co.jp/',
+            'JR九州': 'https://www.jrkyushu.co.jp/',
+            // 地下街
+            '八重洲地下街': 'https://www.yaechika.com/',
+            '大阪地下街': 'https://www.dotica.or.jp/',
+            '天神地下街': 'https://www.tenchika.com/',
+            '名古屋地下街': 'https://www.meieki-chikagai.jp/',
+            // 百貨店
+            '高島屋': 'https://www.takashimaya.co.jp/',
+            '三越伊勢丹': 'https://www.imhds.co.jp/',
+            '大丸松坂屋百貨店': 'https://www.daimaru-matsuzakaya.com/',
+            'そごう・西武': 'https://www.sogo-seibu.co.jp/',
+            // その他
+            '東京ドーム': 'https://www.tokyo-dome.co.jp/',
+            'ファーストリテイリング': 'https://www.fastretailing.com/',
+            'ニトリ': 'https://www.nitori.co.jp/',
+            'ビックカメラ': 'https://www.biccamera.co.jp/',
+            'ヨドバシカメラ': 'https://www.yodobashi.com/',
+            'ヤマダ電機': 'https://www.yamada-denki.jp/',
+            'カインズ': 'https://www.cainz.co.jp/',
+            // 地元主導型SC
+            'ベルモール': 'https://www.bellmall.co.jp/',
+            'ゆめタウン': 'https://www.izumi.co.jp/',
+            // GMS
+            'イオンリテール': 'https://www.aeonretail.jp/',
+            'イトーヨーカ堂': 'https://www.itoyokado.co.jp/',
+            '西友': 'https://www.seiyu.co.jp/',
+            '平和堂': 'https://www.heiwado.jp/'
+        };
+
         // Company Database - 299 companies across all segments
         const companies = generateCompanyData();
 
@@ -954,6 +1088,7 @@
                     data.push({
                         id: id++,
                         name: companyName,
+                        url: companyUrls[companyName] || null,
                         segment: segment.name,
                         tier: segment.tier,
                         region: region,
@@ -1146,7 +1281,7 @@
             tbody.innerHTML = pageData.map(company => `
                 <tr>
                     <td>${company.rank}</td>
-                    <td><strong>${company.name}</strong></td>
+                    <td><strong>${company.url ? `<a href="${company.url}" target="_blank" style="color: var(--accent-cyan); text-decoration: none;">${company.name} <span style="font-size: 0.7rem;">↗</span></a>` : company.name}</strong></td>
                     <td>${company.segment}</td>
                     <td><span class="tier-badge tier-${company.tier}">Tier ${company.tier}</span></td>
                     <td><span class="score-badge ${getScoreClass(company.score)}">${company.score}</span></td>
