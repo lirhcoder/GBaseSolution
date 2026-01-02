@@ -58,10 +58,22 @@ GBaseSolution/
 
 ## 閲覧方法
 
-HTMLファイルをブラウザで直接開くか、GitHub Pagesで閲覧できます。
+### GitHub Pages（推奨）
+
+以下のURLでブラウザから直接閲覧できます：
+
+| ドキュメント | URL |
+|-------------|-----|
+| **製品ロードマップ** | https://lirhcoder.github.io/GBaseSolution/GBaseSupport/Product_Roadmap.html |
+| **SC業界ソリューションレポート** | https://lirhcoder.github.io/GBaseSolution/GBaseSupport/Shopping_Center_Solution_Report.html |
+
+### ローカル閲覧
 
 ```bash
-# ローカルで閲覧
+# リポジトリをクローン
+git clone https://github.com/lirhcoder/GBaseSolution.git
+
+# ブラウザで開く
 open GBaseSupport/Product_Roadmap.html
 ```
 
