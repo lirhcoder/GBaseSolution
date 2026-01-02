@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GBase Support SC業界ソリューション - マーケティング戦略</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Noto Sans JP', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%);
+        }
+        .highlight-box {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+        }
+    </style>
+</head>
+<body class="font-sans bg-slate-50 text-slate-900">
+
+    <!-- Header -->
+    <header class="gradient-bg text-white py-16 px-6">
+        <div class="max-w-5xl mx-auto">
+            <div class="text-sm text-blue-300 mb-4">Marketing Strategy Document</div>
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">GBase Support<br>SC業界ソリューション</h1>
+            <p class="text-xl text-slate-300 mb-6">マーケティング戦略 & 落地ページ設計書</p>
+            <div class="flex flex-wrap gap-4 text-sm">
+                <span class="bg-white/10 px-3 py-1 rounded-full">作成日: 2026-01-02</span>
+                <span class="bg-white/10 px-3 py-1 rounded-full">Version: 1.0</span>
+                <span class="bg-blue-500 px-3 py-1 rounded-full">営業用LP戦略</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 bg-white shadow-sm z-50 border-b">
+        <div class="max-w-5xl mx-auto px-6 py-4">
+            <div class="flex flex-wrap gap-4 text-sm">
+                <a href="#executive" class="text-slate-600 hover:text-blue-600">概要</a>
+                <a href="#target" class="text-slate-600 hover:text-blue-600">ターゲット</a>
+                <a href="#messaging" class="text-slate-600 hover:text-blue-600">メッセージング</a>
+                <a href="#structure" class="text-slate-600 hover:text-blue-600">LP構成</a>
+                <a href="#copy" class="text-slate-600 hover:text-blue-600">コピー</a>
+                <a href="#design" class="text-slate-600 hover:text-blue-600">デザイン</a>
+                <a href="#kpi" class="text-slate-600 hover:text-blue-600">KPI</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-5xl mx-auto px-6 py-12">
+
+        <!-- Executive Summary -->
+        <section id="executive" class="mb-16">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span class="w-8 h-8 bg-blue-600 text-white rounded-lg flex items-center justify-center text-sm">1</span>
+                エグゼクティブサマリー
+            </h2>
+
+            <div class="highlight-box text-white p-8 rounded-2xl mb-8">
+                <h3 class="text-xl font-bold mb-4">戦略の核心</h3>
+                <p class="text-lg leading-relaxed">
+                    SC業界の「人手不足」「インバウンド対応」という<strong>避けられない課題</strong>に対し、
+                    <strong>「降本増効」（コスト削減×効率向上）</strong>を数字で証明する落地ページを構築。
+                    競合との差別化は「SC業界特化」×「即効性のあるROI」で実現。
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-xl border shadow-sm">
+                    <div class="text-3xl font-bold text-blue-600 mb-2">70%</div>
+                    <div class="font-medium mb-1">問い合わせ自動化</div>
+                    <div class="text-sm text-slate-500">核心の価値提案</div>
+                </div>
+                <div class="bg-white p-6 rounded-xl border shadow-sm">
+                    <div class="text-3xl font-bold text-green-600 mb-2">1ヶ月</div>
+                    <div class="font-medium mb-1">投資回収期間</div>
+                    <div class="text-sm text-slate-500">意思決定を後押し</div>
+                </div>
+                <div class="bg-white p-6 rounded-xl border shadow-sm">
+                    <div class="text-3xl font-bold text-purple-600 mb-2">10言語</div>
+                    <div class="font-medium mb-1">多言語対応</div>
+                    <div class="text-sm text-slate-500">インバウンド差別化</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Target Audience -->
+        <section id="target" class="mb-16">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span class="w-8 h-8 bg-blue-600 text-white rounded-lg flex items-center justify-center text-sm">2</span>
+                ターゲット顧客定義
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6 mb-8">
+                <!-- Primary Persona -->
+                <div class="bg-white p-6 rounded-xl border shadow-sm">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-2xl">👔</div>
+                        <div>
+                            <div class="text-xs text-blue-600 font-medium">Primary Persona</div>
+                            <div class="font-bold">運営部長 / DX推進担当</div>
+                        </div>
+                    </div>
+                    <table class="w-full text-sm">
+                        <tr class="border-b"><td class="py-2 text-slate-500">年齢層</td><td class="py-2 font-medium">40-55歳</td></tr>
+                        <tr class="border-b"><td class="py-2 text-slate-500">予算権限</td><td class="py-2 font-medium">500万〜2000万円/年</td></tr>
+                        <tr class="border-b"><td class="py-2 text-slate-500">意思決定</td><td class="py-2 font-medium">半年〜1年サイクル</td></tr>
+                        <tr><td class="py-2 text-slate-500">重視点</td><td class="py-2 font-medium">ROI証明、導入実績</td></tr>
+                    </table>
+                </div>
+
+                <!-- Secondary Persona -->
+                <div class="bg-white p-6 rounded-xl border shadow-sm">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-2xl">🏢</div>
+                        <div>
+                            <div class="text-xs text-green-600 font-medium">Secondary Persona</div>
+                            <div class="font-bold">施設管理者</div>
+                        </div>
+                    </div>
+                    <table class="w-full text-sm">
+                        <tr class="border-b"><td class="py-2 text-slate-500">年齢層</td><td class="py-2 font-medium">35-50歳</td></tr>
+                        <tr class="border-b"><td class="py-2 text-slate-500">予算権限</td><td class="py-2 font-medium">提案・推薦レベル</td></tr>
+                        <tr class="border-b"><td class="py-2 text-slate-500">意思決定</td><td class="py-2 font-medium">上申後2-3ヶ月</td></tr>
+                        <tr><td class="py-2 text-slate-500">重視点</td><td class="py-2 font-medium">現場の使いやすさ</td></tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Pain Points -->
+            <h3 class="font-bold text-lg mb-4">ペインポイント分析</h3>
+            <div class="space-y-4">
+                <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-bold text-red-700">Pain #1: 人手不足</span>
+                        <span class="text-xs bg-red-100 text-red-700 px-2 py-1 rounded">深刻度: ★★★★★</span>
+                    </div>
+                    <p class="text-sm text-slate-600 mb-2">インフォカウンターの採用難、時給上昇、シフト調整困難。同じ質問に何度も答えてスタッフ疲弊。</p>
+                    <p class="text-sm font-medium text-red-600">→ 解決: 定型質問70%をAIが自動対応、スタッフは高度な接客に集中</p>
+                </div>
+
+                <div class="bg-orange-50 border-l-4 border-orange-500 p-4 rounded-r-lg">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-bold text-orange-700">Pain #2: インバウンド対応の壁</span>
+                        <span class="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded">深刻度: ★★★★☆</span>
+                    </div>
+                    <p class="text-sm text-slate-600 mb-2">外国人観光客急増、多言語スタッフ確保困難、言語の壁によるクレームと販売機会損失。</p>
+                    <p class="text-sm font-medium text-orange-600">→ 解決: 10言語リアルタイム自動翻訳、多言語スタッフ採用不要</p>
+                </div>
+
+                <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-r-lg">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-bold text-yellow-700">Pain #3: 情報更新負荷</span>
+                        <span class="text-xs bg-yellow-100 text-yellow-700 px-2 py-1 rounded">深刻度: ★★★★☆</span>
+                    </div>
+                    <p class="text-sm text-slate-600 mb-2">イベント情報の頻繁な更新、更新漏れによる誤案内、月10時間以上の作業負荷。</p>
+                    <p class="text-sm font-medium text-yellow-600">→ 解決: 期限検知で自動アラート、情報更新作業70%削減</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Messaging Strategy -->
+        <section id="messaging" class="mb-16">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span class="w-8 h-8 bg-blue-600 text-white rounded-lg flex items-center justify-center text-sm">3</span>
+                メッセージング戦略
+            </h2>
+
+            <div class="bg-white p-6 rounded-xl border shadow-sm mb-8">
+                <h3 class="font-bold mb-4">PASTOR フレームワーク適用</h3>
+                <div class="space-y-4">
+                    <div class="flex gap-4">
+                        <div class="w-8 h-8 bg-slate-900 text-white rounded-lg flex items-center justify-center font-bold shrink-0">P</div>
+                        <div>
+                            <div class="font-medium">Problem（問題提起）</div>
+                            <div class="text-sm text-slate-600">「同じ質問に何度答えましたか？」「外国人対応できるスタッフが足りない」</div>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="w-8 h-8 bg-slate-900 text-white rounded-lg flex items-center justify-center font-bold shrink-0">A</div>
+                        <div>
+                            <div class="font-medium">Amplify（問題の深刻化）</div>
+                            <div class="text-sm text-slate-600">「スタッフ疲弊、離職率上昇」「機会損失、競合に遅れ」</div>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="w-8 h-8 bg-slate-900 text-white rounded-lg flex items-center justify-center font-bold shrink-0">S</div>
+                        <div>
+                            <div class="font-medium">Solution（解決策提示）</div>
+                            <div class="text-sm text-slate-600">「AIが定型質問を70%自動対応」「10言語で外国人にも即座に回答」</div>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="w-8 h-8 bg-slate-900 text-white rounded-lg flex items-center justify-center font-bold shrink-0">T</div>
+                        <div>
+                            <div class="font-medium">Transformation（変革の可視化）</div>
+                            <div class="text-sm text-slate-600">「スタッフは心のこもった接客に集中」「24時間365日、一貫した顧客体験」</div>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="w-8 h-8 bg-slate-900 text-white rounded-lg flex items-center justify-center font-bold shrink-0">O</div>
+                        <div>
+                            <div class="font-medium">Offer（提案）</div>
+                            <div class="text-sm text-slate-600">「無料デモで効果を体感」「投資回収1ヶ月、ROI 300%以上」</div>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="w-8 h-8 bg-slate-900 text-white rounded-lg flex items-center justify-center font-bold shrink-0">R</div>
+                        <div>
+                            <div class="font-medium">Response（行動喚起）</div>
+                            <div class="text-sm text-slate-600">「無料デモを予約する」「資料をダウンロード」</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Key Messages -->
+            <h3 class="font-bold text-lg mb-4">コアメッセージ</h3>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="bg-blue-50 p-4 rounded-lg">
+                    <div class="text-xs text-blue-600 font-medium mb-1">Primary Headline</div>
+                    <div class="font-bold text-lg">人手不足×インバウンドを<br>AIで解決</div>
+                </div>
+                <div class="bg-green-50 p-4 rounded-lg">
+                    <div class="text-xs text-green-600 font-medium mb-1">Value Proposition</div>
+                    <div class="font-bold text-lg">問い合わせ対応コストを<br>70%削減</div>
+                </div>
+                <div class="bg-purple-50 p-4 rounded-lg">
+                    <div class="text-xs text-purple-600 font-medium mb-1">Differentiator</div>
+                    <div class="font-bold text-lg">SC業界特化<br>フロアマップ連携</div>
+                </div>
+                <div class="bg-orange-50 p-4 rounded-lg">
+                    <div class="text-xs text-orange-600 font-medium mb-1">Risk Reversal</div>
+                    <div class="font-bold text-lg">投資回収期間<br>約1ヶ月</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- LP Structure -->
+        <section id="structure" class="mb-16">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span class="w-8 h-8 bg-blue-600 text-white rounded-lg flex items-center justify-center text-sm">4</span>
+                落地ページ構成
+            </h2>
+
+            <div class="bg-white rounded-xl border shadow-sm overflow-hidden">
+                <table class="w-full">
+                    <thead class="bg-slate-100">
+                        <tr>
+                            <th class="text-left p-4 font-medium">セクション</th>
+                            <th class="text-left p-4 font-medium">目的</th>
+                            <th class="text-left p-4 font-medium">コンテンツ</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y">
+                        <tr>
+                            <td class="p-4 font-medium">1. Hero</td>
+                            <td class="p-4 text-sm text-slate-600">興味を引く、問題を提起</td>
+                            <td class="p-4 text-sm">
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>キャッチコピー: 「人手不足×インバウンドをAIで解決」</li>
+                                    <li>サブコピー: 10言語対応×ノーコード構築</li>
+                                    <li>CTA: 「無料デモを予約」</li>
+                                    <li>ビジュアル: AIチャットデモ画面</li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="p-4 font-medium">2. 数字で示す価値</td>
+                            <td class="p-4 text-sm text-slate-600">信頼構築、具体性</td>
+                            <td class="p-4 text-sm">
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>70% - 問い合わせ自動化率</li>
+                                    <li>24/7 - 365日対応</li>
+                                    <li>10言語 - 多言語対応</li>
+                                    <li>90% - 顧客満足度</li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="p-4 font-medium">3. ペインポイント</td>
+                            <td class="p-4 text-sm text-slate-600">共感を得る、問題を深掘り</td>
+                            <td class="p-4 text-sm">
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>「同じ質問への対応でスタッフ疲弊」</li>
+                                    <li>「外国人対応の壁」</li>
+                                    <li>「情報更新の負荷」</li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="p-4 font-medium">4. ソリューション</td>
+                            <td class="p-4 text-sm text-slate-600">解決策を提示</td>
+                            <td class="p-4 text-sm">
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Before/After比較</li>
+                                    <li>3つの核心価値（自動化・多言語・24時間）</li>
+                                    <li>ROI数値（年間600万円削減）</li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="p-4 font-medium">5. 主要機能</td>
+                            <td class="p-4 text-sm text-slate-600">機能をベネフィットで説明</td>
+                            <td class="p-4 text-sm">
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>フロアマップ連携（「トイレどこ？」に即座に道案内）</li>
+                                    <li>イベント自動更新（更新漏れゼロ）</li>
+                                    <li>LINE Bot強化（アプリ開発費ゼロ）</li>
+                                    <li>転人工対応（AIで対応できない時は自動でスタッフへ）</li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="p-4 font-medium">6. 詳細レポート</td>
+                            <td class="p-4 text-sm text-slate-600">深掘りしたい人向け</td>
+                            <td class="p-4 text-sm">
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>製品ロードマップへのリンク</li>
+                                    <li>各機能の詳細分析レポート</li>
+                                    <li>299社分析マトリクス</li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="p-4 font-medium">7. CTA</td>
+                            <td class="p-4 text-sm text-slate-600">行動を促す</td>
+                            <td class="p-4 text-sm">
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>「まずは無料デモで効果を体感」</li>
+                                    <li>リスク軽減: 「導入を決める前に確認できます」</li>
+                                    <li>複数の接点: デモ予約、電話、資料DL</li>
+                                </ul>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Copy Recommendations -->
+        <section id="copy" class="mb-16">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span class="w-8 h-8 bg-blue-600 text-white rounded-lg flex items-center justify-center text-sm">5</span>
+                推奨コピー
+            </h2>
+
+            <div class="space-y-6">
+                <!-- Hero Copy -->
+                <div class="bg-white p-6 rounded-xl border shadow-sm">
+                    <h3 class="font-bold mb-4 text-blue-600">Hero セクション</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="text-xs text-slate-500 mb-1">Badge</div>
+                            <div class="inline-block bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">SC業界特化 AIソリューション</div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-slate-500 mb-1">Headline</div>
+                            <div class="text-3xl font-bold">人手不足×インバウンドを<br><span class="text-blue-600">AIで解決</span></div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-slate-500 mb-1">Subheadline</div>
+                            <div class="text-slate-600">ショッピングセンター向けAIコンシェルジュ。<br>10言語自動翻訳×ノーコード構築で、顧客体験を革新し運営コストを削減します。</div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-slate-500 mb-1">CTA</div>
+                            <div class="flex gap-3">
+                                <span class="bg-blue-600 text-white px-6 py-2 rounded-lg font-medium">無料デモを予約</span>
+                                <span class="border border-slate-300 px-6 py-2 rounded-lg font-medium">製品ロードマップ</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pain Points Copy -->
+                <div class="bg-white p-6 rounded-xl border shadow-sm">
+                    <h3 class="font-bold mb-4 text-red-600">ペインポイント セクション</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="text-xs text-slate-500 mb-1">Section Title</div>
+                            <div class="text-xl font-bold">こんな課題はありませんか？</div>
+                        </div>
+                        <div class="grid md:grid-cols-3 gap-4">
+                            <div class="bg-slate-50 p-4 rounded-lg">
+                                <div class="font-medium mb-2">同じ質問の繰り返し</div>
+                                <div class="text-sm text-slate-600">「駐車場はどこ？」「営業時間は？」<br>同じ質問への対応に時間を取られていませんか？</div>
+                            </div>
+                            <div class="bg-slate-50 p-4 rounded-lg">
+                                <div class="font-medium mb-2">インバウンド対応の壁</div>
+                                <div class="text-sm text-slate-600">外国人観光客の急増に<br>多言語対応が追いつかない</div>
+                            </div>
+                            <div class="bg-slate-50 p-4 rounded-lg">
+                                <div class="font-medium mb-2">情報更新の負荷</div>
+                                <div class="text-sm text-slate-600">イベント情報の更新漏れで<br>お客様に古い情報を案内してしまう</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Solution Copy -->
+                <div class="bg-white p-6 rounded-xl border shadow-sm">
+                    <h3 class="font-bold mb-4 text-green-600">ソリューション セクション</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="text-xs text-slate-500 mb-1">Section Title</div>
+                            <div class="text-xl font-bold">GBase Supportで解決</div>
+                        </div>
+                        <div class="grid md:grid-cols-3 gap-4">
+                            <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                                <div class="text-2xl font-bold text-green-600 mb-1">70%自動化</div>
+                                <div class="text-sm text-slate-600">定型質問はAIにお任せ。<br>スタッフは高度な接客に集中。</div>
+                            </div>
+                            <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                                <div class="text-2xl font-bold text-blue-600 mb-1">10言語対応</div>
+                                <div class="text-sm text-slate-600">リアルタイム自動翻訳。<br>多言語スタッフの採用不要。</div>
+                            </div>
+                            <div class="bg-purple-50 p-4 rounded-lg border border-purple-200">
+                                <div class="text-2xl font-bold text-purple-600 mb-1">24時間365日</div>
+                                <div class="text-sm text-slate-600">営業時間外も対応。<br>機会損失ゼロ。</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CTA Copy -->
+                <div class="bg-white p-6 rounded-xl border shadow-sm">
+                    <h3 class="font-bold mb-4 text-orange-600">CTA セクション</h3>
+                    <div class="bg-slate-900 text-white p-6 rounded-lg">
+                        <div class="text-center">
+                            <div class="text-2xl font-bold mb-2">導入をご検討ですか？</div>
+                            <div class="text-slate-300 mb-6">
+                                まずは無料デモで、GBase Supportの可能性をご体験ください。<br>
+                                御社の課題に合わせたご提案をいたします。
+                            </div>
+                            <div class="flex justify-center gap-4 flex-wrap">
+                                <span class="bg-orange-500 text-white px-8 py-3 rounded-lg font-medium">無料デモを予約する</span>
+                                <span class="border border-white/30 px-8 py-3 rounded-lg font-medium">資料をダウンロード</span>
+                            </div>
+                            <div class="text-xs text-slate-400 mt-4">※ デモ後の営業電話は一切いたしません</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Design Recommendations -->
+        <section id="design" class="mb-16">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span class="w-8 h-8 bg-blue-600 text-white rounded-lg flex items-center justify-center text-sm">6</span>
+                デザイン推奨
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-white p-6 rounded-xl border shadow-sm">
+                    <h3 class="font-bold mb-4">推奨デザインスタイル</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-3">
+                            <span class="w-6 h-6 bg-green-500 text-white rounded flex items-center justify-center text-xs">1</span>
+                            <span><strong>Minimal Light Pro</strong> - B2B企業向け、信頼感重視</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="w-6 h-6 bg-blue-500 text-white rounded flex items-center justify-center text-xs">2</span>
+                            <span><strong>Bento Grid Modern</strong> - 情報整理、視覚的インパクト</span>
+                        </div>
+                    </div>
+                    <div class="mt-4 p-3 bg-yellow-50 rounded-lg text-sm">
+                        <strong>Note:</strong> Glassmorphism Darkは「先進的」だがSC業界の保守的な意思決定者には向かない可能性あり。
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl border shadow-sm">
+                    <h3 class="font-bold mb-4">カラーパレット</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 bg-blue-600 rounded"></div>
+                            <div>
+                                <div class="font-medium">#2563EB</div>
+                                <div class="text-xs text-slate-500">Primary - 信頼、テクノロジー</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 bg-orange-500 rounded"></div>
+                            <div>
+                                <div class="font-medium">#F97316</div>
+                                <div class="text-xs text-slate-500">CTA - アクション、緊急性</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 bg-green-500 rounded"></div>
+                            <div>
+                                <div class="font-medium">#10B981</div>
+                                <div class="text-xs text-slate-500">Success - 成長、コスト削減</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl border shadow-sm">
+                    <h3 class="font-bold mb-4">タイポグラフィ</h3>
+                    <div class="space-y-3">
+                        <div>
+                            <div class="text-xs text-slate-500">見出し</div>
+                            <div class="font-bold text-lg">Poppins / Noto Sans JP Bold</div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-slate-500">本文</div>
+                            <div>Noto Sans JP Regular</div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-slate-500">数字強調</div>
+                            <div class="font-bold text-2xl">Inter Bold</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl border shadow-sm">
+                    <h3 class="font-bold mb-4">レイアウト原則</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex items-start gap-2">
+                            <span class="text-green-500">✓</span>
+                            <span>セクション間余白: 最低60px</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-green-500">✓</span>
+                            <span>カード内パディング: 40px</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-green-500">✓</span>
+                            <span>タッチターゲット: 最低44px</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-green-500">✓</span>
+                            <span>最大コンテンツ幅: 1200px</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-green-500">✓</span>
+                            <span>モバイルファースト設計</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- KPI -->
+        <section id="kpi" class="mb-16">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span class="w-8 h-8 bg-blue-600 text-white rounded-lg flex items-center justify-center text-sm">7</span>
+                KPI & 成功指標
+            </h2>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-xl border shadow-sm">
+                    <div class="text-sm text-slate-500 mb-1">Primary KPI</div>
+                    <div class="text-2xl font-bold mb-2">CVR 3%+</div>
+                    <div class="text-sm text-slate-600">デモ申込/ページ訪問</div>
+                    <div class="mt-3 text-xs text-slate-500">業界平均: 1-2%</div>
+                </div>
+                <div class="bg-white p-6 rounded-xl border shadow-sm">
+                    <div class="text-sm text-slate-500 mb-1">Secondary KPI</div>
+                    <div class="text-2xl font-bold mb-2">滞在時間 3分+</div>
+                    <div class="text-sm text-slate-600">ページ平均滞在時間</div>
+                    <div class="mt-3 text-xs text-slate-500">目標: コンテンツ熟読</div>
+                </div>
+                <div class="bg-white p-6 rounded-xl border shadow-sm">
+                    <div class="text-sm text-slate-500 mb-1">Engagement KPI</div>
+                    <div class="text-2xl font-bold mb-2">スクロール率 70%+</div>
+                    <div class="text-sm text-slate-600">CTAセクションまで到達</div>
+                    <div class="mt-3 text-xs text-slate-500">目標: ページ下部まで閲覧</div>
+                </div>
+            </div>
+
+            <div class="mt-8 bg-blue-50 p-6 rounded-xl">
+                <h3 class="font-bold mb-4">次のステップ</h3>
+                <ol class="space-y-2">
+                    <li class="flex items-start gap-3">
+                        <span class="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs shrink-0">1</span>
+                        <span>本マーケティング戦略に基づき、<strong>Minimal Light Pro</strong>または<strong>Bento Grid Modern</strong>スタイルで落地ページを再構築</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs shrink-0">2</span>
+                        <span>コピーをPASTORフレームワークに沿って最適化</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs shrink-0">3</span>
+                        <span>ROI計算ツールまたはシミュレーターをページに組み込み（Phase 2）</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs shrink-0">4</span>
+                        <span>A/Bテスト実施：ヘッドラインバリエーション、CTAカラー</span>
+                    </li>
+                </ol>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="gradient-bg text-white py-8 px-6">
+        <div class="max-w-5xl mx-auto text-center">
+            <p class="text-slate-400 text-sm">
+                GBase Support SC業界ソリューション マーケティング戦略<br>
+                &copy; 2026 Sparticle Inc. | 社内検討資料
+            </p>
+        </div>
+    </footer>
+
+</body>
+</html>

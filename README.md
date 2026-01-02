@@ -19,14 +19,21 @@ GBaseSolution/
 
 ## 主要ドキュメント
 
-### 落地ページ（Landing Page）デザインバリエーション
+### 落地ページ（Landing Page）
+
+| ファイル | スタイル | 説明 |
+|---------|----------|------|
+| [SC_Solution_Landing_Optimized.html](GBaseSupport/SC_Solution_Landing_Optimized.html) | **営業用LP（推奨）** | PASTOR フレームワーク適用・ROI訴求 |
+| [SC_Solution_Marketing_Plan.html](GBaseSupport/SC_Solution_Marketing_Plan.html) | **マーケティング戦略** | LP設計・コピー・デザイン方針 |
+
+#### デザインバリエーション
 
 | ファイル | スタイル | 説明 |
 |---------|----------|------|
 | [SC_Solution_Landing.html](GBaseSupport/SC_Solution_Landing.html) | Light Glassmorphism | ライトモード・フロストグラス効果 |
-| [SC_Solution_Landing_A_Dark.html](GBaseSupport/SC_Solution_Landing_A_Dark.html) | **Glassmorphism Dark** | ダークモード・ネオングラデーション |
-| [SC_Solution_Landing_B_Minimal.html](GBaseSupport/SC_Solution_Landing_B_Minimal.html) | **Minimal Light Pro** | ミニマル・ホワイトスペース重視 |
-| [SC_Solution_Landing_C_Bento.html](GBaseSupport/SC_Solution_Landing_C_Bento.html) | **Bento Grid Modern** | Apple風モジュラーカードレイアウト |
+| [SC_Solution_Landing_A_Dark.html](GBaseSupport/SC_Solution_Landing_A_Dark.html) | Glassmorphism Dark | ダークモード・ネオングラデーション |
+| [SC_Solution_Landing_B_Minimal.html](GBaseSupport/SC_Solution_Landing_B_Minimal.html) | Minimal Light Pro | ミニマル・ホワイトスペース重視 |
+| [SC_Solution_Landing_C_Bento.html](GBaseSupport/SC_Solution_Landing_C_Bento.html) | Bento Grid Modern | Apple風モジュラーカードレイアウト |
 
 ### マスターレポート
 
@@ -72,13 +79,19 @@ GBaseSolution/
 
 以下のURLでブラウザから直接閲覧できます：
 
-**Landing Page デザインバリエーション:**
+**Landing Page:**
+| ページ | URL |
+|--------|-----|
+| **営業用LP（推奨）** | https://lirhcoder.github.io/GBaseSolution/GBaseSupport/SC_Solution_Landing_Optimized.html |
+| マーケティング戦略 | https://lirhcoder.github.io/GBaseSolution/GBaseSupport/SC_Solution_Marketing_Plan.html |
+
+**デザインバリエーション:**
 | スタイル | URL |
 |----------|-----|
 | Light Glassmorphism | https://lirhcoder.github.io/GBaseSolution/GBaseSupport/SC_Solution_Landing.html |
-| **Glassmorphism Dark** | https://lirhcoder.github.io/GBaseSolution/GBaseSupport/SC_Solution_Landing_A_Dark.html |
-| **Minimal Light Pro** | https://lirhcoder.github.io/GBaseSolution/GBaseSupport/SC_Solution_Landing_B_Minimal.html |
-| **Bento Grid Modern** | https://lirhcoder.github.io/GBaseSolution/GBaseSupport/SC_Solution_Landing_C_Bento.html |
+| Glassmorphism Dark | https://lirhcoder.github.io/GBaseSolution/GBaseSupport/SC_Solution_Landing_A_Dark.html |
+| Minimal Light Pro | https://lirhcoder.github.io/GBaseSolution/GBaseSupport/SC_Solution_Landing_B_Minimal.html |
+| Bento Grid Modern | https://lirhcoder.github.io/GBaseSolution/GBaseSupport/SC_Solution_Landing_C_Bento.html |
 
 **マスターレポート:**
 | ドキュメント | URL |
@@ -99,6 +112,10 @@ open GBaseSupport/Product_Roadmap.html
 
 ## 更新履歴
 
+- 2026-01-02: マーケティング戦略＆営業用LP追加
+  - SC_Solution_Marketing_Plan.html: PASTOR フレームワークに基づくマーケティング戦略
+  - SC_Solution_Landing_Optimized.html: ROI訴求型の営業用ランディングページ
+  - solution-landing-expert skill: 落地ページ営業専家スキル
 - 2026-01-02: Landing Pageデザインバリエーション追加
   - Glassmorphism Dark (Option A)
   - Minimal Light Pro (Option B)
