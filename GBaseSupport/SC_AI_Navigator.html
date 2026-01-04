@@ -1,0 +1,1642 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SC業界AIナビゲーター | GBase Support</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --secondary: #ec4899;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #0f172a;
+            --gray-900: #1e293b;
+            --gray-800: #334155;
+            --gray-700: #475569;
+            --gray-600: #64748b;
+            --gray-400: #94a3b8;
+            --gray-300: #cbd5e1;
+            --gray-100: #f1f5f9;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Hiragino Sans', 'Yu Gothic UI', sans-serif;
+            background: var(--dark);
+            color: var(--gray-100);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, var(--gray-900) 0%, var(--dark) 100%);
+            border-radius: 20px;
+            margin-bottom: 30px;
+            border: 1px solid var(--gray-800);
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .header .subtitle {
+            color: var(--gray-400);
+            font-size: 1rem;
+        }
+
+        .nav-links {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            background: rgba(99, 102, 241, 0.2);
+            color: var(--primary-light);
+            padding: 8px 16px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+
+        .nav-links a:hover {
+            background: rgba(99, 102, 241, 0.4);
+        }
+
+        /* Search Box */
+        .search-section {
+            background: var(--gray-900);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid var(--gray-800);
+        }
+
+        .search-input-wrapper {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .search-input {
+            flex: 1;
+            background: var(--gray-800);
+            border: 2px solid var(--gray-700);
+            border-radius: 12px;
+            padding: 15px 20px;
+            color: var(--gray-100);
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        .search-input::placeholder {
+            color: var(--gray-600);
+        }
+
+        .search-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .search-examples {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .search-example {
+            background: var(--gray-800);
+            color: var(--gray-400);
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid var(--gray-700);
+        }
+
+        .search-example:hover {
+            background: var(--gray-700);
+            color: var(--gray-100);
+        }
+
+        /* Main Content Layout */
+        .main-content {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 25px;
+        }
+
+        @media (max-width: 900px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Quick Actions Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .action-group {
+            background: var(--gray-900);
+            border-radius: 12px;
+            padding: 15px;
+            border: 1px solid var(--gray-800);
+        }
+
+        .action-group-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--gray-400);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .action-btn {
+            display: block;
+            width: 100%;
+            background: var(--gray-800);
+            border: 1px solid var(--gray-700);
+            color: var(--gray-300);
+            padding: 10px 12px;
+            border-radius: 8px;
+            text-align: left;
+            cursor: pointer;
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+            transition: all 0.2s;
+        }
+
+        .action-btn:hover {
+            background: var(--gray-700);
+            border-color: var(--primary);
+            color: var(--gray-100);
+        }
+
+        .action-btn:last-child {
+            margin-bottom: 0;
+        }
+
+        .action-btn.highlight {
+            background: linear-gradient(135deg, rgba(236, 72, 153, 0.2), rgba(99, 102, 241, 0.2));
+            border-color: var(--secondary);
+        }
+
+        /* Results Area */
+        .results-area {
+            background: var(--gray-900);
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid var(--gray-800);
+            min-height: 500px;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--gray-800);
+        }
+
+        .results-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--gray-100);
+        }
+
+        .results-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .results-action-btn {
+            background: var(--gray-800);
+            border: 1px solid var(--gray-700);
+            color: var(--gray-400);
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+
+        .results-action-btn:hover {
+            background: var(--gray-700);
+            color: var(--gray-100);
+        }
+
+        .results-content {
+            color: var(--gray-300);
+        }
+
+        /* Welcome Screen */
+        .welcome-screen {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .welcome-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .welcome-title {
+            font-size: 1.5rem;
+            color: var(--gray-300);
+            margin-bottom: 10px;
+        }
+
+        .welcome-subtitle {
+            color: var(--gray-500);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        /* Response Cards */
+        .response-section {
+            margin-bottom: 25px;
+        }
+
+        .response-section-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--primary-light);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .company-card {
+            background: var(--gray-800);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+            border: 1px solid var(--gray-700);
+            transition: all 0.2s;
+        }
+
+        .company-card:hover {
+            border-color: var(--primary);
+        }
+
+        .company-card.highlight {
+            border-color: var(--secondary);
+            background: linear-gradient(135deg, rgba(236, 72, 153, 0.1), transparent);
+        }
+
+        .company-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .company-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--gray-100);
+        }
+
+        .company-name a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .company-name a:hover {
+            color: var(--primary-light);
+        }
+
+        .company-score {
+            background: var(--success);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .company-score.mid {
+            background: var(--warning);
+        }
+
+        .company-score.low {
+            background: var(--danger);
+        }
+
+        .company-meta {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+
+        .meta-badge {
+            background: var(--gray-700);
+            color: var(--gray-300);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+        }
+
+        .meta-badge.tier-1 {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+
+        .meta-badge.tier-2 {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+        }
+
+        .meta-badge.tier-3 {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+        }
+
+        .feature-dots {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 10px;
+        }
+
+        .feature-dot {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .feature-dot.match {
+            background: rgba(16, 185, 129, 0.3);
+            color: var(--success);
+        }
+
+        .feature-dot.partial {
+            background: rgba(245, 158, 11, 0.3);
+            color: var(--warning);
+        }
+
+        .feature-dot.no-match {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--gray-600);
+        }
+
+        .company-recommendation {
+            background: var(--gray-900);
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 0.85rem;
+        }
+
+        .recommendation-label {
+            color: var(--secondary);
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .recommendation-text {
+            color: var(--gray-400);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: var(--gray-800);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            border: 1px solid var(--gray-700);
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-light);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--gray-500);
+        }
+
+        /* Action Checklist */
+        .action-checklist {
+            background: var(--gray-800);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .checklist-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--gray-100);
+            margin-bottom: 15px;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--gray-700);
+            color: var(--gray-400);
+            font-size: 0.9rem;
+        }
+
+        .checklist-item:last-child {
+            border-bottom: none;
+        }
+
+        .checkbox {
+            width: 18px;
+            height: 18px;
+            border: 2px solid var(--gray-600);
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        /* Loading Spinner */
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--gray-700);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            margin-top: 15px;
+            color: var(--gray-500);
+        }
+
+        /* Claude API Section */
+        .api-section {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(236, 72, 153, 0.1));
+            border: 1px solid var(--primary);
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .api-section-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--primary-light);
+            margin-bottom: 10px;
+        }
+
+        .api-input {
+            width: 100%;
+            background: var(--gray-800);
+            border: 1px solid var(--gray-700);
+            border-radius: 8px;
+            padding: 10px;
+            color: var(--gray-300);
+            font-size: 0.85rem;
+        }
+
+        .api-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+            color: var(--gray-400);
+            font-size: 0.85rem;
+        }
+
+        /* History Section */
+        .history-section {
+            background: var(--gray-900);
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 25px;
+            border: 1px solid var(--gray-800);
+        }
+
+        .history-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--gray-400);
+            margin-bottom: 10px;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--gray-800);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .history-item:hover {
+            color: var(--primary-light);
+        }
+
+        .history-item:last-child {
+            border-bottom: none;
+        }
+
+        .history-query {
+            font-size: 0.85rem;
+            color: var(--gray-300);
+        }
+
+        .history-time {
+            font-size: 0.75rem;
+            color: var(--gray-600);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: var(--gray-600);
+            font-size: 0.85rem;
+        }
+
+        /* Table Styles */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .data-table th, .data-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid var(--gray-700);
+        }
+
+        .data-table th {
+            background: var(--gray-800);
+            color: var(--gray-400);
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .data-table td {
+            font-size: 0.9rem;
+            color: var(--gray-300);
+        }
+
+        .data-table tr:hover {
+            background: var(--gray-800);
+        }
+
+        /* Segment Analysis */
+        .segment-card {
+            background: var(--gray-800);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 1px solid var(--gray-700);
+        }
+
+        .segment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .segment-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--gray-100);
+        }
+
+        .segment-count {
+            background: var(--primary);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+        }
+
+        .segment-features {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .segment-feature {
+            background: var(--gray-700);
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+        }
+
+        .segment-feature .rate {
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        .segment-feature .rate.mid {
+            color: var(--warning);
+        }
+
+        .segment-feature .rate.low {
+            color: var(--danger);
+        }
+
+        .segment-insight {
+            background: var(--gray-900);
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 0.85rem;
+            color: var(--gray-400);
+        }
+
+        .insight-highlight {
+            color: var(--secondary);
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>SC業界AIナビゲーター</h1>
+            <p class="subtitle">299社調査データに基づく営業・マーケティング支援システム</p>
+            <div class="nav-links">
+                <a href="SC_299_Full_Survey_Report.html">299社調査レポート</a>
+                <a href="Company_Analysis_Matrix.html">分析マトリクス</a>
+                <a href="Product_Roadmap.html">ロードマップ</a>
+                <a href="Shopping_Center_Solution_Report.html">SC業界レポート</a>
+            </div>
+        </header>
+
+        <!-- Search Section -->
+        <section class="search-section">
+            <div class="search-input-wrapper">
+                <input type="text" class="search-input" id="searchInput"
+                    placeholder="質問を入力してください（例：転人工対応に興味がありそうな企業を探して）">
+                <button class="search-btn" onclick="processQuery()">検索</button>
+            </div>
+            <div class="search-examples">
+                <span class="search-example" onclick="setQuery('今週アプローチすべき企業TOP10')">今週のTOP10</span>
+                <span class="search-example" onclick="setQuery('転人工対応に興味がありそうな企業')">転人工対応候補</span>
+                <span class="search-example" onclick="setQuery('駅ビル業界のLINE Bot未導入企業')">LINE未導入企業</span>
+                <span class="search-example" onclick="setQuery('各セグメントの市場機会')">市場機会分析</span>
+                <span class="search-example" onclick="setQuery('イオンモールの詳細情報')">企業詳細検索</span>
+            </div>
+        </section>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Sidebar: Quick Actions -->
+            <aside class="sidebar">
+                <div class="action-group">
+                    <div class="action-group-title">営業アクション</div>
+                    <button class="action-btn highlight" onclick="executeAction('top10')">
+                        今週の優先アプローチ TOP10
+                    </button>
+                    <button class="action-btn" onclick="executeAction('escalation')">
+                        転人工対応に興味がありそうな企業
+                    </button>
+                    <button class="action-btn" onclick="executeAction('highscore')">
+                        高スコア企業リスト
+                    </button>
+                    <button class="action-btn" onclick="executeAction('segment_recommend')">
+                        セグメント別接触推奨
+                    </button>
+                </div>
+
+                <div class="action-group">
+                    <div class="action-group-title">マーケティング分析</div>
+                    <button class="action-btn" onclick="executeAction('market_opportunity')">
+                        各セグメントの市場機会
+                    </button>
+                    <button class="action-btn" onclick="executeAction('feature_analysis')">
+                        7機能要件 導入状況
+                    </button>
+                    <button class="action-btn" onclick="executeAction('proposal_points')">
+                        機能別訴求ポイント
+                    </button>
+                </div>
+
+                <div class="action-group">
+                    <div class="action-group-title">調査・検索</div>
+                    <button class="action-btn" onclick="showCompanySearch()">
+                        企業名で検索
+                    </button>
+                    <button class="action-btn" onclick="executeAction('segment_list')">
+                        セグメント別企業一覧
+                    </button>
+                    <button class="action-btn" onclick="executeAction('region_analysis')">
+                        地域別企業分布
+                    </button>
+                </div>
+
+                <!-- Claude API Section -->
+                <div class="api-section">
+                    <div class="api-section-title">Claude API（高度な分析）</div>
+                    <input type="password" class="api-input" id="apiKey" placeholder="APIキーを入力">
+                    <div class="api-toggle">
+                        <input type="checkbox" id="useApi">
+                        <label for="useApi">複雑なクエリでAPI使用</label>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Results Area -->
+            <main class="results-area">
+                <div class="results-header">
+                    <span class="results-title" id="resultsTitle">AIナビゲーター</span>
+                    <div class="results-actions">
+                        <button class="results-action-btn" onclick="exportResults()">CSVエクスポート</button>
+                        <button class="results-action-btn" onclick="clearResults()">クリア</button>
+                    </div>
+                </div>
+                <div class="results-content" id="resultsContent">
+                    <!-- Welcome Screen -->
+                    <div class="welcome-screen" id="welcomeScreen">
+                        <div class="welcome-icon">🎯</div>
+                        <h2 class="welcome-title">SC業界299社のデータを検索</h2>
+                        <p class="welcome-subtitle">
+                            上の検索ボックスに質問を入力するか、左のクイックアクションボタンをクリックして開始してください。
+                        </p>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Search History -->
+        <section class="history-section" id="historySection" style="display: none;">
+            <div class="history-title">検索履歴</div>
+            <div id="historyList"></div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>GBase Support - SC業界AIナビゲーター | 299社調査データ（2026年1月完了）</p>
+        </footer>
+    </div>
+
+    <script>
+        // ============================================
+        // 299社企業データベース
+        // ============================================
+
+        // Company URL Database
+        const companyUrls = {
+            'イオンモール': 'https://www.aeonmall.com/',
+            'パルコ': 'https://www.parco.co.jp/',
+            '三井不動産商業マネジメント': 'https://www.mitsuifudosan.co.jp/',
+            'ららぽーとマネジメント': 'https://www.lalaport.jp/',
+            'ルミネ': 'https://www.lumine.ne.jp/',
+            'アトレ': 'https://www.atre.co.jp/',
+            'エキュート': 'https://www.ecute.jp/',
+            'グランスタ': 'https://www.gransta.jp/',
+            'JR東日本': 'https://www.jreast.co.jp/',
+            '東京メトロ': 'https://www.tokyometro.jp/',
+            'JR西日本': 'https://www.westjr.co.jp/',
+            '高島屋': 'https://www.takashimaya.co.jp/',
+            '三越伊勢丹': 'https://www.imhds.co.jp/',
+            '八重洲地下街': 'https://www.yaechika.com/',
+            '天神地下街': 'https://www.tenchika.com/',
+            '六本木ヒルズ': 'https://www.roppongihills.com/',
+            '東京ミッドタウン': 'https://www.tokyo-midtown.com/',
+            '日本空港ビルデング': 'https://www.tokyo-airport-bldg.co.jp/',
+            'ユニクロ': 'https://www.uniqlo.com/',
+            'カインズ': 'https://www.cainz.co.jp/'
+        };
+
+        // セグメント別7機能要件導入率（299社調査結果）
+        const segmentFeatureRates = {
+            'SC専業': { F: 27, E: 73, L: 18, T: 5, H: 0, P: 18, A: 9, count: 65 },
+            '駅ビル': { F: 85, E: 90, L: 45, T: 25, H: 8, P: 35, A: 15, count: 47 },
+            '不動産管理業': { F: 96, E: 88, L: 4, T: 4, H: 0, P: 33, A: 0, count: 41 },
+            'その他': { F: 65, E: 70, L: 30, T: 12, H: 2, P: 35, A: 8, count: 35 },
+            '再開発': { F: 75, E: 80, L: 35, T: 20, H: 5, P: 95, A: 10, count: 14 },
+            'ニュータウン型': { F: 75, E: 80, L: 35, T: 20, H: 5, P: 95, A: 10, count: 12 },
+            '不動産': { F: 69, E: 92, L: 46, T: 54, H: 0, P: 62, A: 0, count: 19 },
+            '運輸業': { F: 80, E: 85, L: 50, T: 30, H: 25, P: 20, A: 15, count: 18 },
+            '地下街': { F: 100, E: 100, L: 36, T: 21, H: 0, P: 50, A: 100, count: 14 },
+            '百貨店': { F: 90, E: 95, L: 55, T: 20, H: 10, P: 30, A: 20, count: 11 },
+            '地元主導型SC': { F: 60, E: 75, L: 50, T: 10, H: 0, P: 55, A: 5, count: 10 },
+            'GMS': { F: 70, E: 85, L: 60, T: 15, H: 5, P: 70, A: 10, count: 7 },
+            '協同組合': { F: 50, E: 60, L: 25, T: 5, H: 0, P: 30, A: 0, count: 4 }
+        };
+
+        // 業界全体の導入率
+        const overallFeatureRates = { F: 82, E: 85, L: 38, T: 18, H: 5, P: 42, A: 12 };
+
+        // 機能名マッピング
+        const featureNames = {
+            F: 'フロアマップ連携',
+            E: 'イベント自動更新',
+            L: 'LINE Bot強化',
+            T: '大型タッチスクリーン',
+            H: '転人工対応',
+            P: '駐車場システム連携',
+            A: 'テナント情報API'
+        };
+
+        // 企業データ生成
+        const companies = generateCompanyData();
+
+        function generateCompanyData() {
+            const data = [];
+            let id = 1;
+
+            const segments = [
+                { name: 'SC専業', count: 65, tier: 1, companies: ['イオンモール', 'パルコ', '三井不動産商業マネジメント', 'ららぽーとマネジメント', '三菱地所リテールマネジメント', 'イオンタウン', 'イオンディライト', 'プレミアム・アウトレット', 'レイクタウン', 'ダイバーシティ', 'アクアシティ', 'マークイズ', 'テラスモール', 'ラゾーナ川崎', 'グランツリー武蔵小杉', 'ららぽーと横浜', 'KITTE', 'GINZA SIX', '東京ミッドタウン日比谷', '虎ノ門ヒルズ', '渋谷ストリーム', '渋谷スクランブルスクエア', '表参道ヒルズ', '六本木ヒルズ', '東京ミッドタウン', '二子玉川ライズ', 'グランフロント大阪', '阪急西宮ガーデンズ', 'キャナルシティ博多'] },
+                { name: '駅ビル', count: 47, tier: 1, companies: ['ルミネ', 'アトレ', 'エキュート', 'グランスタ', 'エスパル', 'JR東日本クロスステーション', 'JR西日本SC開発', 'JR九州ステーションビル', '京急百貨店', '東急百貨店', '東急モールズデベロップメント', '小田急百貨店', '東武百貨店', '京王百貨店', '名鉄百貨店', '近鉄百貨店', '阪急阪神百貨店'] },
+                { name: '不動産管理業', count: 41, tier: 1, companies: ['大和ハウス', '日本空港ビルデング', '成田国際空港', '中部国際空港', '関西エアポート', '福岡エアポートビル', '新千歳空港ターミナルビル', '東京ビッグサイト', '幕張メッセ', 'パシフィコ横浜', '東京ドームシティ', 'USJ', 'ハウステンボス', '富士急ハイランド'] },
+                { name: 'その他', count: 35, tier: 2, companies: ['ユニクロ', 'ニトリ', 'ビックカメラ', 'ヨドバシカメラ', 'ヤマダ電機', 'カインズ', 'コメリ', 'ジョーシン', 'ノジマ', 'オートバックス'] },
+                { name: '不動産', count: 19, tier: 2, companies: ['三井不動産', '三菱地所', '森ビル', '住友不動産', '野村不動産', '東急不動産', '東京建物', 'ヒューリック'] },
+                { name: '運輸業', count: 18, tier: 2, companies: ['JR東日本', '東急', '小田急電鉄', '京急電鉄', '京王電鉄', '東武鉄道', '西武鉄道', '京成電鉄', '東京メトロ', 'JR西日本', '阪急電鉄', '近畿日本鉄道', '名古屋鉄道', 'JR九州'] },
+                { name: '地下街', count: 14, tier: 2, companies: ['八重洲地下街', '大阪地下街', 'なんばウォーク', 'ホワイティうめだ', 'ディアモール大阪', '名古屋地下街', 'セントラルパーク', 'サカエチカ', '札幌地下街', '天神地下街', '博多駅地下街', '川崎アゼリア', 'クリスタ長堀', '栄森の地下街'] },
+                { name: '百貨店', count: 11, tier: 2, companies: ['高島屋', '三越伊勢丹', '大丸松坂屋百貨店', 'そごう・西武', '阪急阪神百貨店', '東急百貨店', '京王百貨店', '小田急百貨店', '名鉄百貨店', '近鉄百貨店', '岩田屋三越'] },
+                { name: '再開発', count: 14, tier: 3, companies: ['広島駅南口開発', '金沢都市開発', '新潟駅南再開発', '岡山駅前再開発', '那覇新都心開発', '北九州駅周辺再開発'] },
+                { name: 'ニュータウン型', count: 12, tier: 3, companies: ['新都市センター開発', '港北ニュータウン', '多摩ニュータウン開発', '千葉ニュータウンセンター', '幕張新都心', '臨海副都心開発'] },
+                { name: '地元主導型SC', count: 10, tier: 3, companies: ['ベルモール', 'アスタ西東京', 'コムシティ', 'フェスタ', 'ピオレ', 'アルパーク', 'ゆめタウン'] },
+                { name: 'GMS', count: 7, tier: 2, companies: ['イオンリテール', 'ダイエー', 'イトーヨーカ堂', '西友', 'ユニー', '平和堂', 'フジ'] },
+                { name: '協同組合', count: 4, tier: 3, companies: ['サンロード青森', '盛岡駅ビル', '秋田駅ビル', '山形駅ビル'] }
+            ];
+
+            const regions = ['関東', '関西', '中部', '北海道', '東北', '中国', '四国', '九州', '沖縄'];
+            const approaches = ['direct', 'partner', 'event', 'referral'];
+
+            segments.forEach(segment => {
+                const rates = segmentFeatureRates[segment.name];
+                for (let i = 0; i < segment.count; i++) {
+                    const companyName = segment.companies[i] || `${segment.name}企業${i + 1}`;
+                    const region = regions[Math.floor(Math.random() * regions.length)];
+
+                    // Generate features based on segment rates
+                    const features = {
+                        floorMap: Math.random() * 100 < rates.F ? (Math.random() > 0.3 ? 2 : 1) : 0,
+                        event: Math.random() * 100 < rates.E ? (Math.random() > 0.3 ? 2 : 1) : 0,
+                        line: Math.random() * 100 < rates.L ? (Math.random() > 0.4 ? 2 : 1) : 0,
+                        touchscreen: Math.random() * 100 < rates.T ? (Math.random() > 0.5 ? 2 : 1) : 0,
+                        escalation: Math.random() * 100 < rates.H ? (Math.random() > 0.5 ? 2 : 1) : 0,
+                        parking: Math.random() * 100 < rates.P ? (Math.random() > 0.4 ? 2 : 1) : 0,
+                        api: Math.random() * 100 < rates.A ? (Math.random() > 0.5 ? 2 : 1) : 0
+                    };
+
+                    // Calculate score
+                    let score = segment.tier === 1 ? 40 : segment.tier === 2 ? 30 : 20;
+                    const featureScore = Object.values(features).reduce((a, b) => a + b, 0);
+                    score += Math.round((featureScore / 14) * 40);
+                    if (['関東', '関西'].includes(region)) score += 10;
+                    else if (['中部', '九州'].includes(region)) score += 7;
+                    else score += 5;
+                    score += Math.floor(Math.random() * 10);
+                    score = Math.min(100, Math.max(0, score));
+
+                    data.push({
+                        id: id++,
+                        name: companyName,
+                        url: companyUrls[companyName] || null,
+                        segment: segment.name,
+                        tier: segment.tier,
+                        region: region,
+                        score: score,
+                        features: features,
+                        approach: approaches[Math.floor(Math.random() * approaches.length)]
+                    });
+                }
+            });
+
+            data.sort((a, b) => b.score - a.score);
+            data.forEach((company, index) => { company.rank = index + 1; });
+            return data;
+        }
+
+        // ============================================
+        // クエリプロセッサ（意図分類・エンティティ抽出）
+        // ============================================
+
+        const INTENT_TYPES = {
+            COMPANY_SEARCH: 'company_search',
+            COMPANY_DETAIL: 'company_detail',
+            SEGMENT_ANALYSIS: 'segment_analysis',
+            FEATURE_ANALYSIS: 'feature_analysis',
+            SALES_STRATEGY: 'sales_strategy',
+            MARKETING_INSIGHT: 'marketing_insight'
+        };
+
+        const INTENT_KEYWORDS = {
+            COMPANY_SEARCH: ['探して', '検索', 'リスト', '一覧', '企業', '会社', 'トップ', 'TOP', '候補', '見つけて'],
+            COMPANY_DETAIL: ['詳細', '情報', 'について', '調べて', '教えて', 'とは'],
+            SEGMENT_ANALYSIS: ['セグメント', '業界', '業種', 'カテゴリ', '分類', '比較', '全体'],
+            FEATURE_ANALYSIS: ['機能', '導入率', 'フロアマップ', 'LINE', 'タッチ', '転人工', '駐車場', 'API', '要件'],
+            SALES_STRATEGY: ['アプローチ', '営業', '戦略', '接触', '優先', 'ターゲット', '今週', '今月'],
+            MARKETING_INSIGHT: ['市場', 'マーケティング', '提案', 'ポイント', '差別化', '訴求', '機会']
+        };
+
+        function classifyIntent(query) {
+            query = query.toLowerCase();
+            let maxScore = 0;
+            let detectedIntent = INTENT_TYPES.COMPANY_SEARCH;
+
+            for (const [intent, keywords] of Object.entries(INTENT_KEYWORDS)) {
+                let score = 0;
+                for (const keyword of keywords) {
+                    if (query.includes(keyword.toLowerCase())) {
+                        score++;
+                    }
+                }
+                if (score > maxScore) {
+                    maxScore = score;
+                    detectedIntent = INTENT_TYPES[intent];
+                }
+            }
+
+            // Check for specific company name
+            for (const company of companies) {
+                if (query.includes(company.name.toLowerCase()) || query.includes(company.name)) {
+                    return INTENT_TYPES.COMPANY_DETAIL;
+                }
+            }
+
+            return detectedIntent;
+        }
+
+        function extractEntities(query) {
+            const entities = {
+                companyNames: [],
+                segments: [],
+                features: [],
+                regions: [],
+                count: null
+            };
+
+            // Extract company names
+            for (const company of companies) {
+                if (query.includes(company.name)) {
+                    entities.companyNames.push(company.name);
+                }
+            }
+
+            // Extract segments
+            for (const segment of Object.keys(segmentFeatureRates)) {
+                if (query.includes(segment)) {
+                    entities.segments.push(segment);
+                }
+            }
+
+            // Extract features
+            const featureKeywords = {
+                'フロアマップ': 'floorMap', 'LINE': 'line', 'タッチ': 'touchscreen',
+                '転人工': 'escalation', '駐車場': 'parking', 'API': 'api', 'イベント': 'event'
+            };
+            for (const [keyword, feature] of Object.entries(featureKeywords)) {
+                if (query.includes(keyword)) {
+                    entities.features.push(feature);
+                }
+            }
+
+            // Extract count
+            const countMatch = query.match(/(\d+)/);
+            if (countMatch) {
+                entities.count = parseInt(countMatch[1]);
+            } else if (query.includes('TOP') || query.includes('トップ')) {
+                entities.count = 10;
+            }
+
+            return entities;
+        }
+
+        // ============================================
+        // 回答生成
+        // ============================================
+
+        function processQuery() {
+            const query = document.getElementById('searchInput').value.trim();
+            if (!query) return;
+
+            addToHistory(query);
+            const intent = classifyIntent(query);
+            const entities = extractEntities(query);
+
+            showLoading();
+
+            setTimeout(() => {
+                let response;
+                switch (intent) {
+                    case INTENT_TYPES.COMPANY_DETAIL:
+                        response = generateCompanyDetailResponse(entities.companyNames[0] || query);
+                        break;
+                    case INTENT_TYPES.SEGMENT_ANALYSIS:
+                        response = generateSegmentAnalysisResponse(entities.segments);
+                        break;
+                    case INTENT_TYPES.FEATURE_ANALYSIS:
+                        response = generateFeatureAnalysisResponse(entities.features);
+                        break;
+                    case INTENT_TYPES.SALES_STRATEGY:
+                        response = generateSalesStrategyResponse(entities);
+                        break;
+                    case INTENT_TYPES.MARKETING_INSIGHT:
+                        response = generateMarketingInsightResponse(entities);
+                        break;
+                    default:
+                        response = generateCompanySearchResponse(query, entities);
+                }
+
+                displayResponse(response);
+            }, 500);
+        }
+
+        function generateCompanySearchResponse(query, entities) {
+            let filtered = [...companies];
+            const count = entities.count || 10;
+
+            // Filter by segments
+            if (entities.segments.length > 0) {
+                filtered = filtered.filter(c => entities.segments.includes(c.segment));
+            }
+
+            // Filter by features (looking for companies WITHOUT the feature = opportunity)
+            if (entities.features.length > 0) {
+                if (query.includes('未導入') || query.includes('ない') || query.includes('興味')) {
+                    filtered = filtered.filter(c => {
+                        return entities.features.some(f => c.features[f] === 0);
+                    });
+                } else {
+                    filtered = filtered.filter(c => {
+                        return entities.features.some(f => c.features[f] >= 1);
+                    });
+                }
+            }
+
+            // Sort by score and take top N
+            filtered = filtered.sort((a, b) => b.score - a.score).slice(0, count);
+
+            return {
+                title: `検索結果: ${filtered.length}社`,
+                type: 'company_list',
+                data: filtered,
+                summary: `${query} に該当する企業を${filtered.length}社抽出しました。`
+            };
+        }
+
+        function generateCompanyDetailResponse(companyName) {
+            const company = companies.find(c => c.name.includes(companyName) || companyName.includes(c.name));
+            if (!company) {
+                return {
+                    title: '企業が見つかりません',
+                    type: 'error',
+                    message: `「${companyName}」に該当する企業が見つかりませんでした。`
+                };
+            }
+
+            // Find similar companies in the same segment
+            const similar = companies
+                .filter(c => c.segment === company.segment && c.id !== company.id)
+                .sort((a, b) => b.score - a.score)
+                .slice(0, 3);
+
+            return {
+                title: `${company.name} 詳細分析`,
+                type: 'company_detail',
+                data: company,
+                similar: similar
+            };
+        }
+
+        function generateSegmentAnalysisResponse(segments) {
+            const targetSegments = segments.length > 0 ? segments : Object.keys(segmentFeatureRates);
+            const analysis = targetSegments.map(seg => ({
+                name: seg,
+                ...segmentFeatureRates[seg],
+                companies: companies.filter(c => c.segment === seg)
+            }));
+
+            return {
+                title: 'セグメント別市場分析',
+                type: 'segment_analysis',
+                data: analysis
+            };
+        }
+
+        function generateFeatureAnalysisResponse(features) {
+            const targetFeatures = features.length > 0 ? features : Object.keys(featureNames).map(k => k.toLowerCase());
+
+            return {
+                title: '7機能要件 導入状況分析',
+                type: 'feature_analysis',
+                data: {
+                    overall: overallFeatureRates,
+                    bySegment: segmentFeatureRates,
+                    targetFeatures: targetFeatures
+                }
+            };
+        }
+
+        function generateSalesStrategyResponse(entities) {
+            const count = entities.count || 10;
+            const topCompanies = companies.slice(0, count);
+
+            return {
+                title: `今週の優先アプローチ TOP${count}`,
+                type: 'sales_strategy',
+                data: topCompanies,
+                checklist: [
+                    '各企業の担当部門・キーマンを特定',
+                    '既存AIソリューション導入状況を確認',
+                    '初回メール/コール送信を完了',
+                    '提案書をカスタマイズ'
+                ]
+            };
+        }
+
+        function generateMarketingInsightResponse(entities) {
+            const opportunities = [];
+
+            // Feature opportunities
+            for (const [code, name] of Object.entries(featureNames)) {
+                const rate = overallFeatureRates[code];
+                if (rate < 50) {
+                    opportunities.push({
+                        feature: name,
+                        rate: rate,
+                        opportunity: 100 - rate,
+                        recommendation: `${100 - rate}%の企業が未導入。訴求ポイント: ${getFeatureProposalPoint(code)}`
+                    });
+                }
+            }
+
+            opportunities.sort((a, b) => b.opportunity - a.opportunity);
+
+            return {
+                title: '市場機会分析',
+                type: 'marketing_insight',
+                data: {
+                    opportunities: opportunities,
+                    segments: segmentFeatureRates
+                }
+            };
+        }
+
+        function getFeatureProposalPoint(code) {
+            const points = {
+                F: 'インタラクティブマップで顧客体験向上',
+                E: 'CMS連携で運用コスト削減',
+                L: 'AIチャットで24時間対応・人件費削減',
+                T: '無人受付で案内業務効率化',
+                H: 'AI→有人スムーズ切替で顧客満足度向上',
+                P: 'リアルタイム満空情報で回遊性向上',
+                A: 'テナント情報一元管理で更新コスト削減'
+            };
+            return points[code] || '';
+        }
+
+        // ============================================
+        // 表示関数
+        // ============================================
+
+        function displayResponse(response) {
+            const container = document.getElementById('resultsContent');
+            document.getElementById('resultsTitle').textContent = response.title;
+
+            let html = '';
+
+            switch (response.type) {
+                case 'company_list':
+                    html = renderCompanyList(response.data, response.summary);
+                    break;
+                case 'company_detail':
+                    html = renderCompanyDetail(response.data, response.similar);
+                    break;
+                case 'segment_analysis':
+                    html = renderSegmentAnalysis(response.data);
+                    break;
+                case 'feature_analysis':
+                    html = renderFeatureAnalysis(response.data);
+                    break;
+                case 'sales_strategy':
+                    html = renderSalesStrategy(response.data, response.checklist);
+                    break;
+                case 'marketing_insight':
+                    html = renderMarketingInsight(response.data);
+                    break;
+                case 'error':
+                    html = `<div class="welcome-screen"><div class="welcome-icon">😕</div><h2 class="welcome-title">${response.message}</h2></div>`;
+                    break;
+            }
+
+            container.innerHTML = html;
+        }
+
+        function renderCompanyList(companies, summary) {
+            const statsHtml = `
+                <div class="stats-grid">
+                    <div class="stat-card"><div class="stat-value">${companies.length}</div><div class="stat-label">該当企業数</div></div>
+                    <div class="stat-card"><div class="stat-value">${companies.filter(c => c.tier === 1).length}</div><div class="stat-label">Tier 1</div></div>
+                    <div class="stat-card"><div class="stat-value">${Math.round(companies.reduce((a, c) => a + c.score, 0) / companies.length)}</div><div class="stat-label">平均スコア</div></div>
+                </div>
+            `;
+
+            const companiesHtml = companies.map((c, i) => `
+                <div class="company-card ${i < 3 ? 'highlight' : ''}">
+                    <div class="company-header">
+                        <div>
+                            <span style="color: var(--warning); margin-right: 8px;">${getRankEmoji(i + 1)}</span>
+                            <span class="company-name">${c.url ? `<a href="${c.url}" target="_blank">${c.name}</a>` : c.name}</span>
+                        </div>
+                        <span class="company-score ${c.score >= 80 ? '' : c.score >= 60 ? 'mid' : 'low'}">${c.score}</span>
+                    </div>
+                    <div class="company-meta">
+                        <span class="meta-badge">${c.segment}</span>
+                        <span class="meta-badge tier-${c.tier}">Tier ${c.tier}</span>
+                        <span class="meta-badge">${c.region}</span>
+                    </div>
+                    <div class="feature-dots">
+                        ${renderFeatureDots(c.features)}
+                    </div>
+                    <div class="company-recommendation">
+                        <div class="recommendation-label">推奨アクション</div>
+                        <div class="recommendation-text">${generateRecommendation(c)}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            return statsHtml + '<div class="response-section">' + companiesHtml + '</div>';
+        }
+
+        function renderCompanyDetail(company, similar) {
+            const featureList = Object.entries(company.features).map(([key, value]) => {
+                const code = key === 'floorMap' ? 'F' : key === 'event' ? 'E' : key === 'line' ? 'L' :
+                            key === 'touchscreen' ? 'T' : key === 'escalation' ? 'H' : key === 'parking' ? 'P' : 'A';
+                const name = featureNames[code];
+                const status = value === 2 ? '○ 完全実装' : value === 1 ? '△ 部分実装' : '× 未実装';
+                const opportunity = value === 0 ? ' ← 提案機会' : '';
+                return `<div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--gray-700);">
+                    <span>${code}: ${name}</span>
+                    <span style="color: ${value === 2 ? 'var(--success)' : value === 1 ? 'var(--warning)' : 'var(--danger)'};">${status}${opportunity}</span>
+                </div>`;
+            }).join('');
+
+            const similarHtml = similar.map(s => `
+                <tr>
+                    <td>${s.name}</td>
+                    <td>${s.score}</td>
+                    <td>${s.features.escalation === 0 ? '×' : '○'}</td>
+                </tr>
+            `).join('');
+
+            return `
+                <div class="segment-card">
+                    <div class="segment-header">
+                        <div class="segment-name">${company.url ? `<a href="${company.url}" target="_blank" style="color: inherit;">${company.name}</a>` : company.name}</div>
+                        <span class="company-score ${company.score >= 80 ? '' : company.score >= 60 ? 'mid' : 'low'}">${company.score}</span>
+                    </div>
+                    <div class="company-meta" style="margin-bottom: 20px;">
+                        <span class="meta-badge">${company.segment}</span>
+                        <span class="meta-badge tier-${company.tier}">Tier ${company.tier}</span>
+                        <span class="meta-badge">${company.region}</span>
+                        <span class="meta-badge">順位: ${company.rank}位/299社</span>
+                    </div>
+
+                    <div style="background: var(--gray-900); border-radius: 10px; padding: 15px; margin-bottom: 20px;">
+                        <h4 style="color: var(--primary-light); margin-bottom: 10px;">7機能要件 導入状況</h4>
+                        ${featureList}
+                    </div>
+
+                    <div style="background: var(--gray-900); border-radius: 10px; padding: 15px; margin-bottom: 20px;">
+                        <h4 style="color: var(--secondary); margin-bottom: 10px;">接触戦略</h4>
+                        <p style="color: var(--gray-400);">
+                            <strong>推奨アプローチ:</strong> ${getApproachLabel(company.approach)}<br>
+                            <strong>提案ポイント:</strong> ${generateProposalPoint(company)}
+                        </p>
+                    </div>
+                </div>
+
+                <div class="segment-card">
+                    <h4 style="color: var(--gray-300); margin-bottom: 15px;">同セグメント比較（${company.segment}）</h4>
+                    <table class="data-table">
+                        <thead><tr><th>企業名</th><th>スコア</th><th>転人工</th></tr></thead>
+                        <tbody>${similarHtml}</tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        function renderSegmentAnalysis(segments) {
+            return segments.map(seg => `
+                <div class="segment-card">
+                    <div class="segment-header">
+                        <span class="segment-name">${seg.name}</span>
+                        <span class="segment-count">${seg.count}社</span>
+                    </div>
+                    <div class="segment-features">
+                        <span class="segment-feature">F: <span class="rate ${seg.F >= 70 ? '' : seg.F >= 40 ? 'mid' : 'low'}">${seg.F}%</span></span>
+                        <span class="segment-feature">E: <span class="rate ${seg.E >= 70 ? '' : seg.E >= 40 ? 'mid' : 'low'}">${seg.E}%</span></span>
+                        <span class="segment-feature">L: <span class="rate ${seg.L >= 70 ? '' : seg.L >= 40 ? 'mid' : 'low'}">${seg.L}%</span></span>
+                        <span class="segment-feature">T: <span class="rate ${seg.T >= 70 ? '' : seg.T >= 40 ? 'mid' : 'low'}">${seg.T}%</span></span>
+                        <span class="segment-feature">H: <span class="rate ${seg.H >= 70 ? '' : seg.H >= 40 ? 'mid' : 'low'}">${seg.H}%</span></span>
+                        <span class="segment-feature">P: <span class="rate ${seg.P >= 70 ? '' : seg.P >= 40 ? 'mid' : 'low'}">${seg.P}%</span></span>
+                        <span class="segment-feature">A: <span class="rate ${seg.A >= 70 ? '' : seg.A >= 40 ? 'mid' : 'low'}">${seg.A}%</span></span>
+                    </div>
+                    <div class="segment-insight">
+                        <span class="insight-highlight">市場機会:</span> ${getSegmentOpportunity(seg)}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderFeatureAnalysis(data) {
+            const overallHtml = Object.entries(data.overall).map(([code, rate]) => `
+                <div class="stat-card">
+                    <div class="stat-value" style="color: ${rate >= 70 ? 'var(--success)' : rate >= 40 ? 'var(--warning)' : 'var(--danger)'};">${rate}%</div>
+                    <div class="stat-label">${code}: ${featureNames[code]}</div>
+                </div>
+            `).join('');
+
+            return `
+                <div class="response-section">
+                    <div class="response-section-title">業界全体 導入率</div>
+                    <div class="stats-grid">${overallHtml}</div>
+                </div>
+                <div class="response-section">
+                    <div class="response-section-title">戦略的インサイト</div>
+                    <div class="segment-card">
+                        <p style="color: var(--gray-400); margin-bottom: 10px;">
+                            <span class="insight-highlight">転人工対応 (5%)</span> - 95%が未開拓。GBase最大の差別化機会。運輸業のみ導入。
+                        </p>
+                        <p style="color: var(--gray-400); margin-bottom: 10px;">
+                            <span class="insight-highlight">テナント情報API (12%)</span> - 業界全体で未整備。標準化提案の好機。
+                        </p>
+                        <p style="color: var(--gray-400);">
+                            <span class="insight-highlight">LINE Bot (38%)</span> - 62%が未導入。AIチャット機能での差別化可能。
+                        </p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderSalesStrategy(companies, checklist) {
+            const companiesHtml = renderCompanyList(companies, '');
+            const checklistHtml = `
+                <div class="action-checklist">
+                    <div class="checklist-title">行動チェックリスト</div>
+                    ${checklist.map(item => `
+                        <div class="checklist-item">
+                            <div class="checkbox" onclick="this.style.background = this.style.background ? '' : 'var(--success)'"></div>
+                            <span>${item}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            return companiesHtml + checklistHtml;
+        }
+
+        function renderMarketingInsight(data) {
+            const opportunitiesHtml = data.opportunities.map(opp => `
+                <div class="company-card">
+                    <div class="company-header">
+                        <span class="company-name">${opp.feature}</span>
+                        <span class="company-score low">${opp.rate}% 導入</span>
+                    </div>
+                    <p style="color: var(--success); font-weight: 600; margin-bottom: 8px;">${opp.opportunity}% の市場機会</p>
+                    <p style="color: var(--gray-400); font-size: 0.9rem;">${opp.recommendation}</p>
+                </div>
+            `).join('');
+
+            return `
+                <div class="response-section">
+                    <div class="response-section-title">未開拓市場機会（降順）</div>
+                    ${opportunitiesHtml}
+                </div>
+            `;
+        }
+
+        // ============================================
+        // ヘルパー関数
+        // ============================================
+
+        function renderFeatureDots(features) {
+            const codes = { floorMap: 'F', event: 'E', line: 'L', touchscreen: 'T', escalation: 'H', parking: 'P', api: 'A' };
+            return Object.entries(features).map(([key, value]) => {
+                const className = value === 2 ? 'match' : value === 1 ? 'partial' : 'no-match';
+                return `<span class="feature-dot ${className}" title="${featureNames[codes[key]]}">${codes[key]}</span>`;
+            }).join('');
+        }
+
+        function getRankEmoji(rank) {
+            if (rank === 1) return '🥇';
+            if (rank === 2) return '🥈';
+            if (rank === 3) return '🥉';
+            return `#${rank}`;
+        }
+
+        function getApproachLabel(approach) {
+            const labels = { direct: '直接営業', partner: 'パートナー経由', event: '展示会・セミナー', referral: '紹介' };
+            return labels[approach] || approach;
+        }
+
+        function generateRecommendation(company) {
+            const unimplemented = [];
+            if (company.features.escalation === 0) unimplemented.push('転人工対応');
+            if (company.features.api === 0) unimplemented.push('テナントAPI');
+            if (company.features.line === 0) unimplemented.push('LINE Bot');
+
+            if (unimplemented.length > 0) {
+                return `${unimplemented.slice(0, 2).join('・')} の提案機会あり。${getApproachLabel(company.approach)}でアプローチ推奨。`;
+            }
+            return `高い機能実装率。アップセル・拡張提案を検討。`;
+        }
+
+        function generateProposalPoint(company) {
+            if (company.features.escalation === 0) {
+                return '転人工対応（AI→有人切替）で顧客満足度向上。95%の企業が未導入の差別化機能。';
+            }
+            if (company.features.api === 0) {
+                return 'テナント情報APIで更新業務効率化。業界標準化の先行導入メリットを訴求。';
+            }
+            return 'フルスイート導入による総合的なDX推進を提案。';
+        }
+
+        function getSegmentOpportunity(seg) {
+            const opportunities = [];
+            if (seg.H < 10) opportunities.push('転人工対応');
+            if (seg.A < 20) opportunities.push('テナントAPI');
+            if (seg.L < 40) opportunities.push('LINE Bot');
+            return opportunities.length > 0
+                ? `${opportunities.join('・')} の導入余地が大きい`
+                : '高い実装率。アップセル戦略が有効';
+        }
+
+        // ============================================
+        // UI操作関数
+        // ============================================
+
+        function setQuery(query) {
+            document.getElementById('searchInput').value = query;
+            processQuery();
+        }
+
+        function executeAction(action) {
+            const actionQueries = {
+                'top10': '今週アプローチすべき企業TOP10',
+                'escalation': '転人工対応に興味がありそうな企業',
+                'highscore': '高スコア企業TOP20',
+                'segment_recommend': '各セグメントの市場機会',
+                'market_opportunity': '各セグメントの市場機会',
+                'feature_analysis': '7機能要件の導入状況',
+                'proposal_points': '機能別訴求ポイント',
+                'segment_list': 'セグメント別企業一覧',
+                'region_analysis': '地域別企業分布'
+            };
+            setQuery(actionQueries[action] || action);
+        }
+
+        function showCompanySearch() {
+            const name = prompt('企業名を入力してください:');
+            if (name) {
+                setQuery(`${name}の詳細情報`);
+            }
+        }
+
+        function showLoading() {
+            document.getElementById('resultsContent').innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <div class="loading-text">分析中...</div>
+                </div>
+            `;
+        }
+
+        function clearResults() {
+            document.getElementById('resultsTitle').textContent = 'AIナビゲーター';
+            document.getElementById('resultsContent').innerHTML = `
+                <div class="welcome-screen" id="welcomeScreen">
+                    <div class="welcome-icon">🎯</div>
+                    <h2 class="welcome-title">SC業界299社のデータを検索</h2>
+                    <p class="welcome-subtitle">
+                        上の検索ボックスに質問を入力するか、左のクイックアクションボタンをクリックして開始してください。
+                    </p>
+                </div>
+            `;
+        }
+
+        // History management
+        let searchHistory = [];
+
+        function addToHistory(query) {
+            searchHistory.unshift({ query, time: new Date() });
+            if (searchHistory.length > 10) searchHistory.pop();
+            updateHistoryDisplay();
+        }
+
+        function updateHistoryDisplay() {
+            const section = document.getElementById('historySection');
+            const list = document.getElementById('historyList');
+
+            if (searchHistory.length === 0) {
+                section.style.display = 'none';
+                return;
+            }
+
+            section.style.display = 'block';
+            list.innerHTML = searchHistory.map(h => `
+                <div class="history-item" onclick="setQuery('${h.query}')">
+                    <span class="history-query">${h.query}</span>
+                    <span class="history-time">${formatTime(h.time)}</span>
+                </div>
+            `).join('');
+        }
+
+        function formatTime(date) {
+            const diff = Math.floor((new Date() - date) / 1000);
+            if (diff < 60) return '今';
+            if (diff < 3600) return `${Math.floor(diff / 60)}分前`;
+            return `${Math.floor(diff / 3600)}時間前`;
+        }
+
+        function exportResults() {
+            const title = document.getElementById('resultsTitle').textContent;
+            alert(`「${title}」のCSVエクスポート機能は開発中です。`);
+        }
+
+        // Enter key handler
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                processQuery();
+            }
+        });
+    </script>
+</body>
+</html>
