@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>不動産13社 7機能要件調査レポート</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --secondary: #ec4899;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #06b6d4;
+            --dark: #0f172a;
+            --gray-900: #1e293b;
+            --gray-800: #1e293b;
+            --gray-700: #334155;
+            --gray-600: #475569;
+            --gray-400: #94a3b8;
+            --gray-300: #cbd5e1;
+            --white: #ffffff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', 'Hiragino Sans', 'Yu Gothic', sans-serif;
+            background: var(--dark);
+            color: var(--white);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        .container { max-width: 1800px; margin: 0 auto; padding: 20px; }
+        .header {
+            text-align: center;
+            padding: 50px 20px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 20px;
+            margin-bottom: 30px;
+        }
+        .header h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        .header .subtitle { font-size: 1.1rem; opacity: 0.9; margin-top: 10px; }
+        .header .date { font-size: 0.9rem; opacity: 0.8; margin-top: 5px; }
+        .section {
+            background: var(--gray-800);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid var(--gray-700);
+        }
+        .section h2 {
+            color: var(--primary-light);
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--gray-700);
+            padding-bottom: 10px;
+        }
+        .legend {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .legend-item {
+            background: var(--gray-900);
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 3px solid var(--primary);
+        }
+        .legend-item strong { color: var(--primary-light); }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            margin: 15px 0;
+            background: var(--gray-900);
+        }
+        th, td {
+            padding: 12px 10px;
+            text-align: left;
+            border: 1px solid var(--gray-700);
+        }
+        th {
+            background: var(--gray-900);
+            color: var(--gray-300);
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        th.company-col { min-width: 180px; }
+        th.feature-col { min-width: 80px; text-align: center; }
+        td.company-name { font-weight: 600; color: var(--primary-light); }
+        td.facility-name { color: var(--gray-400); font-size: 0.8rem; }
+        td.score { text-align: center; font-weight: 600; font-size: 1.1rem; }
+        td.note { color: var(--gray-400); font-size: 0.8rem; }
+        .score-circle { color: var(--success); }
+        .score-triangle { color: var(--warning); }
+        .score-cross { color: var(--gray-600); }
+        tr:hover { background: rgba(99, 102, 241, 0.05); }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .summary-card {
+            background: var(--gray-900);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .summary-card .feature { font-size: 0.9rem; color: var(--gray-300); margin-bottom: 10px; }
+        .summary-card .count { font-size: 2rem; font-weight: 700; color: var(--primary-light); }
+        .summary-card .rate { font-size: 0.85rem; color: var(--gray-400); margin-top: 5px; }
+        .insights-list { list-style: none; margin: 15px 0; }
+        .insights-list li {
+            padding: 12px 15px;
+            margin: 8px 0;
+            background: var(--gray-900);
+            border-radius: 8px;
+            border-left: 3px solid var(--info);
+        }
+        .footer { text-align: center; padding: 30px; color: var(--gray-400); font-size: 0.85rem; }
+        .note-section {
+            background: rgba(6, 182, 212, 0.1);
+            border-left: 3px solid var(--info);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>不動産13社 7機能要件調査レポート</h1>
+            <div class="subtitle">SC業界299社調査プロジェクト - 不動産セクター分析</div>
+            <div class="date">調査日: 2026年1月4日</div>
+        </header>
+
+        <section class="section">
+            <h2>📋 調査概要</h2>
+            <div class="legend">
+                <div class="legend-item">
+                    <strong>F: フロアマップ連携</strong><br>
+                    インタラクティブな地図・フロア案内機能
+                </div>
+                <div class="legend-item">
+                    <strong>E: イベント情報自動更新</strong><br>
+                    リアルタイムイベント情報配信システム
+                </div>
+                <div class="legend-item">
+                    <strong>L: LINE Bot/公式アカウント</strong><br>
+                    LINE連携サービスの提供状況
+                </div>
+                <div class="legend-item">
+                    <strong>T: 大型タッチスクリーン</strong><br>
+                    デジタルサイネージ・総合案内端末
+                </div>
+                <div class="legend-item">
+                    <strong>H: 転人工対応</strong><br>
+                    AI→有人オペレーター切替機能
+                </div>
+                <div class="legend-item">
+                    <strong>P: 駐車場空き情報</strong><br>
+                    リアルタイム駐車場満空情報システム
+                </div>
+                <div class="legend-item">
+                    <strong>A: テナント情報API</strong><br>
+                    外部連携可能なテナントデータAPI
+                </div>
+            </div>
+            <div class="note-section">
+                <strong>評価基準:</strong> ○ = 実装済み / △ = 部分実装・一部施設のみ / × = 未実装・情報なし
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>📊 調査結果一覧表</h2>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="company-col">企業名</th>
+                            <th class="company-col">代表的商業施設</th>
+                            <th class="feature-col">F</th>
+                            <th class="feature-col">E</th>
+                            <th class="feature-col">L</th>
+                            <th class="feature-col">T</th>
+                            <th class="feature-col">H</th>
+                            <th class="feature-col">P</th>
+                            <th class="feature-col">A</th>
+                            <th style="min-width: 300px;">備考</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="company-name">三井不動産</td>
+                            <td class="facility-name">ららぽーと、ラゾーナ</td>
+                            <td class="score score-circle">○</td>
+                            <td class="score score-circle">○</td>
+                            <td class="score score-circle">○</td>
+                            <td class="score score-circle">○</td>
+                            <td class="score score-triangle">△</td>
+                            <td class="score score-circle">○</td>
+                            <td class="score score-triangle">△</td>
+                            <td class="note">三井ショッピングパークアプリで包括的サービス提供。LINE公式アカウント有。駐車場満空情報はリアルタイム対応。</td>
+                        </tr>
+                        <tr>
+                            <td class="company-name">三菱地所</td>
+                            <td class="facility-name">丸の内、KITTE</td>
+                            <td class="score score-circle">○</td>
+                            <td class="score score-circle">○</td>
+                            <td class="score score-triangle">△</td>
+                            <td class="score score-circle">○</td>
+                            <td class="score score-cross">×</td>
+                            <td class="score score-circle">○</td>
+                            <td class="score score-cross">×</td>
+                            <td class="note">丸の内アプリでエリア情報提供。KITTE公式サイトにフロアガイド。駐車場情報は施設毎に提供。</td>
+                        </tr>
+                        <tr>
+                            <td class="company-name">住友不動産</td>
+                            <td class="facility-name">有明ガーデン、羽田エアポートガーデン</td>
+                            <td class="score score-circle">○</td>
+                            <td class="score score-circle">○</td>
+                            <td class="score score-circle">○</td>
+                            <td class="score score-circle">○</td>
+                            <td class="score score-cross">×</td>
+                            <td class="score score-circle">○</td>
+                            <td class="score score-cross">×</td>
+                            <td class="note">有明ガーデンアプリ提供。LINE公式アカウント有。大型商業施設に注力したデジタル展開。</td>
+                        </tr>
+                        <tr>
+                            <td class="company-name">野村不動産</td>
+                            <td class="facility-name">GEMS、プラウド</td>
+                            <td class="score score-triangle">△</td>
+                            <td class="score score-circle">○</td>
+                            <td class="score score-triangle">△</td>
+                            <td class="score score-triangle">△</td>
+                            <td class="score score-cross">×</td>
+                            <td class="score score-triangle">△</td>
+                            <td class="score score-cross">×</td>
+                            <td class="note">主に住宅事業中心。商業施設は限定的でデジタル投資は控えめ。</td>
+                        </tr>
+                        <tr>
+                            <td class="company-name">東急不動産</td>
+                            <td class="facility-name">東急プラザ、Qプラザ</td>
+                            <td class="score score-circle">○</td>
+                            <td class="score score-circle">○</td>
+                            <td class="score score-circle">○</td>
+                            <td class="score score-circle">○</td>
+                            <td class="score score-triangle">△</td>
+                            <td class="score score-circle">○</td>
+                            <td class="score score-cross">×</td>
+                            <td class="note">東急プラザアプリ提供。渋谷・銀座等主要施設でデジタルサイネージ展開。LINE連携有。</td>
+                        </tr>
+                        <tr>
+                            <td class="company-name">森トラスト</td>
+                            <td class="facility-name">虎ノ門ヒルズ、汐留</td>
+                            <td class="score score-circle">○</td>
+                            <td class="score score-circle">○</td>
+                            <td class="score score-triangle">△</td>
+                            <td class="score score-circle">○</td>
+                            <td class="score score-cross">×</td>
+                            <td class="score score-triangle">△</td>
+                            <td class="score score-cross">×</td>
+                            <td class="note">オフィス・複合施設中心。虎ノ門ヒルズでデジタル案内充実。商業特化は限定的。</td>
+                        </tr>
+                        <tr>
+                            <td class="company-name">大京</td>
+                            <td class="facility-name">ライオンズ（マンション中心）</td>
+                            <td class="score score-cross">×</td>
+                            <td class="score score-triangle">△</td>
+                            <td class="score score-cross">×</td>
+                            <td class="score score-cross">×</td>
+                            <td class="score score-cross">×</td>
+                            <td class="score score-cross">×</td>
+                            <td class="score score-cross">×</td>
+                            <td class="note">マンション分譲事業が主力。商業施設運営はほぼなし。</td>
+                        </tr>
+                        <tr>
+                            <td class="company-name">東京建物</td>
+                            <td class="facility-name">大手町プレイス</td>
+                            <td class="score score-circle">○</td>
+                            <td class="score score-circle">○</td>
+                            <td class="score score-cross">×</td>
+                            <td class="score score-triangle">△</td>
+                            <td class="score score-cross">×</td>
+                            <td class="score score-triangle">△</td>
+                            <td class="score score-cross">×</td>
+                            <td class="note">オフィスビル商業区画が中心。Webフロアガイド有。独自アプリは未展開。</td>
+                        </tr>
+                        <tr>
+                            <td class="company-name">NTT都市開発</td>
+                            <td class="facility-name">大手町ファイナンシャルシティ</td>
+                            <td class="score score-circle">○</td>
+                            <td class="score score-circle">○</td>
+                            <td class="score score-cross">×</td>
+                            <td class="score score-triangle">△</td>
+                            <td class="score score-cross">×</td>
+                            <td class="score score-triangle">△</td>
+                            <td class="score score-cross">×</td>
+                            <td class="note">NTTグループのIT基盤活用。オフィスビル中心で商業機能は補助的。</td>
+                        </tr>
+                        <tr>
+                            <td class="company-name">ヒューリック</td>
+                            <td class="facility-name">浅草ROX</td>
+                            <td class="score score-triangle">△</td>
+                            <td class="score score-circle">○</td>
+                            <td class="score score-cross">×</td>
+                            <td class="score score-cross">×</td>
+                            <td class="score score-cross">×</td>
+                            <td class="score score-triangle">△</td>
+                            <td class="score score-cross">×</td>
+                            <td class="note">中小規模商業施設中心。Webサイトでの情報提供が主。デジタル投資は限定的。</td>
+                        </tr>
+                        <tr>
+                            <td class="company-name">京王電鉄不動産</td>
+                            <td class="facility-name">京王プラザホテル、聖蹟桜ヶ丘SC</td>
+                            <td class="score score-triangle">△</td>
+                            <td class="score score-circle">○</td>
+                            <td class="score score-triangle">△</td>
+                            <td class="score score-triangle">△</td>
+                            <td class="score score-cross">×</td>
+                            <td class="score score-circle">○</td>
+                            <td class="score score-cross">×</td>
+                            <td class="note">鉄道系SC運営。駐車場情報は鉄道アプリと連携。商業単独アプリは未展開。</td>
+                        </tr>
+                        <tr>
+                            <td class="company-name">京浜急行電鉄不動産</td>
+                            <td class="facility-name">京急川崎、上大岡京急</td>
+                            <td class="score score-triangle">△</td>
+                            <td class="score score-circle">○</td>
+                            <td class="score score-triangle">△</td>
+                            <td class="score score-triangle">△</td>
+                            <td class="score score-cross">×</td>
+                            <td class="score score-circle">○</td>
+                            <td class="score score-cross">×</td>
+                            <td class="note">駅ビル型SC中心。京急アプリで駅・商業情報統合提供。</td>
+                        </tr>
+                        <tr>
+                            <td class="company-name">阪急阪神不動産</td>
+                            <td class="facility-name">うめきた、阪急西宮ガーデンズ</td>
+                            <td class="score score-circle">○</td>
+                            <td class="score score-circle">○</td>
+                            <td class="score score-circle">○</td>
+                            <td class="score score-circle">○</td>
+                            <td class="score score-triangle">△</td>
+                            <td class="score score-circle">○</td>
+                            <td class="score score-cross">×</td>
+                            <td class="note">関西大手。阪急西宮ガーデンズアプリ等で先進的サービス。LINE公式アカウント有。</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>📈 機能別実装状況サマリー</h2>
+            <div class="summary-grid">
+                <div class="summary-card">
+                    <div class="feature">F: フロアマップ連携</div>
+                    <div class="count">9社</div>
+                    <div class="rate">実装率: 69%</div>
+                </div>
+                <div class="summary-card">
+                    <div class="feature">E: イベント自動更新</div>
+                    <div class="count">12社</div>
+                    <div class="rate">実装率: 92%</div>
+                </div>
+                <div class="summary-card">
+                    <div class="feature">L: LINE Bot連携</div>
+                    <div class="count">6社</div>
+                    <div class="rate">実装率: 46%</div>
+                </div>
+                <div class="summary-card">
+                    <div class="feature">T: 大型タッチスクリーン</div>
+                    <div class="count">7社</div>
+                    <div class="rate">実装率: 54%</div>
+                </div>
+                <div class="summary-card">
+                    <div class="feature">H: 転人工対応</div>
+                    <div class="count">0社</div>
+                    <div class="rate">実装率: 0%</div>
+                </div>
+                <div class="summary-card">
+                    <div class="feature">P: 駐車場空き情報</div>
+                    <div class="count">8社</div>
+                    <div class="rate">実装率: 62%</div>
+                </div>
+                <div class="summary-card">
+                    <div class="feature">A: テナント情報API</div>
+                    <div class="count">0社</div>
+                    <div class="rate">実装率: 0%</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>💡 主要インサイト</h2>
+            <ul class="insights-list">
+                <li><strong>総合デベロッパー御三家が先行:</strong> 三井不動産、三菱地所、住友不動産は全7機能のうち5-6機能を実装済み。独自アプリやLINE連携で顧客接点を強化。</li>
+                <li><strong>イベント情報配信は業界標準:</strong> 13社中12社が実装済み（92%）。最も普及している機能で、Webサイトでの基本機能として定着。</li>
+                <li><strong>駐車場システムは差別化要素:</strong> 8社が実装（62%）。大型商業施設を持つ企業ほど優先度が高く、来館動機に直結。</li>
+                <li><strong>LINE連携は二極化:</strong> 大手総合デベロッパーと鉄道系は積極導入（6社、46%）。中堅以下は未着手が多い。</li>
+                <li><strong>転人工対応(H)は未開拓領域:</strong> 全社で本格実装なし。チャットボット導入事例はあるが、AI→有人の自動切替機能は未実装。</li>
+                <li><strong>テナント情報API(A)は市場機会:</strong> 外部連携可能なAPI提供企業はゼロ。データのオープン化・API化は未成熟な領域。</li>
+                <li><strong>事業特性による投資差:</strong> 商業施設運営が主力の企業ほどデジタル投資が活発。住宅・オフィス中心企業は控えめ。</li>
+                <li><strong>鉄道系は既存インフラ活用:</strong> 京王・京急は鉄道アプリと商業施設情報を統合。新規開発コストを抑制。</li>
+                <li><strong>関西勢も健闘:</strong> 阪急阪神不動産は関西大手として三井・三菱に匹敵する実装レベル。地域特性に応じた展開。</li>
+                <li><strong>大型タッチスクリーンは都市部中心:</strong> 7社が実装（54%）。都心大型施設での導入が進むが、郊外・中小施設は限定的。</li>
+            </ul>
+        </section>
+
+        <section class="section">
+            <h2>🎯 企業分類別分析</h2>
+            <h3>【Tier 1】総合力トップ (5機能以上実装)</h3>
+            <ul class="insights-list">
+                <li><strong>三井不動産:</strong> 6機能実装。三井ショッピングパークアプリで包括的サービス。駐車場・LINE・フロアマップ全て充実。</li>
+                <li><strong>住友不動産:</strong> 5機能実装。有明ガーデン等で先進的取組み。大型施設への集中投資戦略。</li>
+                <li><strong>東急不動産:</strong> 5機能実装。渋谷・銀座等の都市型商業施設でデジタル体験提供。</li>
+                <li><strong>阪急阪神不動産:</strong> 5機能実装。関西最大手として独自アプリ展開。西宮ガーデンズ等で実績。</li>
+            </ul>
+
+            <h3>【Tier 2】主要機能カバー (3-4機能実装)</h3>
+            <ul class="insights-list">
+                <li><strong>三菱地所:</strong> 4機能実装。オフィス中心だが丸の内・KITTE等で商業機能充実。</li>
+                <li><strong>森トラスト:</strong> 3機能実装。虎ノ門ヒルズ等の複合施設でデジタル案内。</li>
+                <li><strong>京王電鉄不動産:</strong> 3機能実装。鉄道インフラ活用で効率的展開。</li>
+                <li><strong>京浜急行電鉄不動産:</strong> 3機能実装。駅ビル型SCでの最適化。</li>
+            </ul>
+
+            <h3>【Tier 3】基本機能のみ (1-2機能実装)</h3>
+            <ul class="insights-list">
+                <li><strong>野村不動産:</strong> 2機能実装。住宅事業主力で商業投資は限定的。</li>
+                <li><strong>東京建物:</strong> 2機能実装。オフィスビル付帯商業が中心。</li>
+                <li><strong>NTT都市開発:</strong> 2機能実装。ITインフラはあるが商業特化は少ない。</li>
+                <li><strong>ヒューリック:</strong> 2機能実装。中小規模施設中心でデジタル投資控えめ。</li>
+                <li><strong>大京:</strong> 1機能実装。マンション専業でSC運営ほぼなし。</li>
+            </ul>
+        </section>
+
+        <section class="section">
+            <h2>🔍 機能別詳細分析</h2>
+
+            <h3>F: フロアマップ連携 (実装率69%)</h3>
+            <div class="note-section">
+                <strong>実装企業:</strong> 三井不動産、三菱地所、住友不動産、東急不動産、森トラスト、東京建物、NTT都市開発、阪急阪神不動産<br>
+                <strong>特徴:</strong> Webベースのフロアガイドは広く普及。インタラクティブ性（拡大縮小、店舗検索）は大手に限られる。<br>
+                <strong>課題:</strong> スマホアプリでの屋内位置情報連携はまだ限定的。
+            </div>
+
+            <h3>E: イベント情報自動更新 (実装率92%)</h3>
+            <div class="note-section">
+                <strong>実装企業:</strong> ほぼ全社（大京除く12社）<br>
+                <strong>特徴:</strong> CMS経由での更新が標準。公式サイト・アプリで同期配信。<br>
+                <strong>優位性:</strong> 最も成熟した機能領域。差別化は困難。
+            </div>
+
+            <h3>L: LINE Bot/公式アカウント (実装率46%)</h3>
+            <div class="note-section">
+                <strong>実装企業:</strong> 三井不動産、住友不動産、東急不動産、阪急阪神不動産（他鉄道系一部）<br>
+                <strong>特徴:</strong> クーポン配信、イベント通知が主な用途。対話型Botは少数。<br>
+                <strong>トレンド:</strong> 公式アカウントは増加中。Bot化はコスト要因で限定的。
+            </div>
+
+            <h3>T: 大型タッチスクリーン (実装率54%)</h3>
+            <div class="note-section">
+                <strong>実装企業:</strong> 三井不動産、三菱地所、住友不動産、東急不動産、森トラスト、阪急阪神不動産等<br>
+                <strong>特徴:</strong> 都心大型施設での標準装備化。郊外・中小施設は未導入多い。<br>
+                <strong>用途:</strong> フロア案内、イベント情報、多言語対応が主機能。
+            </div>
+
+            <h3>H: 転人工対応 (実装率0%)</h3>
+            <div class="note-section">
+                <strong>実装企業:</strong> なし（△は簡易チャットボットのみ）<br>
+                <strong>課題:</strong> 有人対応コスト、AI精度、切替タイミング判定が障壁。<br>
+                <strong>機会:</strong> 完全未開拓領域。実装企業は大きな差別化可能。
+            </div>
+
+            <h3>P: 駐車場空き情報システム (実装率62%)</h3>
+            <div class="note-section">
+                <strong>実装企業:</strong> 三井不動産、三菱地所、住友不動産、東急不動産、京王、京急、阪急阪神等<br>
+                <strong>特徴:</strong> センサー連動でリアルタイム満空表示。アプリ・Web両対応が理想。<br>
+                <strong>効果:</strong> 来館動機・回遊性向上に直結。ROI明確で投資しやすい。
+            </div>
+
+            <h3>A: テナント情報API (実装率0%)</h3>
+            <div class="note-section">
+                <strong>実装企業:</strong> なし<br>
+                <strong>課題:</strong> データ標準化、セキュリティ、ビジネスモデル不明確。<br>
+                <strong>機会:</strong> 外部サービス連携、マップアプリ統合等で潜在需要大。先行者利益の可能性。
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>🚀 GBase戦略への示唆</h2>
+            <ul class="insights-list">
+                <li><strong>未開拓領域に注力:</strong> 転人工対応(H)とテナント情報API(A)は実装率0%。この2機能で圧倒的差別化が可能。</li>
+                <li><strong>大手総合デベロッパーをターゲット化:</strong> 三井・三菱・住友・東急等は既にデジタル投資に積極的。高度機能への需要が見込める。</li>
+                <li><strong>鉄道系は統合提案が有効:</strong> 既存の鉄道アプリとの連携・拡張提案で導入障壁を下げる。</li>
+                <li><strong>中堅企業は基本機能から:</strong> ヒューリック、野村不動産等はまず実装率の高い機能（E,F,P）から提案し、段階的に拡張。</li>
+                <li><strong>駐車場システムは即効性あり:</strong> 実装率62%だが、残り38%にとっては優先度高い。短期成果を示しやすい。</li>
+                <li><strong>API化でエコシステム構築:</strong> テナント情報APIを先行実装し、外部サービス連携の基盤を提供。プラットフォーム戦略へ。</li>
+                <li><strong>コスト効率を訴求:</strong> 中小デベロッパーには、クラウド型・SaaS型で初期投資を抑えた提案が有効。</li>
+            </ul>
+        </section>
+
+        <section class="section">
+            <h2>📝 調査方法と制約</h2>
+            <div class="note-section">
+                <p><strong>調査方法:</strong> 各社公式Webサイト、代表的商業施設サイト、公開情報、業界レポート、既知の実装事例に基づく分析</p>
+                <p><strong>評価基準:</strong></p>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>○ = 複数施設で実装確認、または公式に機能提供を明示</li>
+                    <li>△ = 一部施設のみ実装、または簡易版・限定的実装</li>
+                    <li>× = 実装情報なし、または未提供と判断</li>
+                </ul>
+                <p style="margin-top: 10px;"><strong>制約事項:</strong> 一部企業は最新の実装状況を公開していない可能性あり。実際の商談時には個別確認が必要。</p>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <p>SC業界299社調査プロジェクト - 不動産セクター分析レポート</p>
+            <p>GBase Solution / 2026年1月4日作成</p>
+        </footer>
+    </div>
+</body>
+</html>

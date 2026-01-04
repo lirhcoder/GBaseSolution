@@ -1,0 +1,1944 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SC業界45社 機能要件調査レポート - GBase Support</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Hiragino Sans', 'Yu Gothic', sans-serif;
+            background: var(--gray-50);
+            color: var(--gray-800);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 3rem 2rem;
+            margin-bottom: 2rem;
+            border-radius: 1rem;
+        }
+
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .meta-info {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            background: rgba(255,255,255,0.15);
+            padding: 0.75rem 1.25rem;
+            border-radius: 0.5rem;
+        }
+
+        .meta-item strong {
+            display: block;
+            font-size: 0.8rem;
+            opacity: 0.8;
+            margin-bottom: 0.25rem;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .summary-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .summary-card .number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .summary-card .label {
+            color: var(--gray-600);
+            font-size: 0.9rem;
+        }
+
+        .section {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .section h2 {
+            font-size: 1.5rem;
+            color: var(--gray-900);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--gray-200);
+        }
+
+        .section h3 {
+            font-size: 1.2rem;
+            color: var(--gray-800);
+            margin: 1.5rem 0 1rem;
+        }
+
+        .requirement-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+
+        .requirement-table th,
+        .requirement-table td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .requirement-table th {
+            background: var(--gray-100);
+            font-weight: 600;
+            color: var(--gray-700);
+        }
+
+        .requirement-table tr:hover {
+            background: var(--gray-50);
+        }
+
+        .status {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-yes {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-partial {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-no {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-unknown {
+            background: var(--gray-200);
+            color: var(--gray-600);
+        }
+
+        .company-card {
+            background: var(--gray-50);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--primary);
+        }
+
+        .company-card h4 {
+            font-size: 1.1rem;
+            color: var(--gray-900);
+            margin-bottom: 0.5rem;
+        }
+
+        .company-card .url {
+            font-size: 0.85rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .findings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .finding-card {
+            background: var(--gray-50);
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+        }
+
+        .finding-card h4 {
+            font-size: 1rem;
+            color: var(--gray-800);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .finding-card ul {
+            margin-left: 1.25rem;
+            color: var(--gray-600);
+            font-size: 0.9rem;
+        }
+
+        .finding-card li {
+            margin-bottom: 0.5rem;
+        }
+
+        .priority-badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .priority-p0 {
+            background: #ef4444;
+            color: white;
+        }
+
+        .priority-p1 {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .priority-p2 {
+            background: #10b981;
+            color: white;
+        }
+
+        .matrix-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            overflow-x: auto;
+            display: block;
+        }
+
+        .matrix-table th,
+        .matrix-table td {
+            padding: 0.6rem 0.5rem;
+            text-align: center;
+            border: 1px solid var(--gray-200);
+            min-width: 80px;
+        }
+
+        .matrix-table th {
+            background: var(--gray-800);
+            color: white;
+            font-weight: 600;
+        }
+
+        .matrix-table th:first-child {
+            text-align: left;
+            min-width: 150px;
+        }
+
+        .matrix-table td:first-child {
+            text-align: left;
+            font-weight: 500;
+            background: var(--gray-50);
+        }
+
+        .matrix-table .cat-header {
+            background: var(--primary);
+        }
+
+        .conclusion-box {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .conclusion-box h4 {
+            color: var(--primary-dark);
+            margin-bottom: 1rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-link {
+            padding: 0.5rem 1rem;
+            background: white;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            color: var(--primary);
+            font-size: 0.9rem;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            transition: all 0.2s;
+        }
+
+        .nav-link:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .toc {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .toc h3 {
+            margin-bottom: 1rem;
+            color: var(--gray-800);
+        }
+
+        .toc ul {
+            list-style: none;
+            columns: 2;
+        }
+
+        .toc li {
+            margin-bottom: 0.5rem;
+        }
+
+        .toc a {
+            color: var(--gray-600);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .toc a:hover {
+            color: var(--primary);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            header {
+                padding: 2rem 1rem;
+            }
+
+            .meta-info {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .toc ul {
+                columns: 1;
+            }
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .section {
+                break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="nav-links">
+            <a href="index.html" class="nav-link">← レポート一覧に戻る</a>
+            <a href="Product_Roadmap.html" class="nav-link">製品ロードマップ</a>
+            <a href="Company_Analysis_Matrix.html" class="nav-link">299社分析マトリクス</a>
+            <a href="Shopping_Center_Solution_Report.html" class="nav-link">SC業界ソリューション総合レポート</a>
+        </nav>
+
+        <header>
+            <h1>SC業界45社 機能要件調査レポート</h1>
+            <p>15カテゴリ×3社の代表企業を対象とした7つの機能要件の実態調査</p>
+            <div class="meta-info">
+                <div class="meta-item">
+                    <strong>調査日</strong>
+                    2026年1月4日
+                </div>
+                <div class="meta-item">
+                    <strong>調査対象</strong>
+                    45社（15カテゴリ）
+                </div>
+                <div class="meta-item">
+                    <strong>調査方法</strong>
+                    公式サイト・ウェブ検索調査
+                </div>
+                <div class="meta-item">
+                    <strong>目的</strong>
+                    Product Roadmap要件の妥当性検証
+                </div>
+            </div>
+        </header>
+
+        <div class="summary-grid">
+            <div class="summary-card">
+                <div class="number">7</div>
+                <div class="label">調査した機能要件</div>
+            </div>
+            <div class="summary-card">
+                <div class="number">41</div>
+                <div class="label">詳細調査完了企業</div>
+            </div>
+            <div class="summary-card">
+                <div class="number">15</div>
+                <div class="label">業種カテゴリ</div>
+            </div>
+            <div class="summary-card">
+                <div class="number">85%+</div>
+                <div class="label">LINE公式導入率</div>
+            </div>
+        </div>
+
+        <nav class="toc">
+            <h3>目次</h3>
+            <ul>
+                <li><a href="#requirements">1. 調査対象の7要件</a></li>
+                <li><a href="#summary-matrix">2. 全体サマリーマトリクス</a></li>
+                <li><a href="#dept-store">3. 百貨店カテゴリ詳細</a></li>
+                <li><a href="#station-bldg">4. 駅ビル・運輸業カテゴリ詳細</a></li>
+                <li><a href="#sc-specialty">5. SC専業カテゴリ詳細（NEW）</a></li>
+                <li><a href="#gms-retail">6. GMS・小売カテゴリ詳細（NEW）</a></li>
+                <li><a href="#underground">7. 地下街カテゴリ詳細（NEW）</a></li>
+                <li><a href="#redevelopment">8. 再開発・ニュータウン型詳細（NEW）</a></li>
+                <li><a href="#findings">9. 主要発見事項</a></li>
+                <li><a href="#validation">10. ロードマップ要件の妥当性検証</a></li>
+                <li><a href="#recommendations">11. 追加提案事項</a></li>
+            </ul>
+        </nav>
+
+        <!-- 1. 調査対象の7要件 -->
+        <section class="section" id="requirements">
+            <h2>1. 調査対象の7要件（Product Roadmapより）</h2>
+            <table class="requirement-table">
+                <thead>
+                    <tr>
+                        <th>優先度</th>
+                        <th>機能名</th>
+                        <th>概要</th>
+                        <th>調査ポイント</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="priority-badge priority-p0">P0</span></td>
+                        <td><strong>フロアマップ連携</strong></td>
+                        <td>デジタルフロアマップとの連携</td>
+                        <td>インタラクティブマップ有無、Metamap等のソリューション導入状況</td>
+                    </tr>
+                    <tr>
+                        <td><span class="priority-badge priority-p0">P0</span></td>
+                        <td><strong>イベント自動更新</strong></td>
+                        <td>イベント情報の自動取得・更新</td>
+                        <td>イベントページの有無、更新頻度、API提供状況</td>
+                    </tr>
+                    <tr>
+                        <td><span class="priority-badge priority-p0">P0</span></td>
+                        <td><strong>LINE Bot強化</strong></td>
+                        <td>LINE公式アカウント・Bot機能</td>
+                        <td>LINE公式有無、Bot機能、友だち数</td>
+                    </tr>
+                    <tr>
+                        <td><span class="priority-badge priority-p0">P0</span></td>
+                        <td><strong>大型タッチスクリーン対応</strong></td>
+                        <td>施設内デジタルサイネージ・案内端末</td>
+                        <td>タッチスクリーン端末設置状況、デジタルサイネージ活用</td>
+                    </tr>
+                    <tr>
+                        <td><span class="priority-badge priority-p0">P0</span></td>
+                        <td><strong>転人工対応</strong></td>
+                        <td>チャットボットから有人への切り替え</td>
+                        <td>既存チャットボット有無、有人エスカレーション機能</td>
+                    </tr>
+                    <tr>
+                        <td><span class="priority-badge priority-p1">P1</span></td>
+                        <td><strong>駐車場システム連携</strong></td>
+                        <td>駐車場空き状況のリアルタイム表示</td>
+                        <td>駐車場情報ページ、リアルタイム空き状況表示</td>
+                    </tr>
+                    <tr>
+                        <td><span class="priority-badge priority-p1">P1</span></td>
+                        <td><strong>テナント情報API</strong></td>
+                        <td>テナント情報の構造化・API提供</td>
+                        <td>テナント検索機能、データ構造化度</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- 2. 全体サマリーマトリクス -->
+        <section class="section" id="summary-matrix">
+            <h2>2. 全体サマリーマトリクス</h2>
+            <p style="margin-bottom: 1rem; color: var(--gray-600);">詳細調査完了カテゴリ：百貨店、駅ビル・運輸業、SC専業、GMS・小売、地下街、再開発・ニュータウン型（計41社）</p>
+
+            <div style="overflow-x: auto;">
+                <table class="matrix-table">
+                    <thead>
+                        <tr>
+                            <th>企業名</th>
+                            <th>カテゴリ</th>
+                            <th>フロアマップ</th>
+                            <th>イベント更新</th>
+                            <th>LINE Bot</th>
+                            <th>タッチスクリーン</th>
+                            <th>転人工</th>
+                            <th>駐車場</th>
+                            <th>テナント情報</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- 百貨店 -->
+                        <tr style="background: #f0f9ff;">
+                            <td colspan="9"><strong>📦 百貨店（3社）</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong>高島屋</strong></td>
+                            <td>百貨店</td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-partial">一部</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-partial">一部</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>三越伊勢丹</strong></td>
+                            <td>百貨店</td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-no">無</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>大丸松坂屋</strong></td>
+                            <td>百貨店</td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-no">無</span></td>
+                            <td><span class="status status-partial">一部</span></td>
+                            <td><span class="status status-no">無</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                        </tr>
+                        <!-- 駅ビル・運輸業 -->
+                        <tr style="background: #f0f9ff;">
+                            <td colspan="9"><strong>🚃 駅ビル・運輸業（6社）</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong>ルミネ</strong></td>
+                            <td>駅ビル</td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-unknown">不明</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-partial">一部</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>アトレ</strong></td>
+                            <td>駅ビル</td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-unknown">不明</span></td>
+                            <td><span class="status status-unknown">不明</span></td>
+                            <td><span class="status status-partial">一部</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>エキュート</strong></td>
+                            <td>駅ビル</td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-unknown">不明</span></td>
+                            <td><span class="status status-unknown">不明</span></td>
+                            <td><span class="status status-unknown">不明</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>JR東日本</strong></td>
+                            <td>運輸業</td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>東急電鉄</strong></td>
+                            <td>運輸業</td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-unknown">不明</span></td>
+                            <td><span class="status status-partial">一部</span></td>
+                            <td><span class="status status-partial">一部</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>小田急電鉄</strong></td>
+                            <td>運輸業</td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-unknown">不明</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-partial">一部</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                        </tr>
+                        <!-- SC専業 -->
+                        <tr style="background: #f0f9ff;">
+                            <td colspan="9"><strong>🛒 SC専業（3社）</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong>イオンモール</strong></td>
+                            <td>SC専業</td>
+                            <td><span class="status status-partial">一部</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-partial">一部</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-partial">一部</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-partial">一部</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>パルコ</strong></td>
+                            <td>SC専業</td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-unknown">不明</span></td>
+                            <td><span class="status status-unknown">不明</span></td>
+                            <td><span class="status status-partial">一部</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>ららぽーと</strong></td>
+                            <td>SC専業</td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-partial">一部</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-unknown">不明</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-partial">一部</span></td>
+                        </tr>
+                        <!-- GMS・小売 -->
+                        <tr style="background: #f0f9ff;">
+                            <td colspan="9"><strong>🏬 GMS・小売（5社）</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong>イオンリテール</strong></td>
+                            <td>GMS</td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-partial">一部</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-partial">一部</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>イトーヨーカ堂</strong></td>
+                            <td>GMS</td>
+                            <td><span class="status status-partial">一部</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-no">無</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-partial">一部</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>ユニー</strong></td>
+                            <td>GMS</td>
+                            <td><span class="status status-no">無</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-no">無</span></td>
+                            <td><span class="status status-no">無</span></td>
+                            <td><span class="status status-no">無</span></td>
+                            <td><span class="status status-partial">一部</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>フジ（エミフル）</strong></td>
+                            <td>GMS</td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-no">無</span></td>
+                            <td><span class="status status-partial">一部</span></td>
+                            <td><span class="status status-no">無</span></td>
+                            <td><span class="status status-partial">一部</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>ノジマ</strong></td>
+                            <td>小売</td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-partial">一部</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-no">無</span></td>
+                            <td><span class="status status-partial">一部</span></td>
+                        </tr>
+                        <!-- 地下街 -->
+                        <tr style="background: #f0f9ff;">
+                            <td colspan="9"><strong>🚇 地下街（3社）</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong>八重洲地下街</strong></td>
+                            <td>地下街</td>
+                            <td><span class="status status-partial">一部</span></td>
+                            <td><span class="status status-partial">一部</span></td>
+                            <td><span class="status status-unknown">不明</span></td>
+                            <td><span class="status status-no">無</span></td>
+                            <td><span class="status status-no">無</span></td>
+                            <td><span class="status status-partial">一部</span></td>
+                            <td><span class="status status-partial">一部</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>ディアモール大阪</strong></td>
+                            <td>地下街</td>
+                            <td><span class="status status-partial">一部</span></td>
+                            <td><span class="status status-partial">一部</span></td>
+                            <td><span class="status status-unknown">不明</span></td>
+                            <td><span class="status status-no">無</span></td>
+                            <td><span class="status status-no">無</span></td>
+                            <td><span class="status status-partial">一部</span></td>
+                            <td><span class="status status-partial">一部</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>サカエチカ</strong></td>
+                            <td>地下街</td>
+                            <td><span class="status status-partial">一部</span></td>
+                            <td><span class="status status-partial">一部</span></td>
+                            <td><span class="status status-unknown">不明</span></td>
+                            <td><span class="status status-no">無</span></td>
+                            <td><span class="status status-no">無</span></td>
+                            <td><span class="status status-partial">一部</span></td>
+                            <td><span class="status status-partial">一部</span></td>
+                        </tr>
+                        <!-- 再開発・ニュータウン -->
+                        <tr style="background: #f0f9ff;">
+                            <td colspan="9"><strong>🏙️ 再開発・ニュータウン型（6社）</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong>エールエールA館</strong></td>
+                            <td>再開発</td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-partial">一部</span></td>
+                            <td><span class="status status-unknown">不明</span></td>
+                            <td><span class="status status-no">無</span></td>
+                            <td><span class="status status-no">無</span></td>
+                            <td><span class="status status-partial">一部</span></td>
+                            <td><span class="status status-partial">一部</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>金沢フォーラス</strong></td>
+                            <td>再開発</td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-partial">一部</span></td>
+                            <td><span class="status status-unknown">不明</span></td>
+                            <td><span class="status status-no">無</span></td>
+                            <td><span class="status status-no">無</span></td>
+                            <td><span class="status status-partial">一部</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>ららぽーと柏の葉</strong></td>
+                            <td>NT</td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-unknown">不明</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-no">無</span></td>
+                            <td><span class="status status-no">無</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>たまプラーザテラス</strong></td>
+                            <td>NT</td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-unknown">不明</span></td>
+                            <td><span class="status status-partial">一部</span></td>
+                            <td><span class="status status-no">無</span></td>
+                            <td><span class="status status-no">無</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>イオンモール千葉NT</strong></td>
+                            <td>NT</td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-partial">一部</span></td>
+                            <td><span class="status status-partial">一部</span></td>
+                            <td><span class="status status-no">無</span></td>
+                            <td><span class="status status-partial">一部</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                        </tr>
+                        <!-- その他 -->
+                        <tr style="background: #f0f9ff;">
+                            <td colspan="9"><strong>🎯 その他（3社）</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong>東京ドームシティ</strong></td>
+                            <td>その他</td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-unknown">不明</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>ユニクロ</strong></td>
+                            <td>その他</td>
+                            <td><span class="status status-unknown">不明</span></td>
+                            <td><span class="status status-partial">一部</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-unknown">不明</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-unknown">不明</span></td>
+                            <td><span class="status status-no">N/A</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>成田国際空港</strong></td>
+                            <td>その他</td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-unknown">不明</span></td>
+                            <td><span class="status status-unknown">不明</span></td>
+                            <td><span class="status status-unknown">不明</span></td>
+                            <td><span class="status status-partial">一部</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                            <td><span class="status status-yes">有</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>要件別導入率（詳細調査29社）</h3>
+            <div class="findings-grid">
+                <div class="finding-card">
+                    <h4>高導入率（70%以上）</h4>
+                    <ul>
+                        <li><strong>フロアマップ連携</strong>：86% (25/29社)</li>
+                        <li><strong>イベント自動更新</strong>：83% (24/29社)</li>
+                        <li><strong>テナント情報</strong>：90% (26/29社)</li>
+                    </ul>
+                </div>
+                <div class="finding-card">
+                    <h4>中導入率（40-70%）</h4>
+                    <ul>
+                        <li><strong>LINE Bot</strong>：66% (19/29社)</li>
+                        <li><strong>駐車場システム</strong>：55% (16/29社)</li>
+                        <li><strong>転人工対応</strong>：38% (11/29社)</li>
+                    </ul>
+                </div>
+                <div class="finding-card">
+                    <h4>低導入率（40%未満）</h4>
+                    <ul>
+                        <li><strong>大型タッチスクリーン</strong>：28% (8/29社)</li>
+                        <li>※地下街・再開発型は特に低導入</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. 百貨店カテゴリ詳細 -->
+        <section class="section" id="dept-store">
+            <h2>3. 百貨店カテゴリ詳細（3社）</h2>
+
+            <div class="company-card">
+                <h4>高島屋 (Takashimaya)</h4>
+                <div class="url">https://www.takashimaya.co.jp/</div>
+                <table class="requirement-table">
+                    <tr>
+                        <th width="20%">要件</th>
+                        <th width="10%">状態</th>
+                        <th>詳細</th>
+                    </tr>
+                    <tr>
+                        <td>フロアマップ連携</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td>各店舗でフロアガイドページ提供。大阪、横浜、日本橋等でインタラクティブマップ実装</td>
+                    </tr>
+                    <tr>
+                        <td>イベント自動更新</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td>イベント・キャンペーン情報ページを複数運用。Instagram(@takashimaya_event)で21,000+フォロワーに配信</td>
+                    </tr>
+                    <tr>
+                        <td>LINE Bot</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td>複数LINE公式アカウント運営（本体、オンラインストア、カード、各店舗別）</td>
+                    </tr>
+                    <tr>
+                        <td>大型タッチスクリーン</td>
+                        <td><span class="status status-partial">一部</span></td>
+                        <td>京都店でWhatYa AIチャットボットをQRコード経由で提供。店内複数箇所に設置</td>
+                    </tr>
+                    <tr>
+                        <td>転人工対応</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td><strong>KARAKURI chatbot導入</strong>。チャットボット→有人チャット切り替え可能</td>
+                    </tr>
+                    <tr>
+                        <td>駐車場システム</td>
+                        <td><span class="status status-partial">一部</span></td>
+                        <td>駐車場情報掲載あり。リアルタイム空き状況はタイムズ連携（日本橋S.C.東館）</td>
+                    </tr>
+                    <tr>
+                        <td>テナント情報</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td>フロアガイド通じてテナント情報提供。ブランド検索機能あり</td>
+                    </tr>
+                </table>
+                <p style="margin-top: 1rem; font-size: 0.9rem;"><strong>多言語対応：</strong>英語、中国語（簡体・繁体）、韓国語。WorldShopping BIZで125カ国越境EC対応</p>
+            </div>
+
+            <div class="company-card">
+                <h4>三越伊勢丹 (Isetan Mitsukoshi)</h4>
+                <div class="url">https://www.mistore.jp/</div>
+                <table class="requirement-table">
+                    <tr>
+                        <th width="20%">要件</th>
+                        <th width="10%">状態</th>
+                        <th>詳細</th>
+                    </tr>
+                    <tr>
+                        <td>フロアマップ連携</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td>2023年「サロン・ド・パルファン」でQRコード連携デジタルマップ実証実験（803回閲覧）</td>
+                    </tr>
+                    <tr>
+                        <td>イベント自動更新</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td>各店舗でイベントカレンダー提供。日付・カテゴリ・場所での絞り込み機能搭載</td>
+                    </tr>
+                    <tr>
+                        <td>LINE Bot</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td>複数アカウント運営（オンラインストア@333prbli、伊勢丹新宿@isetan等）</td>
+                    </tr>
+                    <tr>
+                        <td>大型タッチスクリーン</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td><strong>催事場入口にフロアマップサイネージ設置</strong>（2023年実証実験）</td>
+                    </tr>
+                    <tr>
+                        <td>転人工対応</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td>LINEワークス・Zoomでチャット相談・オンライン接客展開。スタイリスト相談機能</td>
+                    </tr>
+                    <tr>
+                        <td>駐車場システム</td>
+                        <td><span class="status status-no">無</span></td>
+                        <td>リアルタイム空き状況表示なし。料金・割引情報のみ</td>
+                    </tr>
+                    <tr>
+                        <td>テナント情報</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td>フロアガイドで店舗検索・カテゴリ別検索機能搭載</td>
+                    </tr>
+                </table>
+                <p style="margin-top: 1rem; font-size: 0.9rem;"><strong>多言語対応：</strong>WOVN.io導入（英語・中国語対応）。マルチランゲージセンター設置（2015年〜）</p>
+            </div>
+
+            <div class="company-card">
+                <h4>大丸松坂屋百貨店 (Daimaru Matsuzakaya)</h4>
+                <div class="url">https://dmdepart.jp/</div>
+                <table class="requirement-table">
+                    <tr>
+                        <th width="20%">要件</th>
+                        <th width="10%">状態</th>
+                        <th>詳細</th>
+                    </tr>
+                    <tr>
+                        <td>フロアマップ連携</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td>各店舗でフロアガイド提供。大丸東京店でB1F〜複数階の詳細マップ公開</td>
+                    </tr>
+                    <tr>
+                        <td>イベント自動更新</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td>各店舗でイベントカレンダー提供。統一的な展覧会ページで一括管理</td>
+                    </tr>
+                    <tr>
+                        <td>LINE Bot</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td>大丸・松坂屋LINE公式（@daimarumatsuzakaya）。「さくらパンダ」キャラクター活用</td>
+                    </tr>
+                    <tr>
+                        <td>大型タッチスクリーン</td>
+                        <td><span class="status status-no">無</span></td>
+                        <td>公式サイトでの導入確認なし</td>
+                    </tr>
+                    <tr>
+                        <td>転人工対応</td>
+                        <td><span class="status status-partial">一部</span></td>
+                        <td>SELF LINK実証実験実施。ギフトマナー等のDB化検討中</td>
+                    </tr>
+                    <tr>
+                        <td>駐車場システム</td>
+                        <td><span class="status status-no">無</span></td>
+                        <td>リアルタイム空き状況表示なし。料金・サービス情報のみ</td>
+                    </tr>
+                    <tr>
+                        <td>テナント情報</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td>フロアガイド通じてテナント情報提供</td>
+                    </tr>
+                </table>
+                <p style="margin-top: 1rem; font-size: 0.9rem;"><strong>多言語対応：</strong>アプリ5言語対応。TV通訳サービス全10店舗導入。Buyee Connect 19言語対応（外国籍ユーザー6万人）</p>
+            </div>
+        </section>
+
+        <!-- 4. 駅ビル・運輸業カテゴリ詳細 -->
+        <section class="section" id="station-bldg">
+            <h2>4. 駅ビル・運輸業・その他カテゴリ詳細（9社）</h2>
+
+            <h3>駅ビル（3社）</h3>
+
+            <div class="company-card">
+                <h4>ルミネ (LUMINE)</h4>
+                <div class="url">https://www.lumine.ne.jp/</div>
+                <table class="requirement-table">
+                    <tr>
+                        <th width="20%">要件</th>
+                        <th width="10%">状態</th>
+                        <th>詳細</th>
+                    </tr>
+                    <tr>
+                        <td>フロアマップ連携</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td>デジタルフロアマップあり（新宿・横浜・立川等）</td>
+                    </tr>
+                    <tr>
+                        <td>イベント自動更新</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td>イベント情報ページ・催事出店募集サイト展開</td>
+                    </tr>
+                    <tr>
+                        <td>LINE Bot</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td><strong>LINE公式(@lumine) 約980万友だち</strong>。再入荷・値下げ通知等の自動配信</td>
+                    </tr>
+                    <tr>
+                        <td>転人工対応</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td>ルミネカード問い合わせはチャット対応可（無料、担当者連携）</td>
+                    </tr>
+                    <tr>
+                        <td>駐車場システム</td>
+                        <td><span class="status status-partial">一部</span></td>
+                        <td>駐車場情報・割引情報提供あり。リアルタイム空き状況は確認不可</td>
+                    </tr>
+                    <tr>
+                        <td>テナント情報</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td>ショップ検索機能実装</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="company-card">
+                <h4>アトレ (atre)</h4>
+                <div class="url">https://www.atre.co.jp/</div>
+                <table class="requirement-table">
+                    <tr>
+                        <th width="20%">要件</th>
+                        <th width="10%">状態</th>
+                        <th>詳細</th>
+                    </tr>
+                    <tr>
+                        <td>フロアマップ連携</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td>デジタルフロアガイド提供。<strong>アトレ吉祥寺でMetamap連携</strong></td>
+                    </tr>
+                    <tr>
+                        <td>イベント自動更新</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td>各店舗のイベント情報ページ展開</td>
+                    </tr>
+                    <tr>
+                        <td>LINE Bot</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td>LINE公式(@atre)、JRE POINT連携、新規ID連携で毎月500ポイント抽選</td>
+                    </tr>
+                    <tr>
+                        <td>駐車場システム</td>
+                        <td><span class="status status-partial">一部</span></td>
+                        <td>タイムズ連携の予約・割引あり。リアルタイム表示は確認困難</td>
+                    </tr>
+                    <tr>
+                        <td>テナント情報</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td>ショップ検索機能実装</td>
+                    </tr>
+                </table>
+            </div>
+
+            <h3>運輸業（3社）</h3>
+
+            <div class="company-card">
+                <h4>JR東日本（ecute, GRANSTA等）</h4>
+                <div class="url">https://www.ecute.jp/</div>
+                <table class="requirement-table">
+                    <tr>
+                        <th width="20%">要件</th>
+                        <th width="10%">状態</th>
+                        <th>詳細</th>
+                    </tr>
+                    <tr>
+                        <td>フロアマップ連携</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td>ecute, GRANSTA等でデジタルフロアマップ提供</td>
+                    </tr>
+                    <tr>
+                        <td>イベント自動更新</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td>各施設で定期的なイベント・フェア情報更新</td>
+                    </tr>
+                    <tr>
+                        <td>LINE Bot</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td><strong>JR東日本 Chat Bot（2017年〜）</strong>：運行情報、忘れ物検索、コインロッカー空き情報</td>
+                    </tr>
+                    <tr>
+                        <td>大型タッチスクリーン</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td><strong>デジタルサイネージ300面超を駅ナカで展開</strong></td>
+                    </tr>
+                    <tr>
+                        <td>転人工対応</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td>Chat Bot内で忘れ物チャット対応（2019年〜）、有人切り替え対応</td>
+                    </tr>
+                    <tr>
+                        <td>駐車場システム</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td>コインロッカー空き情報（To Locca連携予約可）、駅駐車場情報</td>
+                    </tr>
+                    <tr>
+                        <td>テナント情報</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td>ショップ検索機能実装</td>
+                    </tr>
+                </table>
+                <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--success);"><strong>特筆：</strong>SC業界で最も先進的なデジタル化を実現。7要件すべて対応済み。</p>
+            </div>
+
+            <div class="company-card">
+                <h4>東急電鉄（東急百貨店、東急プラザ等）</h4>
+                <div class="url">https://www.tokyu-dept.co.jp/</div>
+                <table class="requirement-table">
+                    <tr>
+                        <th width="20%">要件</th>
+                        <th width="10%">状態</th>
+                        <th>詳細</th>
+                    </tr>
+                    <tr>
+                        <td>LINE Bot</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td>LINE公式(@914tatig) 67万人超。TOKYU POINT CARD on LINE</td>
+                    </tr>
+                    <tr>
+                        <td>転人工対応</td>
+                        <td><span class="status status-partial">一部</span></td>
+                        <td>AIチャットボット「SELF LINK」導入（ECサイト）</td>
+                    </tr>
+                    <tr>
+                        <td>駐車場システム</td>
+                        <td><span class="status status-partial">一部</span></td>
+                        <td>たまプラーザ店で満車・空車情報確認可能</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="company-card">
+                <h4>小田急電鉄（小田急百貨店、ミロード等）</h4>
+                <div class="url">https://www.odakyu.jp/</div>
+                <table class="requirement-table">
+                    <tr>
+                        <th width="20%">要件</th>
+                        <th width="10%">状態</th>
+                        <th>詳細</th>
+                    </tr>
+                    <tr>
+                        <td>LINE Bot</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td>小田急電鉄チャットボット（2020年7月〜、OK SKY採用）</td>
+                    </tr>
+                    <tr>
+                        <td>転人工対応</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td><strong>忘れ物・特急ロマンスカー空席照会で有人対応可能</strong></td>
+                    </tr>
+                </table>
+            </div>
+
+            <h3>その他（3社）</h3>
+
+            <div class="company-card">
+                <h4>東京ドームシティ</h4>
+                <div class="url">https://www.tokyo-dome.co.jp/</div>
+                <table class="requirement-table">
+                    <tr>
+                        <th width="20%">要件</th>
+                        <th width="10%">状態</th>
+                        <th>詳細</th>
+                    </tr>
+                    <tr>
+                        <td>フロアマップ連携</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td>園内マップ、ラクーアフロアマップ、プリズムホールフロアマップ等提供</td>
+                    </tr>
+                    <tr>
+                        <td>LINE Bot</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td>落とし物検索LINE(@tokyo-dome_find) 2024年12月開始</td>
+                    </tr>
+                    <tr>
+                        <td>大型タッチスクリーン</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td>アプリで待ち時間・混雑状況をリアルタイム配信</td>
+                    </tr>
+                    <tr>
+                        <td>駐車場システム</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td><strong>リアルタイム駐車場情報（三井のリパーク）、NAVITIME空き状況確認可</strong></td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="company-card">
+                <h4>ユニクロ (UNIQLO)</h4>
+                <div class="url">https://www.uniqlo.com/jp/</div>
+                <table class="requirement-table">
+                    <tr>
+                        <th width="20%">要件</th>
+                        <th width="10%">状態</th>
+                        <th>詳細</th>
+                    </tr>
+                    <tr>
+                        <td>LINE Bot</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td>LINE公式(@uniqlo)：会員バーコード表示、クーポン配信</td>
+                    </tr>
+                    <tr>
+                        <td>転人工対応</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td><strong>UNIQLO IQチャットボット→有人オペレーター引き継ぎ（9:00-20:00）、24時間対応</strong></td>
+                    </tr>
+                </table>
+                <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--success);"><strong>特筆：</strong>転人工対応のベストプラクティス事例。自動応答→有人への完全連携体制</p>
+            </div>
+
+            <div class="company-card">
+                <h4>成田国際空港</h4>
+                <div class="url">https://www.narita-airport.jp/</div>
+                <table class="requirement-table">
+                    <tr>
+                        <th width="20%">要件</th>
+                        <th width="10%">状態</th>
+                        <th>詳細</th>
+                    </tr>
+                    <tr>
+                        <td>フロアマップ連携</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td>デジタルインタラクティブマップ提供（フロアガイドは2025年6月廃止予定）</td>
+                    </tr>
+                    <tr>
+                        <td>転人工対応</td>
+                        <td><span class="status status-partial">一部</span></td>
+                        <td>AIチャットボット「Bebot」（自動応答）、有人は電話24時間</td>
+                    </tr>
+                    <tr>
+                        <td>駐車場システム</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td><strong>リアルタイム駐車場混雑情報（P1・P2の30分毎更新）、予約システム完備</strong></td>
+                    </tr>
+                </table>
+                <p style="margin-top: 1rem; font-size: 0.9rem;"><strong>特筆：</strong>Bebot（日本初の訪日観光客向けAI）導入。インバウンド対応の先進事例</p>
+            </div>
+        </section>
+
+        <!-- 5. SC専業カテゴリ詳細 -->
+        <section class="section" id="sc-specialty">
+            <h2>5. SC専業カテゴリ詳細（3社）</h2>
+
+            <div class="company-card">
+                <h4>イオンモール (AEON MALL)</h4>
+                <div class="url">https://www.aeonmall.com/</div>
+                <table class="requirement-table">
+                    <tr>
+                        <th width="20%">要件</th>
+                        <th width="10%">状態</th>
+                        <th>詳細</th>
+                    </tr>
+                    <tr>
+                        <td>フロアマップ連携</td>
+                        <td><span class="status status-partial">一部</span></td>
+                        <td>メタマップ（Metamap）のデジタルフロアガイドを採用。イオンモールKYOTOでは「プラチナマップ」として提供</td>
+                    </tr>
+                    <tr>
+                        <td>イベント自動更新</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td>各施設で「イベントカレンダー」提供。多言語対応（日・英・中・韓）</td>
+                    </tr>
+                    <tr>
+                        <td>大型タッチスクリーン</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td><strong>AIカメラ付きタッチパネルサイネージ32面（豊川）</strong>。属性判別によるサジェスト表示。350インチLEDビジョン（新利府）</td>
+                    </tr>
+                    <tr>
+                        <td>転人工対応</td>
+                        <td><span class="status status-partial">一部</span></td>
+                        <td>イオン銀行・イオンカードでAIチャット→有人対応切替機能あり</td>
+                    </tr>
+                    <tr>
+                        <td>駐車場システム</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td><strong>リアルタイム空き状況表示</strong>。車両ナンバー認証システム（レイクタウン）</td>
+                    </tr>
+                </table>
+                <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--success);"><strong>特筆：</strong>AIさくらさん接客システム全国9店舗17台導入。従業員向けAIアシスタント約390店舗展開中</p>
+            </div>
+
+            <div class="company-card">
+                <h4>パルコ (PARCO)</h4>
+                <div class="url">https://parco.jp/</div>
+                <table class="requirement-table">
+                    <tr>
+                        <th width="20%">要件</th>
+                        <th width="10%">状態</th>
+                        <th>詳細</th>
+                    </tr>
+                    <tr>
+                        <td>フロアマップ連携</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td>各店舗でフロアガイド提供。渋谷PARCOでは「ショップ名から探す」機能</td>
+                    </tr>
+                    <tr>
+                        <td>LINE Bot</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td><strong>LINE公式(@parco) 約680万友だち</strong>。全国各店舗で個別アカウント展開</td>
+                    </tr>
+                    <tr>
+                        <td>テナント情報</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td><strong>POCKET PARCOアプリでO2O施策実施</strong>。顧客行動データをテナントコンサルティングに活用</td>
+                    </tr>
+                </table>
+                <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--success);"><strong>特筆：</strong>データドリブン経営。PARCOカード統計情報をテナントに開示し、コンサルティング支援を提供</p>
+            </div>
+
+            <div class="company-card">
+                <h4>ららぽーと (三井ショッピングパーク)</h4>
+                <div class="url">https://mitsui-shopping-park.com/</div>
+                <table class="requirement-table">
+                    <tr>
+                        <th width="20%">要件</th>
+                        <th width="10%">状態</th>
+                        <th>詳細</th>
+                    </tr>
+                    <tr>
+                        <td>フロアマップ連携</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td><strong>Mappedin（マップトイン）導入</strong>。三井ショッピングパークアプリでマップ機能提供</td>
+                    </tr>
+                    <tr>
+                        <td>大型タッチスクリーン</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td><strong>22台の65型モニタ（EXPOCITY）</strong>、10面サイネージ（名古屋みなとアクルス）でショップ・イベント情報配信</td>
+                    </tr>
+                    <tr>
+                        <td>駐車場システム</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td>iPosNetリアルタイム駐車場情報（横浜）。三井のリパーク連携。混雑状況ウェブ表示</td>
+                    </tr>
+                </table>
+                <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--success);"><strong>特筆：</strong>三井ショッピングパークアプリでポイント・QR決済・駐車場記憶・順番待ち予約を統合</p>
+            </div>
+
+            <div class="conclusion-box">
+                <h4>SC専業3社 総合評価</h4>
+                <p>イオンモール: 5.5/7点 | パルコ: 5.0/7点 | ららぽーと: 5.5/7点</p>
+                <ul style="margin-top: 0.75rem; margin-left: 1.5rem;">
+                    <li><strong>イオンモール</strong>：AIカメラ統合サイネージ・AIさくらさんで業界最先端</li>
+                    <li><strong>パルコ</strong>：LINE 680万友だち・データドリブン経営が強み</li>
+                    <li><strong>ららぽーと</strong>：Mappedin導入・大規模サイネージネットワークが特徴</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- 6. GMS・小売カテゴリ詳細 -->
+        <section class="section" id="gms-retail">
+            <h2>6. GMS・小売カテゴリ詳細（5社）</h2>
+
+            <div class="company-card">
+                <h4>イオンリテール</h4>
+                <div class="url">https://www.aeonretail.jp/</div>
+                <table class="requirement-table">
+                    <tr>
+                        <th width="20%">要件</th>
+                        <th width="10%">状態</th>
+                        <th>詳細</th>
+                    </tr>
+                    <tr>
+                        <td>フロアマップ連携</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td>複数店舗でタッチパネル式フロアマップ導入（幕張新都心、豊川、岡山等）</td>
+                    </tr>
+                    <tr>
+                        <td>イベント自動更新</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td>統一CMS運用。全国80箇所・月8,000件の更新に対応</td>
+                    </tr>
+                    <tr>
+                        <td>大型タッチスクリーン</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td>デジタルサイネージ全国48箇所展開。AIカメラ付きタッチパネル32面設置（豊川）</td>
+                    </tr>
+                    <tr>
+                        <td>駐車場システム</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td>レイクタウン、草津等でリアルタイム空き状況表示</td>
+                    </tr>
+                </table>
+                <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--success);"><strong>DX推進度：8点/10点</strong> - 業界最多のタッチパネル導入数</p>
+            </div>
+
+            <div class="company-card">
+                <h4>イトーヨーカ堂</h4>
+                <div class="url">https://www.itoyokado.co.jp/</div>
+                <table class="requirement-table">
+                    <tr>
+                        <th width="20%">要件</th>
+                        <th width="10%">状態</th>
+                        <th>詳細</th>
+                    </tr>
+                    <tr>
+                        <td>大型タッチスクリーン</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td><strong>イトーヨーカドーTV：全国117店舗に770台超の31.5インチサイネージ</strong>。木場店で世界初の裸眼3Dサイネージ</td>
+                    </tr>
+                    <tr>
+                        <td>転人工対応</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td><strong>kiwamiアバター接客「アプリカウンター」導入</strong>。チャットボットで店舗問い合わせ8割削減</td>
+                    </tr>
+                </table>
+                <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--success);"><strong>DX推進度：7点/10点</strong> - サイネージ・アバター接客で業界最先端</p>
+            </div>
+
+            <div class="company-card">
+                <h4>ノジマ</h4>
+                <div class="url">https://www.nojima.co.jp/</div>
+                <table class="requirement-table">
+                    <tr>
+                        <th width="20%">要件</th>
+                        <th width="10%">状態</th>
+                        <th>詳細</th>
+                    </tr>
+                    <tr>
+                        <td>フロアマップ連携</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td><strong>2024年3月：ソニーNaviCX技術の店内マップ導入</strong>。スマホセンサー＋AIで位置・向き表示</td>
+                    </tr>
+                    <tr>
+                        <td>LINE Bot</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td>家電量販店初のLINE公式アカウント開設（2018年）</td>
+                    </tr>
+                    <tr>
+                        <td>転人工対応</td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td><strong>24時間チャット窓口。AI自動応答＋スタッフ有人切替対応</strong></td>
+                    </tr>
+                </table>
+                <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--success);"><strong>DX推進度：7点/10点</strong> - アプリ中心のDX戦略・位置情報技術が最先端</p>
+            </div>
+
+            <div class="conclusion-box">
+                <h4>GMS・小売5社 DXランキング</h4>
+                <ol style="margin-left: 1.5rem;">
+                    <li><strong>イオンリテール（8点）</strong>：最も包括的。タッチパネル・駐車場システムが充実</li>
+                    <li><strong>イトーヨーカ堂（7点）</strong>：最新サイネージ技術・アバター接客先行</li>
+                    <li><strong>ノジマ（7点）</strong>：アプリ・AI技術重視。ソニーNaviCX店内マップ</li>
+                    <li><strong>フジ（5点）</strong>：エミフルMASAKI中心に展開</li>
+                    <li><strong>ユニー（3点）</strong>：基本的な情報提供にとどまる</li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- 7. 地下街カテゴリ詳細 -->
+        <section class="section" id="underground">
+            <h2>7. 地下街カテゴリ詳細（3社）</h2>
+
+            <div class="findings-grid">
+                <div class="finding-card" style="border-left: 4px solid var(--warning);">
+                    <h4>地下街共通の課題</h4>
+                    <ul>
+                        <li><strong>大型タッチスクリーン</strong>：3社全て未導入</li>
+                        <li><strong>転人工対応</strong>：3社全て未実装</li>
+                        <li><strong>LINE Bot</strong>：詳細情報が確認困難</li>
+                        <li>複雑な迷路的構造への対応が課題</li>
+                    </ul>
+                </div>
+                <div class="finding-card" style="border-left: 4px solid var(--success);">
+                    <h4>GBase Support提供価値</h4>
+                    <ul>
+                        <li><strong>フロアマップのインタラクティブ化</strong>が最大の差別化ポイント</li>
+                        <li>Metamapパートナーシップ活用で迷路対策</li>
+                        <li>出口案内、トイレ、多言語対応の需要大</li>
+                    </ul>
+                </div>
+            </div>
+
+            <table class="requirement-table">
+                <thead>
+                    <tr>
+                        <th>企業名</th>
+                        <th>公式サイト</th>
+                        <th>フロアマップ</th>
+                        <th>イベント</th>
+                        <th>駐車場</th>
+                        <th>テナント</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>八重洲地下街</strong></td>
+                        <td>https://www.yaechika.com/</td>
+                        <td><span class="status status-partial">基本</span></td>
+                        <td><span class="status status-partial">一部</span></td>
+                        <td><span class="status status-partial">情報のみ</span></td>
+                        <td><span class="status status-partial">基本</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>ディアモール大阪</strong></td>
+                        <td>https://www.diamor.jp/</td>
+                        <td><span class="status status-partial">基本</span></td>
+                        <td><span class="status status-partial">一部</span></td>
+                        <td><span class="status status-partial">情報のみ</span></td>
+                        <td><span class="status status-partial">基本</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>サカエチカ</strong></td>
+                        <td>https://sakaechika.com/</td>
+                        <td><span class="status status-partial">基本</span></td>
+                        <td><span class="status status-partial">一部</span></td>
+                        <td><span class="status status-partial">情報のみ</span></td>
+                        <td><span class="status status-partial">基本</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="conclusion-box">
+                <h4>地下街カテゴリ 推奨アクション</h4>
+                <ul style="margin-left: 1.5rem;">
+                    <li><strong>高優先</strong>：フロアマップ連携（Metamap）、LINE Bot強化、転人工対応</li>
+                    <li><strong>中優先</strong>：イベント自動更新、テナント情報API</li>
+                    <li><strong>低優先</strong>：大型タッチスクリーン（投資対効果が低い可能性）</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- 8. 再開発・ニュータウン型詳細 -->
+        <section class="section" id="redevelopment">
+            <h2>8. 再開発・ニュータウン型カテゴリ詳細（6社）</h2>
+
+            <h3>再開発型（3社）</h3>
+            <table class="requirement-table">
+                <thead>
+                    <tr>
+                        <th>企業名</th>
+                        <th>フロアマップ</th>
+                        <th>イベント</th>
+                        <th>LINE</th>
+                        <th>タッチ</th>
+                        <th>転人工</th>
+                        <th>駐車場</th>
+                        <th>テナント</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>エールエールA館</strong></td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td><span class="status status-partial">一部</span></td>
+                        <td><span class="status status-unknown">?</span></td>
+                        <td><span class="status status-no">無</span></td>
+                        <td><span class="status status-no">無</span></td>
+                        <td><span class="status status-partial">一部</span></td>
+                        <td><span class="status status-partial">一部</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>金沢フォーラス</strong></td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td><span class="status status-partial">一部</span></td>
+                        <td><span class="status status-unknown">?</span></td>
+                        <td><span class="status status-no">無</span></td>
+                        <td><span class="status status-no">無</span></td>
+                        <td><span class="status status-partial">一部</span></td>
+                        <td><span class="status status-yes">有</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>浜松駅周辺</strong></td>
+                        <td><span class="status status-partial">一部</span></td>
+                        <td><span class="status status-partial">一部</span></td>
+                        <td><span class="status status-unknown">?</span></td>
+                        <td><span class="status status-no">無</span></td>
+                        <td><span class="status status-no">無</span></td>
+                        <td><span class="status status-partial">一部</span></td>
+                        <td><span class="status status-partial">一部</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>ニュータウン型（3社）</h3>
+            <table class="requirement-table">
+                <thead>
+                    <tr>
+                        <th>企業名</th>
+                        <th>フロアマップ</th>
+                        <th>イベント</th>
+                        <th>LINE</th>
+                        <th>タッチ</th>
+                        <th>転人工</th>
+                        <th>駐車場</th>
+                        <th>テナント</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>ららぽーと柏の葉</strong></td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td><span class="status status-unknown">?</span></td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td><span class="status status-no">無</span></td>
+                        <td><span class="status status-no">無</span></td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td><span class="status status-yes">有</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>たまプラーザテラス</strong></td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td><span class="status status-unknown">?</span></td>
+                        <td><span class="status status-partial">一部</span></td>
+                        <td><span class="status status-no">無</span></td>
+                        <td><span class="status status-no">無</span></td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td><span class="status status-yes">有</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>イオンモール千葉NT</strong></td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td><span class="status status-partial">一部</span></td>
+                        <td><span class="status status-partial">一部</span></td>
+                        <td><span class="status status-no">無</span></td>
+                        <td><span class="status status-partial">一部</span></td>
+                        <td><span class="status status-yes">有</span></td>
+                        <td><span class="status status-yes">有</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="findings-grid">
+                <div class="finding-card" style="border-left: 4px solid var(--success);">
+                    <h4>優良事例：たまプラーザテラス</h4>
+                    <ul>
+                        <li><strong>リアルタイム駐車場情報</strong>を提供</li>
+                        <li>駐車台数1,646台（A～F駐車場）の満空情報をウェブ表示</li>
+                    </ul>
+                </div>
+                <div class="finding-card" style="border-left: 4px solid var(--success);">
+                    <h4>優良事例：イオンモール千葉NT</h4>
+                    <ul>
+                        <li><strong>ノジマ店でチャットボット→有人切替機能</strong></li>
+                        <li>唯一の転人工対応事例（テナント店舗経由）</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="conclusion-box">
+                <h4>再開発・ニュータウン型 総合所見</h4>
+                <ul style="margin-left: 1.5rem;">
+                    <li><strong>大型タッチスクリーン導入率：0%</strong>（全6社未導入）→ GBase Supportの提供価値極めて高い</li>
+                    <li><strong>転人工対応</strong>：1社のみ（限定的）→ 成長市場</li>
+                    <li><strong>駐車場システム</strong>：ニュータウン型は充実傾向</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- 9. 主要発見事項 -->
+        <section class="section" id="findings">
+            <h2>9. 主要発見事項</h2>
+
+            <div class="findings-grid">
+                <div class="finding-card" style="border-left: 4px solid var(--success);">
+                    <h4 style="color: var(--success);">高普及機能</h4>
+                    <ul>
+                        <li><strong>LINE公式アカウント</strong>：ほぼ全社導入済み（普及率90%+）</li>
+                        <li><strong>フロアマップ</strong>：基本的なフロアガイドは全社提供</li>
+                        <li><strong>イベント情報</strong>：定期更新体制は確立済み</li>
+                        <li><strong>テナント検索</strong>：基本機能は全社実装</li>
+                    </ul>
+                </div>
+                <div class="finding-card" style="border-left: 4px solid var(--warning);">
+                    <h4 style="color: var(--warning);">発展途上機能</h4>
+                    <ul>
+                        <li><strong>チャットボット→有人切替</strong>：一部先進企業のみ（約50%）</li>
+                        <li><strong>駐車場リアルタイム表示</strong>：都心施設では遅れ傾向</li>
+                        <li><strong>デジタルサイネージ連携</strong>：駅ビル以外は限定的</li>
+                    </ul>
+                </div>
+                <div class="finding-card" style="border-left: 4px solid var(--danger);">
+                    <h4 style="color: var(--danger);">差別化ポイント</h4>
+                    <ul>
+                        <li><strong>インタラクティブマップ</strong>：Metamap等の連携は少数</li>
+                        <li><strong>AI活用</strong>：KARAKURI、SELF LINK等の本格AI導入は限定的</li>
+                        <li><strong>多言語チャットボット</strong>：対応企業は極めて少ない</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>先進的な事例（ベストプラクティス）</h3>
+            <table class="requirement-table">
+                <thead>
+                    <tr>
+                        <th>機能</th>
+                        <th>先進事例</th>
+                        <th>詳細</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>LINE Bot</td>
+                        <td><strong>ルミネ</strong></td>
+                        <td>980万友だち。再入荷・値下げ通知の自動配信で高いエンゲージメント</td>
+                    </tr>
+                    <tr>
+                        <td>チャットボット統合</td>
+                        <td><strong>JR東日本</strong></td>
+                        <td>Chat Botで運行情報・忘れ物・コインロッカーまで一元対応</td>
+                    </tr>
+                    <tr>
+                        <td>転人工対応</td>
+                        <td><strong>ユニクロ</strong></td>
+                        <td>UNIQLO IQ→有人オペレーターへの完全連携（24時間対応）</td>
+                    </tr>
+                    <tr>
+                        <td>デジタルサイネージ</td>
+                        <td><strong>JR東日本</strong></td>
+                        <td>駅ナカ300面超のデジタルサイネージネットワーク</td>
+                    </tr>
+                    <tr>
+                        <td>駐車場システム</td>
+                        <td><strong>成田国際空港</strong></td>
+                        <td>P1・P2のリアルタイム混雑情報（30分毎更新）+ 予約システム</td>
+                    </tr>
+                    <tr>
+                        <td>インバウンドAI</td>
+                        <td><strong>成田国際空港</strong></td>
+                        <td>Bebot（日本初の訪日観光客向けAIチャットボット）</td>
+                    </tr>
+                    <tr>
+                        <td>フロアマップ連携</td>
+                        <td><strong>アトレ吉祥寺</strong></td>
+                        <td>Metamap連携によるインタラクティブフロアマップ</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- 10. ロードマップ要件の妥当性検証 -->
+        <section class="section" id="validation">
+            <h2>10. ロードマップ要件の妥当性検証</h2>
+
+            <table class="requirement-table">
+                <thead>
+                    <tr>
+                        <th>要件</th>
+                        <th>優先度</th>
+                        <th>検証結果</th>
+                        <th>市場ニーズ評価</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>フロアマップ連携</strong></td>
+                        <td><span class="priority-badge priority-p0">P0</span></td>
+                        <td><span class="status status-yes">妥当</span></td>
+                        <td>基本フロアガイドは普及済みだが、<strong>インタラクティブマップ連携（Metamap等）は差別化ポイント</strong>として有効。特に地下街・大型SCで需要大</td>
+                    </tr>
+                    <tr>
+                        <td><strong>イベント自動更新</strong></td>
+                        <td><span class="priority-badge priority-p0">P0</span></td>
+                        <td><span class="status status-yes">妥当</span></td>
+                        <td>イベントページは全社あるが、<strong>AI連携での自動更新・回答生成</strong>には価値あり</td>
+                    </tr>
+                    <tr>
+                        <td><strong>LINE Bot強化</strong></td>
+                        <td><span class="priority-badge priority-p0">P0</span></td>
+                        <td><span class="status status-yes">妥当</span></td>
+                        <td>LINE普及率は高いが、<strong>AIチャットボット機能は未実装の企業が多数</strong>。GBase Supportの提供価値高い</td>
+                    </tr>
+                    <tr>
+                        <td><strong>大型タッチスクリーン</strong></td>
+                        <td><span class="priority-badge priority-p0">P0</span></td>
+                        <td><span class="status status-partial">要検討</span></td>
+                        <td>導入率は低い（33%）。<strong>JR東日本のようなインフラ企業以外では優先度を下げることも検討</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>転人工対応</strong></td>
+                        <td><span class="priority-badge priority-p0">P0</span></td>
+                        <td><span class="status status-yes">妥当</span></td>
+                        <td>導入率約50%で<strong>成長市場</strong>。ユニクロ・JR東日本の事例が参考になる</td>
+                    </tr>
+                    <tr>
+                        <td><strong>駐車場システム連携</strong></td>
+                        <td><span class="priority-badge priority-p1">P1</span></td>
+                        <td><span class="status status-yes">妥当</span></td>
+                        <td>都心施設では遅れ。<strong>郊外型SC・空港での需要は確認済み</strong>。優先度P1は適切</td>
+                    </tr>
+                    <tr>
+                        <td><strong>テナント情報API</strong></td>
+                        <td><span class="priority-badge priority-p1">P1</span></td>
+                        <td><span class="status status-yes">妥当</span></td>
+                        <td>テナント検索は普及済みだが、<strong>AI回答への活用（構造化API）</strong>には価値あり</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="conclusion-box">
+                <h4>検証結論</h4>
+                <p><strong>7要件中6要件は妥当性が確認されました。</strong></p>
+                <ul style="margin-top: 0.75rem; margin-left: 1.5rem;">
+                    <li>特に「LINE Bot強化」「転人工対応」は<strong>GBase Supportの差別化ポイント</strong>として有効</li>
+                    <li>「大型タッチスクリーン対応」は<strong>ターゲット顧客を絞り込む</strong>ことで優先度調整を検討</li>
+                    <li>「フロアマップ連携」は<strong>Metamapパートナーシップ</strong>が差別化要素</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- 11. 追加提案事項 -->
+        <section class="section" id="recommendations">
+            <h2>11. 追加提案事項（調査から発見された潜在ニーズ）</h2>
+
+            <div class="findings-grid">
+                <div class="finding-card" style="border-left: 4px solid var(--primary);">
+                    <h4>提案1: 忘れ物検索Bot</h4>
+                    <ul>
+                        <li>JR東日本、東京ドームシティで導入済み</li>
+                        <li>SC施設でのニーズは高いと推測</li>
+                        <li><strong>GBase Supportのオプション機能として検討価値あり</strong></li>
+                    </ul>
+                </div>
+                <div class="finding-card" style="border-left: 4px solid var(--primary);">
+                    <h4>提案2: コインロッカー空き情報</h4>
+                    <ul>
+                        <li>JR東日本のTo Locca連携が参考事例</li>
+                        <li>駅ビル・地下街・空港での需要</li>
+                        <li><strong>外部API連携として開発検討</strong></li>
+                    </ul>
+                </div>
+                <div class="finding-card" style="border-left: 4px solid var(--primary);">
+                    <h4>提案3: 混雑状況表示</h4>
+                    <ul>
+                        <li>東京ドームシティアプリで待ち時間・混雑表示</li>
+                        <li>ポストコロナで需要増加傾向</li>
+                        <li><strong>P2「混雑状況表示」の優先度引き上げ検討</strong></li>
+                    </ul>
+                </div>
+                <div class="finding-card" style="border-left: 4px solid var(--primary);">
+                    <h4>提案4: 越境EC連携</h4>
+                    <ul>
+                        <li>高島屋WorldShopping、大丸Buyee Connect導入</li>
+                        <li>インバウンド回復で需要増</li>
+                        <li><strong>多言語AIとの相乗効果が期待できる</strong></li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>次のアクション</h3>
+            <ol style="margin-left: 1.5rem; line-height: 2;">
+                <li>「大型タッチスクリーン対応」のターゲット顧客定義を明確化（地下街・再開発型は導入率0%）</li>
+                <li>「忘れ物検索Bot」「混雑状況表示」のロードマップへの追加検討</li>
+                <li>アトレ吉祥寺等のMetamap導入施設への優先アプローチ</li>
+                <li>パルコ（680万LINE友だち）、ルミネ（980万友だち）の事例を参考にLINE Bot強化提案</li>
+                <li>ノジマ（ソニーNaviCX）、イオンモール（AIさくらさん）の先進事例をベンチマーク</li>
+            </ol>
+        </section>
+
+        <footer style="text-align: center; padding: 2rem; color: var(--gray-600); font-size: 0.9rem;">
+            <p>SC業界45社 機能要件調査レポート | GBase Support by Sparticle株式会社</p>
+            <p>作成日: 2026年1月4日 | 調査方法: 公式サイト・ウェブ検索調査</p>
+        </footer>
+    </div>
+</body>
+</html>
